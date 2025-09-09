@@ -1,0 +1,107 @@
+// Dashboard.jsx
+import React from "react";
+import { mockTransactions, mockBudgets, mockProfiles } from "../data/data";
+import SummaryCards from "../components/dashboard/overview/SummaryCards";
+import RecentTransactions from "../components/dashboard/overview/RecentTransactions";
+import Chart from "../components/dashboard/overview/Chart";
+import BudgetProgress from "../components/dashboard/overview/BudgetProgress";
+import CategoryBreakdown from "../components/dashboard/overview/CategoryBreakdown";
+
+const Dashboard = () => {
+  // Get data directly from mockData
+  const transactions = mockTransactions;
+  const budgets = mockBudgets;
+  const currentUser = mockProfiles[0];
+  const currency = currentUser.currency;
+
+  // Calculate totals
+  const totalIncome = transactions
+    .filter((t) => t.type === "income")
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const totalSpending = transactions
+    .filter((t) => t.type === "expense")
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const remaining = totalIncome - totalSpending;
+
+  // Get recent transactions (last 5)
+  const recentTransactions = [...transactions]
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 5);
+
+  return (
+    <div className="bg-gray-50 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-800">
+            Financial Dashboard
+          </h1>
+          <p className="text-gray-600 mt-2">Welcome back, {currentUser.name}</p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Left Column */}
+          <div className="space-y-6">
+            <SummaryCards
+              totalIncome={totalIncome}
+              totalSpending={totalSpending}
+              remaining={remaining}
+              currency={currency}
+            />
+
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <h2 className="text-xl font-semibold text-gray-800 mb-6">
+                Income vs Spending
+              </h2>
+              <Chart transactions={transactions} currency={currency} />
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                Recent Transactions
+              </h2>
+              <RecentTransactions
+                transactions={recentTransactions}
+                currency={currency}
+              />
+            </div>
+          </div>
+
+          {/* Right Column */}
+          <div className="space-y-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="mb-4">
+                <h2 className="text-xl font-semibold text-gray-800">
+                  Budget Progress
+                </h2>
+                <p className="text-sm text-gray-500 mt-1">
+                  Cumulative spending vs budget since you started
+                </p>
+              </div>
+              <BudgetProgress
+                budgets={budgets}
+                transactions={transactions}
+                currency={currency}
+                currentUser={currentUser}
+              />
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                Spending by Category
+              </h2>
+              <CategoryBreakdown
+                transactions={transactions}
+                currency={currency}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Dashboard;
