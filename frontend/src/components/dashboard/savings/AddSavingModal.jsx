@@ -11,12 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
 
-const AddSavingModal = ({
-  onClose,
-  onSave,
-  editingSaving,
-  onDelete,
-}) => {
+const AddSavingModal = ({ onClose, onSave, editingSaving, onDelete }) => {
   const {
     register,
     handleSubmit,
@@ -28,8 +23,13 @@ const AddSavingModal = ({
   useEffect(() => {
     if (editingSaving) {
       setValue("amount", editingSaving.amount || 0);
-      setValue("date", editingSaving.date ? format(new Date(editingSaving.date), "yyyy-MM-dd") : format(new Date(), "yyyy-MM-dd"));
-      setValue("note", editingSaving.note || "");
+      setValue(
+        "date",
+        editingSaving.date
+          ? format(new Date(editingSaving.date), "yyyy-MM-dd")
+          : format(new Date(), "yyyy-MM-dd")
+      );
+      setValue("title", editingSaving.title || "");
     } else {
       reset();
       setValue("date", format(new Date(), "yyyy-MM-dd"));
@@ -39,7 +39,6 @@ const AddSavingModal = ({
   const onSubmit = (data) => {
     onSave({
       ...data,
-      id: editingSaving ? editingSaving.id : `s${Date.now()}`,
     });
     onClose();
     reset();
@@ -47,7 +46,7 @@ const AddSavingModal = ({
 
   const handleDelete = () => {
     if (editingSaving && onDelete) {
-      onDelete(editingSaving.id);
+      onDelete(editingSaving._id);
       onClose();
     }
   };
@@ -95,27 +94,23 @@ const AddSavingModal = ({
               {...register("date", { required: "Date is required" })}
             />
             {errors.date && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.date.message}
-              </p>
+              <p className="text-red-500 text-xs mt-1">{errors.date.message}</p>
             )}
           </div>
 
           {/* Note / Description */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Note / Description
+              Title
             </label>
             <Input
               type="text"
               placeholder="e.g., Bonus, Gift, etc."
               className={errors.note ? "border-red-500" : ""}
-              {...register("note")}
+              {...register("title")}
             />
             {errors.note && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.note.message}
-              </p>
+              <p className="text-red-500 text-xs mt-1">{errors.note.message}</p>
             )}
           </div>
 
@@ -131,10 +126,18 @@ const AddSavingModal = ({
               </Button>
             )}
             <div className="flex gap-2">
-              <Button type="button" variant="outline" onClick={onClose} className="w-full sm:w-auto">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onClose}
+                className="w-full sm:w-auto"
+              >
                 Cancel
               </Button>
-              <Button type="submit" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700">
+              <Button
+                type="submit"
+                className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
+              >
                 {editingSaving ? "Update" : "Add"} Saving
               </Button>
             </div>

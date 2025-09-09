@@ -1,9 +1,9 @@
-import React from 'react';
-import { format } from 'date-fns';
-import { DollarSign, Edit } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import React from "react";
+import { format } from "date-fns";
+import { DollarSign, Edit } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-const SavingCard = ({ saving, onEdit, currency = '$' }) => {
+const SavingCard = ({ saving, onEdit, currency = "$" }) => {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex items-center justify-between">
       <div className="flex items-center gap-4">
@@ -11,8 +11,12 @@ const SavingCard = ({ saving, onEdit, currency = '$' }) => {
           <DollarSign className="w-6 h-6 text-blue-600" />
         </div>
         <div>
-          <p className="font-semibold text-gray-800">{saving.note || 'Saving Entry'}</p>
-          <p className="text-sm text-gray-500">{format(new Date(saving.date), 'MMMM d, yyyy')}</p>
+          <p className="font-semibold text-gray-800">
+            {saving.title || "Saving Entry"}
+          </p>
+          <p className="text-sm text-gray-500">
+            {format(new Date(saving.date), "MMMM d, yyyy")}
+          </p>
         </div>
       </div>
       <div className="flex items-center gap-4">

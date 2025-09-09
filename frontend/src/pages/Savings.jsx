@@ -2,20 +2,33 @@ import React, { useState, useEffect } from "react";
 import { Plus, DollarSign } from "lucide-react";
 import AddSavingModal from "../components/dashboard/savings/AddSavingModal";
 import SavingCard from "../components/dashboard/savings/SavingCard";
-import { mockSavings, mockProfiles } from "../data/data";
+
+import axios from "axios";
+import { toast } from "react-toastify";
 
 export default function SavingsPage({ userId = "u1" }) {
-  const currentUser = mockProfiles.find((p) => p.id === userId);
   const [open, setOpen] = useState(false);
   const [savings, setSavings] = useState([]);
   const [editingSaving, setEditingSaving] = useState(null);
+  const [hasChanged, setHasChanged] = useState(false);
 
   useEffect(() => {
-    // Initialize savings from mock data, ensuring it's an array
-    setSavings(Array.isArray(mockSavings) ? mockSavings : []);
-  }, []);
+    const fetchSavings = async () => {
+      const res = await axios.get("http://localhost:8000/api/v1/transactions");
 
-  const totalSavings = Array.isArray(savings) ? savings.reduce((sum, s) => sum + s.amount, 0) : 0;
+      const { transactions } = res.data.data;
+      console.log(transactions);
+      console.log(transactions.filter((t) => t.type === "saving"));
+      setSavings(transactions.filter((t) => t.type === "saving"));
+      console.log(savings);
+    };
+    fetchSavings();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasChanged]);
+
+  const totalSavings = Array.isArray(savings)
+    ? savings.reduce((sum, s) => sum + s.amount, 0)
+    : 0;
   const savingsThisMonth = Array.isArray(savings)
     ? savings
         .filter((s) => {
@@ -40,34 +53,49 @@ export default function SavingsPage({ userId = "u1" }) {
     setOpen(true);
   };
 
-  const handleDelete = (id) => {
-    setSavings((prev) => prev.filter((s) => s.id !== id));
-    const deleteIndex = mockSavings.findIndex((s) => s.id === id);
-    if (deleteIndex !== -1) {
-      mockSavings.splice(deleteIndex, 1);
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8000/api/v1/transactions/${id}`);
+      setSavings((prevSavings) => prevSavings.filter((s) => s._id !== id));
+      setHasChanged((t) => !t);
+      toast.success("Saving Deleted");
+    } catch (error) {
+      toast.error(error.message);
     }
   };
 
-  const handleSave = (data) => {
-    if (editingSaving) {
-      // Update
-      const updatedSavings = savings.map((s) =>
-        s.id === editingSaving.id ? { ...s, ...data } : s
-      );
-      setSavings(updatedSavings);
-      const editIndex = mockSavings.findIndex((s) => s.id === editingSaving.id);
-      if (editIndex !== -1) {
-        mockSavings[editIndex] = { ...mockSavings[editIndex], ...data };
+  const handleSave = async (data) => {
+    try {
+      if (editingSaving) {
+        const updateID = editingSaving._id;
+        const res = await axios.patch(
+          `http://localhost:8000/api/v1/transactions/${updateID}`,
+          data
+        );
+        const updatedTransaction = res.data.data.transaction;
+        setSavings((prevSavings) =>
+          prevSavings.map((s) =>
+            s._id === updateID ? updatedTransaction : s
+          )
+        );
+        toast.success("Saving Edited");
+      } else {
+        // Add
+        const res = await axios.post(
+          `http://localhost:8000/api/v1/transactions`,
+          { ...data, budgetType: "none", type: "saving", category: "saving" }
+        );
+        const newSaving = res.data.data.transaction;
+        setSavings((prevSavings) => [...prevSavings, newSaving]);
+        toast.success("Saving Added");
       }
-    } else {
-      // Add
-      const newSaving = { ...data, id: `s${Date.now()}` };
-      const newSavings = [...savings, newSaving];
-      setSavings(newSavings);
-      mockSavings.push(newSaving);
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setOpen(false);
+      setHasChanged((t) => !t);
+      setEditingSaving(null);
     }
-    setOpen(false);
-    setEditingSaving(null);
   };
 
   const handleModalClose = () => {
@@ -95,7 +123,7 @@ export default function SavingsPage({ userId = "u1" }) {
           <div>
             <p className="text-sm font-medium text-gray-500">Total Savings</p>
             <p className="text-3xl font-bold text-blue-900">
-              {currentUser?.currency} {totalSavings.toLocaleString()}
+              PKR {totalSavings.toLocaleString()}
             </p>
           </div>
           <DollarSign className="w-10 h-10 text-blue-400" />
@@ -104,7 +132,7 @@ export default function SavingsPage({ userId = "u1" }) {
           <div>
             <p className="text-sm font-medium text-gray-500">This Month</p>
             <p className="text-3xl font-bold text-green-900">
-              +{currentUser?.currency} {savingsThisMonth.toLocaleString()}
+              +PKR {savingsThisMonth.toLocaleString()}
             </p>
           </div>
           <DollarSign className="w-10 h-10 text-green-400" />
@@ -119,7 +147,9 @@ export default function SavingsPage({ userId = "u1" }) {
             <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center border-2 border-dashed border-gray-300 mb-4">
               <DollarSign className="h-12 w-12 text-gray-400" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">No savings entries yet</h3>
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">
+              No savings entries yet
+            </h3>
             <p className="text-gray-500 max-w-xs">
               Click "Add Saving" to start tracking your progress.
             </p>
@@ -130,10 +160,10 @@ export default function SavingsPage({ userId = "u1" }) {
               .sort((a, b) => new Date(b.date) - new Date(a.date))
               .map((saving) => (
                 <SavingCard
-                  key={saving.id}
+                  key={saving._id}
                   saving={saving}
                   onEdit={handleEdit}
-                  currency={currentUser?.currency}
+                  currency={"PKR"}
                 />
               ))}
           </div>

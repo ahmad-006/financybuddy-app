@@ -15,8 +15,13 @@ pnpm-debug.log*
 
 # Env files
 frontend/.env
+backend/config.env
 backend/.env
+
+# Env files
+config.env
 .env
+
 
 # IDE/OS junk
 .vscode/

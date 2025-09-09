@@ -31,8 +31,11 @@ export default function TransactionModal({
     reset,
     control,
     setValue,
+    watch, // Import watch
     formState: { errors },
   } = useForm();
+
+  const transactionType = watch("type"); // Watch the 'type' field
 
   const categories = [
     "Food",
@@ -44,7 +47,16 @@ export default function TransactionModal({
     "Transportation",
     "Dining Out",
     "Income",
+    "Saving",
   ];
+
+  // Effect to handle side-effects when transactionType changes
+  useEffect(() => {
+    if (transactionType === "saving") {
+      setValue("category", "saving");
+      setValue("budgetType", "none");
+    }
+  }, [transactionType, setValue]);
 
   useEffect(() => {
     if (editingTransaction) {
@@ -52,7 +64,7 @@ export default function TransactionModal({
       setValue("amount", editingTransaction.amount);
       setValue("category", editingTransaction.category);
       setValue("type", editingTransaction.type);
-      setValue("budgetType", editingTransaction.budgetType || "monthly"); // Added budgetType
+      setValue("budgetType", editingTransaction.budgetType || "monthly");
 
       if (editingTransaction.date) {
         try {
@@ -69,18 +81,20 @@ export default function TransactionModal({
       setValue("amount", "");
       setValue("category", "");
       setValue("type", "expense");
-      setValue("budgetType", "monthly"); // Default for new transactions
+      setValue("budgetType", "monthly");
     }
-  }, [editingTransaction, reset, setValue]);
+  }, [editingTransaction, setValue]);
 
-  const onSubmit = (data) => {
-    console.log(data);
-    onSave({
-      ...data,
-      id: editingTransaction ? editingTransaction.id : Date.now(),
-    });
-    reset();
-    onOpenChange(false);
+    const onSubmit = async (data) => {
+    try {
+      await onSave(data);
+      reset();
+      onOpenChange(false);
+    } catch (error) {
+      // The error is already toasted in the parent component.
+      // We catch it here simply to prevent the modal from closing on failure.
+      console.error("Failed to save transaction:", error);
+    }
   };
 
   const handleDelete = () => {
@@ -148,38 +162,7 @@ export default function TransactionModal({
             )}
           </div>
 
-          {/* Category Field */}
-          <div className="space-y-2">
-            <div className="text-sm font-medium">Category</div>
-            <Controller
-              name="category"
-              control={control}
-              rules={{ required: "Category is required" }}
-              render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger
-                    className={errors.category ? "border-red-500" : ""}
-                  >
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map((cat) => (
-                      <SelectItem key={cat} value={cat.toLowerCase()}>
-                        {cat}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-            {errors.category && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.category.message}
-              </p>
-            )}
-          </div>
-
-          {/* Type Field */}
+          {/* Type Field (Moved Up) */}
           <div className="space-y-2">
             <div className="text-sm font-medium">Type</div>
             <Controller
@@ -206,18 +189,38 @@ export default function TransactionModal({
             )}
           </div>
 
-          {/* Date Field */}
+          {/* Category Field */}
           <div className="space-y-2">
-            <div className="text-sm font-medium">Date</div>
-            <Input
-              type="date"
-              className={errors.date ? "border-red-500" : ""}
-              {...register("date", {
-                required: "Date is required",
-              })}
+            <div className="text-sm font-medium">Category</div>
+            <Controller
+              name="category"
+              control={control}
+              rules={{ required: "Category is required" }}
+              render={({ field }) => (
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  disabled={transactionType === "saving"} // Disable when type is saving
+                >
+                  <SelectTrigger
+                    className={errors.category ? "border-red-500" : ""}
+                  >
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat} value={cat.toLowerCase()}>
+                        {cat}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             />
-            {errors.date && (
-              <p className="text-red-500 text-xs mt-1">{errors.date.message}</p>
+            {errors.category && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.category.message}
+              </p>
             )}
           </div>
 
@@ -229,7 +232,11 @@ export default function TransactionModal({
               control={control}
               rules={{ required: "Budget Type is required" }}
               render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  disabled={transactionType === "saving"} // Disable when type is saving
+                >
                   <SelectTrigger
                     className={errors.budgetType ? "border-red-500" : ""}
                   >
@@ -247,6 +254,21 @@ export default function TransactionModal({
               <p className="text-red-500 text-xs mt-1">
                 {errors.budgetType.message}
               </p>
+            )}
+          </div>
+
+          {/* Date Field */}
+          <div className="space-y-2">
+            <div className="text-sm font-medium">Date</div>
+            <Input
+              type="date"
+              className={errors.date ? "border-red-500" : ""}
+              {...register("date", {
+                required: "Date is required",
+              })}
+            />
+            {errors.date && (
+              <p className="text-red-500 text-xs mt-1">{errors.date.message}</p>
             )}
           </div>
 

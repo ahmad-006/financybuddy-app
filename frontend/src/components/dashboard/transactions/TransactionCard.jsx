@@ -1,26 +1,59 @@
-import { format, formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow, isToday } from "date-fns";
 
 export default function TransactionCard({ transaction, onEdit, onDelete }) {
   const isIncome = transaction.type === "income";
   const isSaving = transaction.type === "saving";
 
-  const bgColor = isSaving ? "bg-blue-100" : isIncome ? "bg-green-100" : "bg-red-100";
-  const borderColor = isSaving ? "border-blue-300" : isIncome ? "border-green-300" : "border-red-300";
-  const amountColor = isSaving ? "text-blue-700" : isIncome ? "text-green-700" : "text-red-700";
-  const iconBg = isSaving ? "bg-blue-500" : isIncome ? "bg-green-500" : "bg-red-500";
+  const bgColor = isSaving
+    ? "bg-blue-100"
+    : isIncome
+      ? "bg-green-100"
+      : "bg-red-100";
+  const borderColor = isSaving
+    ? "border-blue-300"
+    : isIncome
+      ? "border-green-300"
+      : "border-red-300";
+  const amountColor = isSaving
+    ? "text-blue-700"
+    : isIncome
+      ? "text-green-700"
+      : "text-red-700";
+  const iconBg = isSaving
+    ? "bg-blue-500"
+    : isIncome
+      ? "bg-green-500"
+      : "bg-red-500";
 
   const formatTransactionDate = (dateString) => {
     if (!dateString) return "";
 
     try {
-      const date = new Date(dateString);
+      let date;
+      // The previous fix was too aggressive. This is more robust.
+      // It handles both date-only strings and full ISO strings correctly.
+      if (dateString.includes("T")) {
+        date = new Date(dateString); // For full ISO strings
+      } else {
+        // For 'YYYY-MM-DD' strings, this prevents timezone issues.
+        const [year, month, day] = dateString.split("-").map(Number);
+        date = new Date(year, month - 1, day);
+      }
+
+      // Check if the created date is valid
+      if (isNaN(date.getTime())) {
+        throw new Error("Invalid date");
+      }
+
       return {
-        full: format(date, "MMM dd, yyyy"),
-        relative: formatDistanceToNow(date, { addSuffix: true }),
+        full: format(date, "MMMM d, yyyy"), // Changed format to full month name
+        relative: isToday(date)
+          ? "Today"
+          : formatDistanceToNow(date, { addSuffix: true }),
       };
     } catch (error) {
-      console.error(error.message);
-      return { full: dateString, relative: "" };
+      console.error(`Failed to format date '${dateString}':`, error.message);
+      return { full: dateString, relative: "Invalid Date" };
     }
   };
 
@@ -124,7 +157,7 @@ export default function TransactionCard({ transaction, onEdit, onDelete }) {
             )}
             {onDelete && (
               <button
-                onClick={() => onDelete(transaction.id)}
+                onClick={() => onDelete(transaction._id)}
                 className="p-1.5 sm:p-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200 transition-colors flex-shrink-0"
                 aria-label="Delete transaction"
               >

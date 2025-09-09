@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -19,30 +19,27 @@ import {
 import { supabase } from "../../supabase-client/supabase-client";
 
 const DashboardSidebar = () => {
-  const [fullName, setFullName] = useState("");
-  console.log(fullName);
   const [isOpen, setIsOpen] = useState(true);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    return async () => {
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.getUser();
-      const { first_name, last_name } = user.user_metadata;
-      if (first_name || last_name) {
-        setFullName(first_name + " " + last_name);
-        return;
-      }
-      const { full_name } = user.user_metadata;
-      setFullName(full_name.split(" ")[0]);
+  // useEffect(() => {
+  //   return async () => {
+  //     const {
+  //       data: { user },
+  //       error,
+  //     } = await supabase.auth.getUser();
+  //     if (first_name || last_name) {
+  //       setFullName(first_name + " " + last_name);
+  //       return;
+  //     }
+  //     const { full_name } = user.user_metadata;
+  //     setFullName(full_name.split(" ")[0]);
 
-      if (error) console.error(error);
-      else console.log("User:", user);
-    };
-  }, []);
+  //     if (error) console.error(error);
+  //     else console.log("User:", user);
+  //   };
+  // }, []);
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();

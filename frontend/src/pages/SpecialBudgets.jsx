@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { mockProfiles, mockTransactions } from "../data/data";
 import { Plus } from "lucide-react";
 import SpecialBudgetModal from "../components/dashboard/budget/SpecialBudgetModal";
@@ -7,6 +7,7 @@ import BudgetList from "../components/dashboard/budget/BudgetList";
 
 const SpecialBudgetsPage = ({ userId = "u1" }) => {
   const [specialBudgets, setSpecialBudgets] = useState([
+    // Dummy Data for now
     {
       id: "sb1",
       userId: "u1",
@@ -28,8 +29,51 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
   ]);
   const [showModal, setShowModal] = useState(false);
   const [editingSpecialBudget, setEditingSpecialBudget] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const currentUser = mockProfiles.find((profile) => profile.id === userId);
+
+  useEffect(() => {
+    setIsLoading(true);
+    try {
+      const transformedSpecialBudgets = specialBudgets.map((budget) => {
+        const spent = mockTransactions
+          .filter((t) => {
+            const transactionDate = new Date(t.date);
+            const budgetStartDate = new Date(budget.startDate);
+            const budgetEndDate = new Date(budget.endDate);
+
+            return (
+              t.userId === userId &&
+              t.category === budget.category &&
+              t.type === "expense" &&
+              transactionDate >= budgetStartDate &&
+              transactionDate <= budgetEndDate
+            );
+          })
+          .reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
+
+        const categoryConfig = getCategoryConfig(budget.category);
+
+        return {
+          id: budget.id,
+          name: budget.title,
+          category: budget.category,
+          allocated: parseFloat(budget.limit) || 0,
+          spent: spent,
+          ...categoryConfig,
+          startDate: budget.startDate,
+          endDate: budget.endDate,
+        };
+      });
+
+      setSpecialBudgets(transformedSpecialBudgets);
+    } catch (error) {
+      console.error("Error processing special budgets:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [userId]); // Removed specialBudgets from dependency array to prevent loop
 
   const getCategoryConfig = (category) => {
     const config = {
@@ -44,56 +88,21 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
       Salary: { icon: "💵", color: "#00CED1" },
       Travel: { icon: "✈️", color: "#FFA500" },
     };
+
     return config[category] || { icon: "📁", color: "#CCCCCC" };
   };
 
-  // Calculate derived state directly instead of using a useEffect hook
-  const processedBudgets = specialBudgets.map((budget) => {
-    const spent = mockTransactions
-      .filter((t) => {
-        const transactionDate = new Date(t.date);
-        const budgetStartDate = new Date(budget.startDate);
-        const budgetEndDate = new Date(budget.endDate);
-        return (
-          t.userId === userId &&
-          t.category === budget.category &&
-          t.type === "expense" &&
-          transactionDate >= budgetStartDate &&
-          transactionDate <= budgetEndDate
-        );
-      })
-      .reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
-
-    const categoryConfig = getCategoryConfig(budget.category);
-
-    return {
-      id: budget.id,
-      name: budget.title,
-      category: budget.category,
-      allocated: parseFloat(budget.limit) || 0,
-      spent: spent,
-      ...categoryConfig,
-      startDate: budget.startDate,
-      endDate: budget.endDate,
-    };
-  });
-
   const handleSaveSpecialBudget = (budgetData) => {
-    const dataToSave = {
-      ...budgetData,
-      limit: parseFloat(budgetData.limit) || 0,
-    };
-
     if (editingSpecialBudget) {
       setSpecialBudgets((prev) =>
         prev.map((b) =>
-          b.id === editingSpecialBudget.id ? { ...b, ...dataToSave } : b
+          b.id === editingSpecialBudget.id ? { ...b, ...budgetData } : b
         )
       );
     } else {
       setSpecialBudgets((prev) => [
         ...prev,
-        { ...dataToSave, id: `sb${Date.now()}` },
+        { ...budgetData, id: `sb${Date.now()}` },
       ]);
     }
     setShowModal(false);
@@ -109,15 +118,26 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
     setSpecialBudgets((prev) => prev.filter((b) => b.id !== id));
   };
 
-  const totalAllocated = processedBudgets.reduce(
-    (sum, budget) => sum + budget.allocated,
+  const totalAllocated = specialBudgets.reduce(
+    (sum, budget) => sum + (parseFloat(budget.limit) || 0),
     0
   );
-  const totalSpent = processedBudgets.reduce(
-    (sum, budget) => sum + budget.spent,
+  const totalSpent = specialBudgets.reduce(
+    (sum, budget) => sum + (parseFloat(budget.spent) || 0),
     0
   );
   const remainingBudget = totalAllocated - totalSpent;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-4 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading special budget data...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen text-black bg-gray-50 p-4 sm:p-6">
@@ -125,13 +145,10 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900 ">Special Budgets</h1>
           <button
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition-colors flex items-center gap-2"
-            onClick={() => {
-              setEditingSpecialBudget(null);
-              setShowModal(true);
-            }}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition-colors"
+            onClick={() => setShowModal(true)}
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="inline-block w-5 h-5 mr-2" />
             Add New Special Budget
           </button>
         </div>
@@ -144,11 +161,18 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
         />
 
         <div>
+          {" "}
           <BudgetList
-            budgetCategories={processedBudgets}
+            budgetCategories={specialBudgets}
             setEditingCategory={handleEditSpecialBudget}
             currency={currentUser?.currency}
           />
+          {/* <Charts
+            budgetCategories={specialBudgets}
+            currency={currentUser?.currency}
+            year={year}
+            userId={userId}
+          /> */}
         </div>
 
         {showModal && (
