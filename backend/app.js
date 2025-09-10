@@ -7,6 +7,7 @@ const userRouter = require("./src/routes/userRoute");
 const monthlyBudgetRouter = require("./src/routes/monthlyBudgetRoute");
 const transactionRouter = require("./src/routes/transactionRoute");
 const SpecialBudgetRouter = require("./src/routes/specialBudgetRoute");
+const recurringTransactionRouter = require("./src/routes/recurringTransactionRoute");
 //? MIDDLEWARES
 
 app.use(
@@ -27,5 +28,6 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/monthlyBudgets", monthlyBudgetRouter);
 app.use("/api/v1/transactions", transactionRouter);
 app.use("/api/v1/specialBudgets", SpecialBudgetRouter);
+app.use("/api/v1/recurringTransactions", recurringTransactionRouter);
 
 module.exports = app;

@@ -1,19 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "../components/ui/button";
 import { Plus, FileText } from "lucide-react";
 import TransactionModal from "../components/dashboard/transactions/TransactionModal";
 import TransactionCard from "../components/dashboard/transactions/TransactionCard";
 import TransactionFilterBar from "../components/dashboard/transactions/FilterBar";
-import axios from "axios";
+
 import { toast } from "react-toastify";
+import {
+  addTransaction,
+  deleteTransaction,
+  fetchTransactions,
+  updateTransaction,
+} from "@/utils/fetchData";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 // Main Transactions Page
 export default function Transactions() {
   const [open, setOpen] = useState(false);
-  const [transactions, setTransactions] = useState([]);
   const [editingTransaction, setEditingTransaction] = useState(null);
-  const [isLoading, setIsLoading] = useState(true); // Loading state
-  const [hasChanged, setHasChanged] = useState(false);
   const [filters, setFilters] = useState({
     search: "",
     type: "",
@@ -24,29 +28,62 @@ export default function Transactions() {
     priceSort: "",
   });
 
-  useEffect(() => {
-    const fetching = async () => {
-      setIsLoading(true); // Start loading
-      try {
-        const data = await axios.get(
-          "http://localhost:8000/api/v1/transactions"
-        );
-        const { transactions } = data.data.data;
-        setTransactions(transactions);
-      } catch (error) {
-        toast.error(error.message);
-      } finally {
-        setIsLoading(false); // Stop loading
-      }
-    };
+  //accessing querry Client
+  const queryClient = useQueryClient();
 
-    fetching();
-  }, [hasChanged]);
+  //initial fetch using react querry
+  const {
+    data: transactions,
+    isLoading,
+    error: fetchError,
+  } = useQuery({ queryKey: ["transactions"], queryFn: fetchTransactions });
+
+  if (fetchError)
+    toast.error(fetchError?.message || "error fetching transactions");
+
+  //handling mutations like adding, deleting , updating
+  const addMutation = useMutation({
+    mutationFn: (data) => addTransaction(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["transactions"],
+        exact: true,
+      });
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }) => updateTransaction(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["transactions"],
+        exact: true,
+      });
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to update transaction");
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => deleteTransaction(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["transactions"],
+        exact: true,
+      });
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to delete transaction");
+    },
+  });
 
   // Filter transactions based on filter criteria and sort by date (latest first)
-  const filteredTransactions = transactions
+  const filteredTransactions = (transactions?.transactions || [])
     .filter((transaction) => {
-      // ... (filtering logic remains the same)
       if (filters.search) {
         const searchLower = filters.search.toLowerCase();
         const categoryLower = transaction.category.toLowerCase();
@@ -74,7 +111,6 @@ export default function Transactions() {
       return true;
     })
     .sort((a, b) => {
-      // ... (sorting logic remains the same)
       if (filters.minPrice || filters.maxPrice) {
         return a.amount - b.amount;
       }
@@ -93,20 +129,10 @@ export default function Transactions() {
       }
     });
 
-  // FUNCTIONS (remain the same)
+  // FUNCTIONS Mutating Data
   const handleAdd = async (data) => {
-    try {
-      const res = await axios.post(
-        "http://localhost:8000/api/v1/transactions",
-        data
-      );
-      const newTransaction = res.data.data.transaction;
-      setTransactions((prev) => [...prev, newTransaction]);
-      toast.success("Transaction Added");
-      setHasChanged((p) => !p);
-    } catch (error) {
-      toast.error(error.message);
-    }
+    addMutation.mutateAsync(data);
+    console.log(transactions);
   };
 
   const handleEdit = (transaction) => {
@@ -115,35 +141,13 @@ export default function Transactions() {
   };
 
   const handleUpdate = async (data) => {
-    try {
-      const updateID = editingTransaction._id;
-      const res = await axios.patch(
-        `http://localhost:8000/api/v1/transactions/${updateID}`,
-        data
-      );
-      const updatedTransaction = res.data.data.transaction;
-      setTransactions((prev) =>
-        prev.map((t) => (t._id === updateID ? updatedTransaction : t))
-      );
-      setEditingTransaction(null);
-      toast.success("transaction updated");
-      setHasChanged((p) => !p);
-    } catch (error) {
-      toast.error(error.message);
-    }
+    const id = editingTransaction._id;
+    updateMutation.mutateAsync({ id, data });
+    setEditingTransaction(null);
   };
 
   const handleDelete = async (id) => {
-    try {
-      await axios.delete(
-        `http://localhost:8000/api/v1/transactions/${id}`
-      );
-      setTransactions(transactions.filter((t) => t._id !== id));
-      toast.success("Transaction deleted");
-      setHasChanged((p) => !p);
-    } catch (error) {
-      toast.error(error.message);
-    }
+    deleteMutation.mutateAsync(id);
   };
 
   const handleSave = (data) => {
@@ -159,7 +163,9 @@ export default function Transactions() {
     setEditingTransaction(null);
   };
 
+  //rendering on the basis of conditions in Main section
   const renderContent = () => {
+    //showing loading when data is being fetched
     if (isLoading) {
       return (
         <div className="flex justify-center items-center py-16">
@@ -167,7 +173,7 @@ export default function Transactions() {
         </div>
       );
     }
-
+    //when there are no transactions
     if (filteredTransactions.length === 0) {
       return (
         <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
@@ -199,7 +205,6 @@ export default function Transactions() {
         </div>
       );
     }
-
     return (
       <>
         <div className="space-y-3">

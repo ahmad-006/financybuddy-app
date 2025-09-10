@@ -4,12 +4,12 @@ const MonthlyBudget = require("../models/monthlyBudgetModal");
 // Get all Monthlybudgets for a user
 exports.getAllMonthlyBudgets = async (req, res) => {
   try {
-    const Monthlybudgets = await MonthlyBudget.find({ user: req.body.user });
+    const monthlyBudget = await MonthlyBudget.find({ user: req.body.user });
     res.status(200).json({
       status: "success",
-      results: Monthlybudgets.length,
+      results: monthlyBudget.length,
       data: {
-        Monthlybudgets,
+        monthlyBudget,
       },
     });
   } catch (error) {

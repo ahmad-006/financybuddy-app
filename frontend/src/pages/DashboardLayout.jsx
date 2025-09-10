@@ -11,7 +11,7 @@ export default function DashboardLayout() {
     if (mainContentRef.current) {
       mainContentRef.current.scrollTop = 0;
     }
-    
+
     // Add dashboard-active class to prevent body scroll
     document.body.classList.add("dashboard-active");
     document.documentElement.classList.add("dashboard-active");

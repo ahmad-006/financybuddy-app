@@ -9,8 +9,8 @@ const SpecialBudgetList = ({
   const isOverBudget = (category) => category.spent > category.allocated;
 
   const getProgressPercentage = (category) => {
-    if (category.allocated === 0) return 0;
-    return Math.min(100, (category.spent / category.allocated) * 100);
+    if (category.limit === 0) return 0;
+    return Math.min(100, (category.spent / category.limit) * 100);
   };
 
   const getProgressColor = (percentage) => {

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const transactionSchema = new mongoose.Schema(
+const recurringTransactionModel = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -11,11 +11,6 @@ const transactionSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-    },
-    type: {
-      type: String,
-      enum: ["income", "expense", "saving"],
-      required: true,
     },
     category: {
       type: String,
@@ -41,20 +36,21 @@ const transactionSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    budgetType: {
-      type: String,
-      trim: true,
-      required: true,
-      enum: ["monthly", "special", "none"],
-    },
-    date: {
+    nextDate: {
       type: Date,
       required: true,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
     },
   },
   { timestamps: true }
 );
 
-const Transaction = mongoose.model("Transaction", transactionSchema);
+const RecurringTransactions = mongoose.model(
+  "RecurringTransactions",
+  recurringTransactionModel
+);
 
-module.exports = Transaction;
+module.exports = RecurringTransactions;

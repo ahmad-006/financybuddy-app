@@ -1,16 +1,12 @@
 import React from "react";
 import BudgetCategory from "./BudgetCategory";
 
-const BudgetList = ({
-  budgetCategories,
-  setEditingCategory,
-  currency,
-}) => {
-  const isOverBudget = (category) => category.spent > category.allocated;
+const BudgetList = ({ budgetCategories, setEditingCategory, currency }) => {
+  const isOverBudget = (category) => category.spent > category.limit;
 
   const getProgressPercentage = (category) => {
-    if (category.allocated === 0) return 0;
-    return Math.min(100, (category.spent / category.allocated) * 100);
+    if (category.spent === 0) return 0;
+    return Math.min(100, (category.spent / category.limit) * 100);
   };
 
   const getProgressColor = (percentage) => {
@@ -27,7 +23,7 @@ const BudgetList = ({
       <div className="space-y-3 sm:space-y-4">
         {budgetCategories.map((category) => (
           <BudgetCategory
-            key={category.id}
+            key={category._id}
             category={category}
             setEditingCategory={setEditingCategory}
             currency={currency}

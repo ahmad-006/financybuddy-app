@@ -42,14 +42,18 @@ const SpecialBudgetModal = ({
 
   const categories = [
     "Food",
-    "Shopping",
-    "Salary",
-    "Utilities",
-    "Entertainment",
-    "Housing",
-    "Transportation",
     "Dining Out",
+    "Shopping",
+    "Housing",
+    "Utilities",
+    "Transportation",
+    "Entertainment",
     "Income",
+    "Philanthropy",
+    "Healthcare",
+    "Education",
+    "Subscriptions",
+    "Savings",
   ];
 
   useEffect(() => {

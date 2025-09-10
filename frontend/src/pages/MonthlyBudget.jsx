@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { mockProfiles, mockTransactions, mockBudgets } from "../data/data";
 import Header from "../components/dashboard/budget/Header";
 import BudgetSummary from "../components/dashboard/budget/BudgetSummary";
 import BudgetList from "../components/dashboard/budget/BudgetList";
 import AddBudgetModal from "../components/dashboard/budget/AddBudgetModal";
 import EditBudgetModal from "../components/dashboard/budget/EditBudgetModal";
 import Charts from "../components/dashboard/budget/Charts";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  addMonthlyBudget,
+  deleteMonthlyBudget,
+  fetchMonthlyBudgets,
+  fetchTransactions,
+  updateMonthlyBudget,
+} from "@/utils/fetchData";
+import { toast } from "react-toastify";
 
-const BudgetPage = ({ userId = "u1" }) => {
+const BudgetPage = () => {
   const [budgetCategories, setBudgetCategories] = useState([]);
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [year, setYear] = useState(new Date().getFullYear());
@@ -19,54 +27,111 @@ const BudgetPage = ({ userId = "u1" }) => {
     icon: "📁",
     color: "#CCCCCC",
   });
-  const [isLoading, setIsLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  const currentUser = mockProfiles.find((profile) => profile.id === userId);
+  // initial monthlyBudget fetch
+  const { data: transactions, error: fetchError } = useQuery({
+    queryKey: ["transactions"],
+    queryFn: fetchTransactions,
+  });
+
+  if (fetchError)
+    toast.error(fetchError?.message || "error fetching transactions");
+
+  const {
+    data: budgets,
+    isLoading,
+    error: budgetFetchError,
+  } = useQuery({
+    queryKey: ["monthlyBudgets"],
+    queryFn: fetchMonthlyBudgets,
+  });
+
+  if (budgetFetchError)
+    toast.error(fetchError?.message || "error fetching budgets");
+
+  //storing in a variable
+  const monthlyBudgets = budgets?.monthlyBudget || [];
+  console.log(monthlyBudgets);
+
+  //Mutations functions
+  const deleteMutation = useMutation({
+    mutationFn: (id) => deleteMonthlyBudget(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["monthlyBudgets"],
+        exact: true,
+      });
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to delete budget");
+    },
+  });
+
+  const addMutation = useMutation({
+    mutationFn: (data) => addMonthlyBudget(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["monthlyBudgets"],
+        exact: true,
+      });
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to Add budget");
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }) => updateMonthlyBudget(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["monthlyBudgets"],
+        exact: true,
+      });
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to update budget");
+    },
+  });
 
   useEffect(() => {
-    setIsLoading(true);
-
     try {
-      const userBudgets = mockBudgets.filter(
-        (budget) => budget.userId === userId
+      const transformedBudgets = (budgets?.monthlyBudget || []).map(
+        (budget) => {
+          //calcuting spent for each category
+          const spent = (transactions?.transactions || [])
+            .filter((t) => {
+              const transactionDate = new Date(t.date);
+              const transactionMonth = transactionDate.getMonth() + 1;
+              const transactionYear = transactionDate.getFullYear();
+
+              return (
+                t.category === budget.category.toLowerCase() &&
+                t.type === "expense" &&
+                t.budgetType === "monthly" && // Added filter for monthly budget type
+                transactionMonth === month &&
+                transactionYear === year
+              );
+            })
+            .reduce((sum, t) => sum + t.amount, 0);
+
+          const categoryConfig = getCategoryConfig(budget.category);
+
+          return {
+            title: budget.title,
+            category: budget.category, // <-- ADDED THIS LINE
+            allocated: parseFloat(budget.limit) || 0,
+            spent: spent,
+            ...categoryConfig,
+          };
+        }
       );
-
-      const transformedBudgets = userBudgets.map((budget) => {
-        const spent = mockTransactions
-          .filter((t) => {
-            const transactionDate = new Date(t.date);
-            const transactionMonth = transactionDate.getMonth() + 1;
-            const transactionYear = transactionDate.getFullYear();
-
-            return (
-              t.userId === userId &&
-              t.category === budget.category &&
-              t.type === "expense" &&
-              t.budgetType === "monthly" && // Added filter for monthly budget type
-              transactionMonth === month &&
-              transactionYear === year
-            );
-          })
-          .reduce((sum, t) => sum + t.amount, 0);
-
-        const categoryConfig = getCategoryConfig(budget.category);
-
-        return {
-          id: budget.id,
-          name: budget.category,
-          allocated: budget.monthlyLimit,
-          spent: spent,
-          ...categoryConfig,
-        };
-      });
 
       setBudgetCategories(transformedBudgets);
     } catch (error) {
       console.error("Error processing budgets:", error);
-    } finally {
-      setIsLoading(false);
     }
-  }, [userId, month, year]);
+  }, [month, year, transactions, budgets]);
 
   const getCategoryConfig = (category) => {
     const config = {
@@ -86,7 +151,6 @@ const BudgetPage = ({ userId = "u1" }) => {
     if (!newCategory.name || newCategory.allocated <= 0) return;
 
     const newCat = {
-      id: `b${Date.now()}`,
       ...newCategory,
       spent: 0,
     };
@@ -101,7 +165,7 @@ const BudgetPage = ({ userId = "u1" }) => {
 
     setBudgetCategories(
       budgetCategories.map((cat) =>
-        cat.id === editingCategory.id ? editingCategory : cat
+        cat._id === editingCategory._id ? editingCategory : cat
       )
     );
     setEditingCategory(null);
@@ -138,28 +202,27 @@ const BudgetPage = ({ userId = "u1" }) => {
           setMonth={setMonth}
           setYear={setYear}
           setShowAddModal={setShowAddModal}
-          currentUser={currentUser}
+          currentUser={{ name: "Ahmad Aamir" }}
         />
 
         <BudgetSummary
           totalAllocated={totalAllocated}
           totalSpent={totalSpent}
           remainingBudget={remainingBudget}
-          currency={currentUser?.currency}
+          currency={"PKR"}
         />
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           <BudgetList
-            budgetCategories={budgetCategories}
+            budgetCategories={monthlyBudgets}
             setEditingCategory={setEditingCategory}
-            currency={currentUser?.currency}
+            currency={"PKR"}
           />
 
           <Charts
-            budgetCategories={budgetCategories}
-            currency={currentUser?.currency}
+            budgetCategories={monthlyBudgets}
+            currency={"PKR"}
             year={year}
-            userId={userId}
           />
         </div>
 
@@ -169,7 +232,7 @@ const BudgetPage = ({ userId = "u1" }) => {
             setNewCategory={setNewCategory}
             setShowAddModal={setShowAddModal}
             handleAddCategory={handleAddCategory}
-            currency={currentUser?.currency}
+            currency={"PKR"}
           />
         )}
 
@@ -179,7 +242,7 @@ const BudgetPage = ({ userId = "u1" }) => {
             setEditingCategory={setEditingCategory}
             handleUpdateCategory={handleUpdateCategory}
             handleDeleteCategory={handleDeleteCategory}
-            currency={currentUser?.currency}
+            currency={"PKR"}
           />
         )}
       </div>

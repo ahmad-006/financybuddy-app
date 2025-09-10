@@ -1,31 +1,72 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Plus, DollarSign } from "lucide-react";
 import AddSavingModal from "../components/dashboard/savings/AddSavingModal";
 import SavingCard from "../components/dashboard/savings/SavingCard";
-
-import axios from "axios";
 import { toast } from "react-toastify";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  addTransaction,
+  deleteTransaction,
+  fetchTransactions,
+  updateTransaction,
+} from "@/utils/fetchData";
 
-export default function SavingsPage({ userId = "u1" }) {
+export default function SavingsPage() {
   const [open, setOpen] = useState(false);
-  const [savings, setSavings] = useState([]);
   const [editingSaving, setEditingSaving] = useState(null);
-  const [hasChanged, setHasChanged] = useState(false);
 
-  useEffect(() => {
-    const fetchSavings = async () => {
-      const res = await axios.get("http://localhost:8000/api/v1/transactions");
+  const queryClient = useQueryClient();
 
-      const { transactions } = res.data.data;
-      console.log(transactions);
-      console.log(transactions.filter((t) => t.type === "saving"));
-      setSavings(transactions.filter((t) => t.type === "saving"));
-      console.log(savings);
-    };
-    fetchSavings();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasChanged]);
+  //initial fetch using react query
+  const { data: transactions, isLoading } = useQuery({
+    queryKey: ["transactions"],
+    queryFn: fetchTransactions,
+  });
 
+  const savings =
+    transactions?.transactions?.filter((t) => t.type === "saving") || [];
+
+  // mutation functions declaration (update,add,delete)
+  const deleteMutation = useMutation({
+    mutationFn: (id) => deleteTransaction(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["transactions"],
+        exact: true,
+      });
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to delete transaction");
+    },
+  });
+
+  const addMutation = useMutation({
+    mutationFn: (data) => addTransaction(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["transactions"],
+        exact: true,
+      });
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }) => updateTransaction(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["transactions"],
+        exact: true,
+      });
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to update transaction");
+    },
+  });
+
+  //calculating total savings for summary section
   const totalSavings = Array.isArray(savings)
     ? savings.reduce((sum, s) => sum + s.amount, 0)
     : 0;
@@ -43,6 +84,7 @@ export default function SavingsPage({ userId = "u1" }) {
         .reduce((sum, s) => sum + s.amount, 0)
     : 0;
 
+  //handling api updating
   const handleAddNew = () => {
     setEditingSaving(null);
     setOpen(true);
@@ -53,51 +95,30 @@ export default function SavingsPage({ userId = "u1" }) {
     setOpen(true);
   };
 
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`http://localhost:8000/api/v1/transactions/${id}`);
-      setSavings((prevSavings) => prevSavings.filter((s) => s._id !== id));
-      setHasChanged((t) => !t);
-      toast.success("Saving Deleted");
-    } catch (error) {
-      toast.error(error.message);
-    }
+  const handleDelete = (id) => {
+    deleteMutation.mutate(id);
   };
 
-  const handleSave = async (data) => {
-    try {
-      if (editingSaving) {
-        const updateID = editingSaving._id;
-        const res = await axios.patch(
-          `http://localhost:8000/api/v1/transactions/${updateID}`,
-          data
-        );
-        const updatedTransaction = res.data.data.transaction;
-        setSavings((prevSavings) =>
-          prevSavings.map((s) =>
-            s._id === updateID ? updatedTransaction : s
-          )
-        );
-        toast.success("Saving Edited");
-      } else {
-        // Add
-        const res = await axios.post(
-          `http://localhost:8000/api/v1/transactions`,
-          { ...data, budgetType: "none", type: "saving", category: "saving" }
-        );
-        const newSaving = res.data.data.transaction;
-        setSavings((prevSavings) => [...prevSavings, newSaving]);
-        toast.success("Saving Added");
-      }
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
-      setOpen(false);
-      setHasChanged((t) => !t);
-      setEditingSaving(null);
+  const handleSave = (data) => {
+    if (editingSaving) {
+      const id = editingSaving._id;
+      // update
+      updateMutation.mutate({ id, data });
+    } else {
+      //adding
+      addMutation.mutate({
+        ...data,
+        budgetType: "none",
+        type: "saving",
+        category: "savings",
+      });
     }
+
+    setOpen(false);
+    setEditingSaving(null);
   };
 
+  //handling modal close button
   const handleModalClose = () => {
     setOpen(false);
     setEditingSaving(null);
