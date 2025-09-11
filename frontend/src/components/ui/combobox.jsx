@@ -27,6 +27,9 @@ export function Combobox({
 }) {
   const [open, setOpen] = React.useState(false);
 
+  // Always compare with option.value (machine key)
+  const selectedOption = options.find((option) => option.value === value);
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -35,10 +38,10 @@ export function Combobox({
           role="combobox"
           aria-expanded={open}
           className="w-full justify-between"
-          disabled={disabled} // Pass disabled prop to the button
+          disabled={disabled}
         >
-          {value
-            ? options.find((option) => option.value === value)?.label
+          {selectedOption
+            ? selectedOption.label
             : placeholder || "Select option..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -51,9 +54,10 @@ export function Combobox({
             {options.map((option) => (
               <CommandItem
                 key={option.value}
-                value={option.value}
-                onSelect={(currentValue) => {
-                  onChange(currentValue);
+                value={option.value} // Use the actual option.value
+                onSelect={() => {
+                  console.log("Selecting option:", option.value); // debug
+                  onChange(option.value); // always return option.value
                   setOpen(false);
                 }}
               >

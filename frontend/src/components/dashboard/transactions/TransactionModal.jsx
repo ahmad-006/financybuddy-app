@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Combobox } from "@/components/ui/combobox";
 import {
   Select,
   SelectTrigger,
@@ -18,8 +17,6 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
-
-import { getCategoryIcon } from "@/utils/iconFunc";
 
 export default function TransactionModal({
   open,
@@ -56,12 +53,6 @@ export default function TransactionModal({
     "Savings",
   ];
 
-  const categoryOptions = categories.map((cat) => ({
-    value: cat.toLowerCase(),
-    label: cat,
-    icon: getCategoryIcon(cat),
-  }));
-
   useEffect(() => {
     // This effect handles setting form values when the modal opens
     if (open) {
@@ -81,6 +72,7 @@ export default function TransactionModal({
               format(new Date(editingTransaction.date), "yyyy-MM-dd")
             );
           } catch (e) {
+            console.log(e);
             setValue("date", format(new Date(), "yyyy-MM-dd"));
           }
         }
@@ -135,6 +127,12 @@ export default function TransactionModal({
           <DialogTitle className="text-xl font-bold text-center">
             {editingTransaction ? "Edit Transaction" : "Add Transaction"}
           </DialogTitle>
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-md flex items-center gap-2 mt-2">
+            <span className="text-lg">💡</span>
+            <p className="text-sm">
+              For accurate tracking, please use the exact budget name (e.g., "Gas Bill", "Netflix Subscription") for your transactions.
+            </p>
+          </div>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-2">
@@ -143,6 +141,7 @@ export default function TransactionModal({
             <Input
               {...register("title", { required: "Title is required" })}
               placeholder="e.g., Coffee, Rent, Salary"
+              readOnly={!!editingTransaction}
             />
             {errors.title && (
               <p className="text-red-500 text-xs mt-1">
@@ -196,20 +195,26 @@ export default function TransactionModal({
               name="category"
               control={control}
               rules={{ required: "Category is required" }}
-              render={({ field }) => {
-                console.log("Combobox options:", categoryOptions);
-                console.log("Combobox field.value:", field.value);
-                return (
-                  <Combobox
-                    options={categoryOptions}
-                    value={field.value}
-                    onChange={field.onChange}
-                    placeholder="Select a category..."
-                    searchPlaceholder="Search categories..."
-                    disabled={transactionType === "saving"}
-                  />
-                );
-              }}
+              render={({ field }) => (
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  disabled={!!editingTransaction || transactionType === "saving"}
+                >
+                  <SelectTrigger
+                    className={errors.category ? "border-red-500" : ""}
+                  >
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat} value={cat.toLowerCase()}>
+                        {cat}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             />
             {errors.category && (
               <p className="text-red-500 text-xs mt-1">
@@ -241,6 +246,11 @@ export default function TransactionModal({
                 </Select>
               )}
             />
+            {errors.budgetType && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.budgetType.message}
+              </p>
+            )}
           </div>
 
           <div className="space-y-2">

@@ -22,15 +22,16 @@ const BudgetPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
   const [newCategory, setNewCategory] = useState({
-    name: "",
-    allocated: 0,
-    icon: "📁",
+    title: "",
+    limit: 0,
+
+    category: "",
     color: "#CCCCCC",
   });
   const queryClient = useQueryClient();
 
   // initial monthlyBudget fetch
-  const { data: transactions, error: fetchError } = useQuery({
+  const { data: transaction, error: fetchError } = useQuery({
     queryKey: ["transactions"],
     queryFn: fetchTransactions,
   });
@@ -39,7 +40,7 @@ const BudgetPage = () => {
     toast.error(fetchError?.message || "error fetching transactions");
 
   const {
-    data: budgets,
+    data: monthlyBudgets,
     isLoading,
     error: budgetFetchError,
   } = useQuery({
@@ -50,11 +51,13 @@ const BudgetPage = () => {
   if (budgetFetchError)
     toast.error(fetchError?.message || "error fetching budgets");
 
-  //storing in a variable
-  const monthlyBudgets = budgets?.monthlyBudget || [];
-  console.log(monthlyBudgets);
+  //? storing in a variable
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const budgets = monthlyBudgets?.monthlyBudgets || [];
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const transactions = transaction?.transactions || [];
 
-  //Mutations functions
+  //?Mutations functions
   const deleteMutation = useMutation({
     mutationFn: (id) => deleteMonthlyBudget(id),
     onSuccess: () => {
@@ -62,6 +65,7 @@ const BudgetPage = () => {
         queryKey: ["monthlyBudgets"],
         exact: true,
       });
+      toast.success("Budget Deleted");
     },
     onError: (err) => {
       toast.error(err.message || "Failed to delete budget");
@@ -75,12 +79,12 @@ const BudgetPage = () => {
         queryKey: ["monthlyBudgets"],
         exact: true,
       });
+      toast.success("Budget Added");
     },
     onError: (err) => {
       toast.error(err.message || "Failed to Add budget");
     },
   });
-
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => updateMonthlyBudget(id, data),
     onSuccess: () => {
@@ -88,44 +92,48 @@ const BudgetPage = () => {
         queryKey: ["monthlyBudgets"],
         exact: true,
       });
+      toast.success("Budget Updated");
     },
     onError: (err) => {
       toast.error(err.message || "Failed to update budget");
     },
   });
 
+  //?Effect to transform budgets into required Form with all the validation
+
   useEffect(() => {
     try {
-      const transformedBudgets = (budgets?.monthlyBudget || []).map(
-        (budget) => {
-          //calcuting spent for each category
-          const spent = (transactions?.transactions || [])
-            .filter((t) => {
-              const transactionDate = new Date(t.date);
-              const transactionMonth = transactionDate.getMonth() + 1;
-              const transactionYear = transactionDate.getFullYear();
+      const transformedBudgets = budgets.map((budget) => {
+        //calcuting spent for each category
+        const spent = transactions
+          .filter((t) => {
+            const transactionDate = new Date(t.date);
+            const transactionMonth = transactionDate.getMonth() + 1;
+            const transactionYear = transactionDate.getFullYear();
 
-              return (
-                t.category === budget.category.toLowerCase() &&
-                t.type === "expense" &&
-                t.budgetType === "monthly" && // Added filter for monthly budget type
-                transactionMonth === month &&
-                transactionYear === year
-              );
-            })
-            .reduce((sum, t) => sum + t.amount, 0);
+            return (
+              t.title.toLowerCase().trim() ===
+                budget.title.toLowerCase().trim() &&
+              t.category === budget.category.toLowerCase() &&
+              t.type === "expense" &&
+              t.budgetType === "monthly" && // Added filter for monthly budget type
+              transactionMonth === month &&
+              transactionYear === year
+            );
+          })
+          .reduce((sum, t) => sum + t.amount, 0);
 
-          const categoryConfig = getCategoryConfig(budget.category);
+        const categoryConfig = getCategoryConfig(budget.category);
 
-          return {
-            title: budget.title,
-            category: budget.category, // <-- ADDED THIS LINE
-            allocated: parseFloat(budget.limit) || 0,
-            spent: spent,
-            ...categoryConfig,
-          };
-        }
-      );
+        return {
+          _id: budget._id,
+          title: budget.title,
+          category: budget.category, // <-- ADDED THIS LINE
+          limit: parseFloat(budget.limit) || 0,
+          spent: spent,
+          ...categoryConfig,
+        };
+      });
 
       setBudgetCategories(transformedBudgets);
     } catch (error) {
@@ -147,36 +155,56 @@ const BudgetPage = () => {
     return config[category] || { icon: "📁", color: "#CCCCCC" };
   };
 
+  //const
   const handleAddCategory = () => {
-    if (!newCategory.name || newCategory.allocated <= 0) return;
+    if (!newCategory.title || newCategory.limit <= 0 || !newCategory.category) {
+      return toast.info("please provide correct information");
+    }
+    addMutation.mutate(newCategory);
 
-    const newCat = {
-      ...newCategory,
-      spent: 0,
-    };
+    // const newCat = {
+    //   ...newCategory,
+    //   spent: 0,
+    // };
 
-    setBudgetCategories([...budgetCategories, newCat]);
-    setNewCategory({ name: "", allocated: 0, icon: "📁", color: "#CCCCCC" });
+    // setBudgetCategories([...budgetCategories, newCat]);
+    setNewCategory({
+      title: "",
+      limit: 0,
+      category: "",
+      color: "#CCCCCC",
+    });
     setShowAddModal(false);
   };
 
   const handleUpdateCategory = () => {
-    if (!editingCategory.name || editingCategory.allocated <= 0) return;
+    if (
+      !editingCategory.title ||
+      editingCategory.limit <= 0 ||
+      !editingCategory.category
+    )
+      return toast.info("please provide correct information");
 
-    setBudgetCategories(
-      budgetCategories.map((cat) =>
-        cat._id === editingCategory._id ? editingCategory : cat
-      )
-    );
+    const { title, category, limit } = editingCategory;
+
+    const data = { title, category: category.toLowerCase(), limit };
+    console.log("cate:", data);
+    const id = editingCategory._id;
+    updateMutation.mutate({ id, data });
+    // setBudgetCategories(
+    //   budgetCategories.map((cat) =>
+    //     cat._id === editingCategory._id ? editingCategory : cat
+    //   )
+    // );
     setEditingCategory(null);
   };
 
   const handleDeleteCategory = (id) => {
-    setBudgetCategories(budgetCategories.filter((cat) => cat.id !== id));
+    deleteMutation.mutate(id);
   };
 
   const totalAllocated = budgetCategories.reduce(
-    (sum, cat) => sum + cat.allocated,
+    (sum, cat) => sum + cat.limit,
     0
   );
   const totalSpent = budgetCategories.reduce((sum, cat) => sum + cat.spent, 0);
@@ -212,17 +240,20 @@ const BudgetPage = () => {
           currency={"PKR"}
         />
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <div className="mt-6 grid grid-cols-1 xl:grid-cols-2 gap-6 min-h-[300px] flex-grow">
           <BudgetList
-            budgetCategories={monthlyBudgets}
+            budgetCategories={budgetCategories}
             setEditingCategory={setEditingCategory}
             currency={"PKR"}
           />
 
           <Charts
-            budgetCategories={monthlyBudgets}
+            key={`${year}-${transactions.length}-${budgets.length}`}
+            budgetCategories={budgetCategories}
             currency={"PKR"}
             year={year}
+            budgets={budgets}
+            transactions={transactions}
           />
         </div>
 

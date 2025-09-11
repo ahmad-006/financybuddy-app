@@ -11,26 +11,38 @@ import {
 } from "recharts";
 
 const Chart = ({ transactions, currency }) => {
-  const monthlyData = transactions.reduce((acc, transaction) => {
-    const date = new Date(transaction.date);
-    const monthYear = `${date.getFullYear()}-${date.getMonth() + 1}`;
+  const now = new Date();
+  const currentYear = now.getFullYear();
 
-    if (!acc[monthYear]) {
-      acc[monthYear] = {
-        month: date.toLocaleString("default", { month: "short" }),
-        income: 0,
-        spending: 0,
-      };
-    }
+  // Pre-fill months Jan -> current month
+  const months = Array.from({ length: now.getMonth() + 1 }, (_, i) => {
+    const date = new Date(currentYear, i, 1);
+    return {
+      key: `${currentYear}-${i + 1}`,
+      month: date.toLocaleString("default", { month: "short" }),
+      income: 0,
+      spending: 0,
+    };
+  });
 
-    if (transaction.type === "income") {
-      acc[monthYear].income += transaction.amount;
-    } else {
-      acc[monthYear].spending += transaction.amount;
-    }
-
+  const monthlyData = months.reduce((acc, m) => {
+    acc[m.key] = m;
     return acc;
   }, {});
+
+  // Merge in actual transactions
+  transactions.forEach((transaction) => {
+    const date = new Date(transaction.date);
+    if (date.getFullYear() !== currentYear) return;
+
+    const monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`;
+
+    if (transaction.type.toLowerCase() === "income") {
+      monthlyData[monthKey].income += transaction.amount;
+    } else if (transaction.type.toLowerCase() === "expense") {
+      monthlyData[monthKey].spending += transaction.amount;
+    }
+  });
 
   const chartData = Object.values(monthlyData);
 

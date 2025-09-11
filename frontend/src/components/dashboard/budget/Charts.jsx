@@ -12,13 +12,28 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { mockTransactions, mockBudgets } from "../../../data/data";
 
-const Charts = ({ budgetCategories, currency, year, userId }) => {
+const CustomXAxisTick = ({ x, y, payload }) => {
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text x={0} y={0} dy={10} textAnchor="middle" fill="#666">
+        {payload.value}
+      </text>
+    </g>
+  );
+};
+
+const Charts = ({
+  budgetCategories,
+  currency,
+  year,
+  transactions,
+  budgets,
+}) => {
   const pieChartData = budgetCategories
     .filter((category) => category.spent > 0)
     .map((category) => ({
-      name: category.name,
+      name: category.title,
       value: category.spent,
       color: category.color,
     }));
@@ -40,24 +55,26 @@ const Charts = ({ budgetCategories, currency, year, userId }) => {
       { name: "Dec", value: 12 },
     ];
 
-    return months.map((monthData) => {
-      // Calculate total budget for the month
-      const totalBudget = mockBudgets
-        .filter((budget) => budget.userId === userId)
-        .reduce((sum, budget) => sum + budget.monthlyLimit, 0);
+    const fullData = months.map((monthData) => {
+      const totalBudget = budgets.reduce(
+        (sum, budget) => sum + budget.limit,
+        0
+      );
 
-      // Calculate total spent for the month
-      const totalSpent = mockTransactions
+      const budgetTitles = new Set(
+        budgets.map((budget) => budget.title.toLowerCase())
+      );
+      const totalSpent = transactions
         .filter((transaction) => {
           const transactionDate = new Date(transaction.date);
           const transactionMonth = transactionDate.getMonth() + 1;
           const transactionYear = transactionDate.getFullYear();
-          
+
           return (
-            transaction.userId === userId &&
             transaction.type === "expense" &&
             transactionMonth === monthData.value &&
-            transactionYear === year
+            transactionYear === year &&
+            budgetTitles.has(transaction.title.toLowerCase())
           );
         })
         .reduce((sum, transaction) => sum + transaction.amount, 0);
@@ -68,7 +85,10 @@ const Charts = ({ budgetCategories, currency, year, userId }) => {
         spent: totalSpent,
       };
     });
-  }, [year, userId]);
+
+    // Always return only last 6 months
+    return fullData.slice(-6);
+  }, [year, budgets, transactions]);
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -114,21 +134,32 @@ const Charts = ({ budgetCategories, currency, year, userId }) => {
       {/* Monthly Trends Chart */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
         <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 sm:mb-6">
-          Monthly Trends
+          Monthly Trends (Last 6 Months)
         </h2>
         {monthlyTrendData && monthlyTrendData.length > 0 ? (
           <div className="h-64 sm:h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={monthlyTrendData}>
+              <BarChart
+                data={monthlyTrendData}
+                key={`${year}-${transactions.length}-${budgets.length}`}
+              >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis 
-                  tickFormatter={(value) => `${currency} ${value.toLocaleString()}`}
+                <XAxis
+                  dataKey="month"
+                  interval={0}
+                  type="category"
+                  tick={<CustomXAxisTick />}
+                />
+                <YAxis
+                  domain={[0, "auto"]}
+                  tickFormatter={(value) =>
+                    `${currency} ${value.toLocaleString()}`
+                  }
                 />
                 <Tooltip
                   formatter={(value, name) => [
-                    `${currency} ${value.toLocaleString()}`, 
-                    name
+                    `${currency} ${value.toLocaleString()}`,
+                    name,
                   ]}
                 />
                 <Legend />

@@ -14,31 +14,20 @@ const AddBudgetModal = ({
   handleAddCategory,
   currency,
 }) => {
-  const categoryIcons = [
-    "🏠",
-    "🛒",
-    "🚗",
-    "🎬",
-    "🍽️",
-    "💡",
-    "👕",
-    "📱",
-    "🏥",
-    "✈️",
-    "🎁",
-    "💰",
-  ];
-
   const categories = [
     "Food",
-    "Shopping",
-    "Salary",
-    "Utilities",
-    "Entertainment",
-    "Housing",
-    "Transportation",
     "Dining Out",
+    "Shopping",
+    "Housing",
+    "Utilities",
+    "Transportation",
+    "Entertainment",
     "Income",
+    "Philanthropy",
+    "Healthcare",
+    "Education",
+    "Subscriptions",
+    "Savings",
   ];
 
   return (
@@ -56,9 +45,9 @@ const AddBudgetModal = ({
             <input
               type="text"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={newCategory.name}
+              value={newCategory.title}
               onChange={(e) =>
-                setNewCategory({ ...newCategory, name: e.target.value })
+                setNewCategory({ ...newCategory, title: e.target.value })
               }
               placeholder="e.g., Monthly Spending"
             />
@@ -94,37 +83,15 @@ const AddBudgetModal = ({
             <input
               type="number"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={newCategory.allocated}
+              value={newCategory.limit}
               onChange={(e) =>
                 setNewCategory({
                   ...newCategory,
-                  allocated: parseFloat(e.target.value) || 0,
+                  limit: parseFloat(e.target.value) || 0,
                 })
               }
               placeholder="0.00"
             />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Icon
-            </label>
-            <div className="grid grid-cols-6 gap-2">
-              {categoryIcons.map((icon) => (
-                <button
-                  key={icon}
-                  type="button"
-                  className={`text-xl p-2 rounded-lg transition-colors ${
-                    newCategory.icon === icon
-                      ? "bg-blue-100 ring-2 ring-blue-500"
-                      : "bg-gray-100 hover:bg-gray-200"
-                  }`}
-                  onClick={() => setNewCategory({ ...newCategory, icon })}
-                >
-                  {icon}
-                </button>
-              ))}
-            </div>
           </div>
 
           <div className="flex justify-end gap-3 pt-4">

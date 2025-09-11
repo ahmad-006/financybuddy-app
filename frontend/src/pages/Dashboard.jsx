@@ -1,18 +1,48 @@
 // Dashboard.jsx
-import React from "react";
-import { mockTransactions, mockBudgets, mockProfiles } from "../data/data";
+import React, { useEffect, useMemo, useState } from "react";
+import { mockProfiles } from "../data/data";
 import SummaryCards from "../components/dashboard/overview/SummaryCards";
 import RecentTransactions from "../components/dashboard/overview/RecentTransactions";
 import Chart from "../components/dashboard/overview/Chart";
 import BudgetProgress from "../components/dashboard/overview/BudgetProgress";
 import CategoryBreakdown from "../components/dashboard/overview/CategoryBreakdown";
+import { toast } from "react-toastify";
+import { useQuery } from "@tanstack/react-query";
+import { fetchMonthlyBudgets, fetchTransactions } from "@/utils/fetchData";
 
 const Dashboard = () => {
-  // Get data directly from mockData
-  const transactions = mockTransactions;
-  const budgets = mockBudgets;
+  const [transformedBudgets, setTransformedBudgets] = useState([]);
+
+  // initial monthlyBudget fetch
+  const { data: transaction, error: fetchError } = useQuery({
+    queryKey: ["transactions"],
+    queryFn: fetchTransactions,
+  });
+
+  if (fetchError)
+    toast.error(fetchError?.message || "error fetching transactions");
+
+  const { data: monthlyBudgets, error: budgetFetchError } = useQuery({
+    queryKey: ["monthlyBudgets"],
+    queryFn: fetchMonthlyBudgets,
+  });
+
+  if (budgetFetchError)
+    toast.error(fetchError?.message || "error fetching budgets");
+
+  //? storing in a variable
+  //using usememo because of re renders
+  const budgets = useMemo(
+    () => monthlyBudgets?.monthlyBudgets || [],
+    [monthlyBudgets]
+  );
+
+  const transactions = useMemo(
+    () => transaction?.transactions || [],
+    [transaction]
+  );
   const currentUser = mockProfiles[0];
-  const currency = currentUser.currency;
+  const currency = "PKR";
 
   // Calculate totals
   const totalIncome = transactions
@@ -29,6 +59,30 @@ const Dashboard = () => {
   const recentTransactions = [...transactions]
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .slice(0, 5);
+
+  useEffect(() => {
+    if (budgets.length && transactions.length) {
+      const result = budgets.map((budget) => {
+        const spent = transactions
+          .filter(
+            (t) =>
+              t.type.toLowerCase() === "expense" &&
+              t.category.toLowerCase() === budget.category.toLowerCase()
+          )
+          .reduce((sum, t) => sum + t.amount, 0);
+
+        return {
+          title: budget.title,
+          category: budget.category,
+          limit: budget.limit,
+          createdAt: budget.createdAt,
+          spent,
+        };
+      });
+
+      setTransformedBudgets(result);
+    }
+  }, [budgets, transactions]);
 
   return (
     <div className="bg-gray-50 p-6">
@@ -81,7 +135,7 @@ const Dashboard = () => {
                 </p>
               </div>
               <BudgetProgress
-                budgets={budgets}
+                budgets={transformedBudgets}
                 transactions={transactions}
                 currency={currency}
                 currentUser={currentUser}

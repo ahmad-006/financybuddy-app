@@ -4,12 +4,12 @@ const MonthlyBudget = require("../models/monthlyBudgetModal");
 // Get all Monthlybudgets for a user
 exports.getAllMonthlyBudgets = async (req, res) => {
   try {
-    const monthlyBudget = await MonthlyBudget.find({ user: req.body.user });
+    const monthlyBudgets = await MonthlyBudget.find({ user: req.body.user });
     res.status(200).json({
       status: "success",
-      results: monthlyBudget.length,
+      results: monthlyBudgets.length,
       data: {
-        monthlyBudget,
+        monthlyBudgets,
       },
     });
   } catch (error) {
@@ -24,7 +24,7 @@ exports.getAllMonthlyBudgets = async (req, res) => {
 exports.createMonthlyBudget = async (req, res) => {
   try {
     const { user, category, limit, title } = req.body;
-    const Monthlybudget = await MonthlyBudget.create({
+    const monthlyBudget = await MonthlyBudget.create({
       user,
       category,
       limit,
@@ -33,7 +33,7 @@ exports.createMonthlyBudget = async (req, res) => {
     res.status(201).json({
       status: "success",
       data: {
-        Monthlybudget,
+        monthlyBudget,
       },
     });
   } catch (error) {
@@ -48,12 +48,12 @@ exports.createMonthlyBudget = async (req, res) => {
 exports.updateMonthlyBudget = async (req, res) => {
   try {
     const { category, monthlyLimit, month, year } = req.body;
-    const Monthlybudget = await MonthlyBudget.findByIdAndUpdate(
+    const monthlyBudget = await MonthlyBudget.findByIdAndUpdate(
       req.params.id,
       req.body,
       { new: true, runValidators: true }
     );
-    if (!Monthlybudget) {
+    if (!monthlyBudget) {
       return res.status(404).json({
         status: "error",
         message: "MonthlyBudget not found",
@@ -62,7 +62,7 @@ exports.updateMonthlyBudget = async (req, res) => {
     res.status(200).json({
       status: "success",
       data: {
-        Monthlybudget,
+        monthlyBudget,
       },
     });
   } catch (error) {
@@ -76,8 +76,8 @@ exports.updateMonthlyBudget = async (req, res) => {
 // Delete a Monthlybudget entry
 exports.deleteMonthlyBudget = async (req, res) => {
   try {
-    const Monthlybudget = await MonthlyBudget.findByIdAndDelete(req.params.id);
-    if (!Monthlybudget) {
+    const monthlyBudget = await MonthlyBudget.findByIdAndDelete(req.params.id);
+    if (!monthlyBudget) {
       return res.status(404).json({
         status: "error",
         message: "MonthlyBudget not found",

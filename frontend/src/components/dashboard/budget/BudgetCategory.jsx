@@ -56,7 +56,10 @@ const BudgetCategory = ({
 
           <button
             className="text-blue-600 hover:text-blue-800 text-sm sm:text-base"
-            onClick={() => setEditingCategory(category)}
+            onClick={() => {
+              console.log(category);
+              setEditingCategory(category);
+            }}
           >
             Edit
           </button>

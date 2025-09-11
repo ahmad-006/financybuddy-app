@@ -6,6 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Title } from "@radix-ui/react-dialog";
 
 const EditBudgetModal = ({
   editingCategory,
@@ -14,31 +15,20 @@ const EditBudgetModal = ({
   handleDeleteCategory,
   currency,
 }) => {
-  const categoryIcons = [
-    "🏠",
-    "🛒",
-    "🚗",
-    "🎬",
-    "🍽️",
-    "💡",
-    "👕",
-    "📱",
-    "🏥",
-    "✈️",
-    "🎁",
-    "💰",
-  ];
-
   const categories = [
     "Food",
-    "Shopping",
-    "Salary",
-    "Utilities",
-    "Entertainment",
-    "Housing",
-    "Transportation",
     "Dining Out",
+    "Shopping",
+    "Housing",
+    "Utilities",
+    "Transportation",
+    "Entertainment",
     "Income",
+    "Philanthropy",
+    "Healthcare",
+    "Education",
+    "Subscriptions",
+    "Savings",
   ];
 
   return (
@@ -56,10 +46,14 @@ const EditBudgetModal = ({
             <input
               type="text"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={editingCategory.name}
+              value={editingCategory.title}
               onChange={(e) =>
-                setEditingCategory({ ...editingCategory, name: e.target.value })
+                setEditingCategory({
+                  ...editingCategory,
+                  title: e.target.value,
+                })
               }
+              readOnly={!!editingCategory}
             />
           </div>
 
@@ -68,10 +62,14 @@ const EditBudgetModal = ({
               Category
             </label>
             <Select
-              value={editingCategory.category || ""}
+              value={editingCategory.category?.toLowerCase() || ""}
               onValueChange={(value) =>
-                setEditingCategory({ ...editingCategory, category: value })
+                setEditingCategory({
+                  ...editingCategory,
+                  category: value.toLowerCase(),
+                })
               }
+              disabled={!!editingCategory}
             >
               <SelectTrigger className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <SelectValue placeholder="Select a category" />
@@ -93,45 +91,21 @@ const EditBudgetModal = ({
             <input
               type="number"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={editingCategory.allocated}
+              value={editingCategory.limit}
               onChange={(e) =>
                 setEditingCategory({
                   ...editingCategory,
-                  allocated: parseFloat(e.target.value) || 0,
+                  limit: parseFloat(e.target.value) || 0,
                 })
               }
             />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Icon
-            </label>
-            <div className="grid grid-cols-6 gap-2">
-              {categoryIcons.map((icon) => (
-                <button
-                  key={icon}
-                  type="button"
-                  className={`text-xl p-2 rounded-lg transition-colors ${
-                    editingCategory.icon === icon
-                      ? "bg-blue-100 ring-2 ring-blue-500"
-                      : "bg-gray-100 hover:bg-gray-200"
-                  }`}
-                  onClick={() =>
-                    setEditingCategory({ ...editingCategory, icon })
-                  }
-                >
-                  {icon}
-                </button>
-              ))}
-            </div>
           </div>
 
           <div className="flex justify-between items-center pt-4">
             <button
               className="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
               onClick={() => {
-                handleDeleteCategory(editingCategory.id);
+                handleDeleteCategory(editingCategory._id);
                 setEditingCategory(null);
               }}
             >
@@ -147,8 +121,8 @@ const EditBudgetModal = ({
               </button>
               <button
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              onClick={handleUpdateCategory}
-            >
+                onClick={handleUpdateCategory}
+              >
                 Update
               </button>
             </div>

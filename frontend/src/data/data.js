@@ -8,6 +8,7 @@ export const mockProfiles = [
     password: "$2b$12$tqr2t63.piDPv34A50upTeFhlx/1ZqwfRvQ/a7x/GmyfTsV237DuC",
     __v: 0,
     currency: "PKR",
+    createdAt: "2025-01-01T00:00:00.000Z", // Added createdAt for BudgetProgress
   },
 ];
 

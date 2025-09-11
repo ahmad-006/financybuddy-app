@@ -26,7 +26,7 @@ export default function DashboardLayout() {
   }, [pathname]);
 
   return (
-    <div className="dashboard-layout flex bg-stone-900 text-white">
+    <div className="dashboard-layout flex bg-stone-900 text-white h-screen">
       <DashboardSidebar />
       <main
         ref={mainContentRef}

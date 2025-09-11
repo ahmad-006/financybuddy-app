@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
 // Fetch all transactions
 const fetchTransactions = async () => {
@@ -42,12 +43,17 @@ const fetchMonthlyBudgets = async () => {
 };
 // Add a new Budget
 const addMonthlyBudget = async (data) => {
-  const res = await axios.post(
-    "http://localhost:8000/api/v1/monthlyBudgets",
-    data
-  );
-  if (!res.data) throw new Error("Failed to add transaction");
-  return res.data.data; // Corrected path
+  try {
+    const res = await axios.post(
+      "http://localhost:8000/api/v1/monthlyBudgets",
+      data
+    );
+    if (!res.data) throw new Error("Failed to add transaction");
+    return res.data.data; // Corrected path
+  } catch (error) {
+    toast.error(error);
+    return error;
+  }
 };
 
 // Update a Budget
@@ -56,14 +62,25 @@ const updateMonthlyBudget = async (id, data) => {
     `http://localhost:8000/api/v1/monthlyBudgets/${id}`,
     data
   );
-  if (!res.data) throw new Error("Failed to update transaction");
-  return res.data.data; // Corrected path
+  if (!res.data) {
+    console.log("hello");
+    throw new Error("Failed to update transaction");
+  }
+
+  return res.data.data;
 };
 
 // Delete a Budget
 const deleteMonthlyBudget = async (id) => {
   await axios.delete(`http://localhost:8000/api/v1/monthlyBudgets/${id}`);
   return id; // return the deleted ID to update cache
+};
+
+// Fetch current user
+const fetchUser = async () => {
+  const res = await axios.get("http://localhost:8000/api/v1/users/me");
+  if (!res.data) throw new Error("No user found");
+  return res.data.data.user; // Assuming user data is nested under data.user
 };
 
 export {
@@ -75,4 +92,5 @@ export {
   addMonthlyBudget,
   deleteMonthlyBudget,
   updateMonthlyBudget,
+  fetchUser,
 };
