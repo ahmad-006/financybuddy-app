@@ -44,6 +44,16 @@ const recurringTransactionModel = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    type: {
+      type: String,
+      enum: ["income", "expense", "saving"],
+      required: true,
+    },
+    frequency: {
+      type: String,
+      enum: ["daily", "monthly", "weekly", "early"],
+      required: true,
+    },
   },
   { timestamps: true }
 );

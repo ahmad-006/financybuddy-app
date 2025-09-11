@@ -1,6 +1,6 @@
 import React from "react";
 import { format } from "date-fns";
-import { getCategoryIcon } from "@/utils/iconFunc"; // Import getCategoryIcon
+import { getCategoryIcon } from "@/utils/iconFunc";
 
 const BudgetCategory = ({
   category,

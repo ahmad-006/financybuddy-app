@@ -32,7 +32,7 @@ const RecurringTransactionCard = ({
         </p>
         <p>
           <strong>Next Due:</strong>{" "}
-          {new Date(transaction.nextDue).toLocaleDateString()}
+          {new Date(transaction.nextDate).toLocaleDateString()}
         </p>
         <p>
           <strong>Category:</strong> {transaction.category}
@@ -43,8 +43,8 @@ const RecurringTransactionCard = ({
         <div className="flex items-center space-x-2">
           <span className="text-sm font-medium text-gray-800">Auto-Add:</span>
           <Switch
-            checked={transaction.autoAdd}
-            onCheckedChange={() => onPause(transaction.id)}
+            checked={transaction.isActive}
+            onCheckedChange={() => onPause(transaction.isActive)}
             className="data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-gray-300"
           />
         </div>
@@ -61,7 +61,7 @@ const RecurringTransactionCard = ({
             variant="outline"
             size="sm"
             className="text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700"
-            onClick={() => onDelete(transaction.id)}
+            onClick={() => onDelete(transaction._id)}
           >
             Delete
           </Button>

@@ -36,7 +36,7 @@ const deleteTransaction = async (id) => {
 
 // Fetch budgets
 const fetchMonthlyBudgets = async () => {
-  const res = await axios.get("http://localhost:8000/api/v1/specialBudgets");
+  const res = await axios.get("http://localhost:8000/api/v1/monthlyBudgets");
   if (!res.data) throw new Error("No special budgets found");
 
   return res.data.data;
@@ -45,7 +45,7 @@ const fetchMonthlyBudgets = async () => {
 const addMonthlyBudget = async (data) => {
   try {
     const res = await axios.post(
-      "http://localhost:8000/api/v1/specialBudgets",
+      "http://localhost:8000/api/v1/monthlyBudgets",
       data
     );
     if (!res.data) throw new Error("Failed to add transaction");
@@ -59,7 +59,7 @@ const addMonthlyBudget = async (data) => {
 // Update a Budget
 const updateMonthlyBudget = async (id, data) => {
   const res = await axios.patch(
-    `http://localhost:8000/api/v1/specialBudgets/${id}`,
+    `http://localhost:8000/api/v1/monthlyBudgets/${id}`,
     data
   );
   if (!res.data) {
@@ -72,7 +72,7 @@ const updateMonthlyBudget = async (id, data) => {
 
 // Delete a Budget
 const deleteMonthlyBudget = async (id) => {
-  await axios.delete(`http://localhost:8000/api/v1/specialBudgets/${id}`);
+  await axios.delete(`http://localhost:8000/api/v1/monthlyBudgets/${id}`);
   return id; // return the deleted ID to update cache
 };
 
@@ -125,6 +125,63 @@ const fetchUser = async () => {
   return res.data.data.user; // Assuming user data is nested under data.user
 };
 
+// Fetch all recurring transactions
+const fetchRecurringTransactions = async () => {
+  try {
+    const res = await axios.get(
+      "http://localhost:8000/api/v1/recurringTransactions"
+    );
+    if (!res.data) throw new Error("No recurring transactions found");
+    return res.data.data; // assuming API returns { data: [...] }
+  } catch (error) {
+    toast.error("Failed to fetch recurring transactions");
+    return [error];
+  }
+};
+
+// Add a new recurring transaction
+const addRecurringTransaction = async (data) => {
+  try {
+    const res = await axios.post(
+      "http://localhost:8000/api/v1/recurringTransactions",
+      data
+    );
+    if (!res.data) throw new Error("Failed to add recurring transaction");
+    return res.data.data;
+  } catch (error) {
+    toast.error(error?.response?.data?.message || error.message);
+    return error;
+  }
+};
+
+// Update a recurring transaction
+const updateRecurringTransaction = async (id, data) => {
+  try {
+    const res = await axios.patch(
+      `http://localhost:8000/api/v1/recurringTransactions/${id}`,
+      data
+    );
+    if (!res.data) throw new Error("Failed to update recurring transaction");
+    return res.data.data;
+  } catch (error) {
+    toast.error(error?.response?.data?.message || error.message);
+    return error;
+  }
+};
+
+// Delete a recurring transaction
+const deleteRecurringTransaction = async (id) => {
+  try {
+    await axios.delete(
+      `http://localhost:8000/api/v1/recurringTransactions/${id}`
+    );
+    return id; // return the deleted ID for cache update
+  } catch (error) {
+    toast.error(error?.response?.data?.message || error.message);
+    return error;
+  }
+};
+
 export {
   fetchTransactions,
   addTransaction,
@@ -139,4 +196,8 @@ export {
   fetchSpecialBudgets,
   updateSpecialBudget,
   deleteSpecialBudget,
+  fetchRecurringTransactions,
+  addRecurringTransaction,
+  updateRecurringTransaction,
+  deleteRecurringTransaction,
 };

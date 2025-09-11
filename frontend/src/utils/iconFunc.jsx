@@ -34,3 +34,29 @@ export const HidePasswordIcon = () => (
     />
   </svg>
 );
+
+export const categoryDisplayConfig = {
+  food: { icon: "🍕", color: "#36A2EB" },
+  "dining out": { icon: "🍽️", color: "#9966FF" },
+  shopping: { icon: "🛍️", color: "#FF69B4" },
+  housing: { icon: "🏠", color: "#FF6384" },
+  utilities: { icon: "💡", color: "#FF9F40" },
+  transportation: { icon: "🚗", color: "#FFCE56" },
+  entertainment: { icon: "🎬", color: "#4BC0C0" },
+  income: { icon: "💰", color: "#4CAF50" },
+  philanthropy: { icon: "🤝", color: "#8B008B" },
+  healthcare: { icon: "🏥", color: "#DC143C" },
+  education: { icon: "🎓", color: "#00BFFF" },
+  subscriptions: { icon: "🔁", color: "#FFD700" },
+  savings: { icon: "🐷", color: "#008000" },
+  default: { icon: "📁", color: "#CCCCCC" },
+};
+
+export const getCategoryDisplayConfig = (category) => {
+  const lowerCategory = category?.toLowerCase();
+  return categoryDisplayConfig[lowerCategory] || categoryDisplayConfig.default;
+};
+
+export const getCategoryIcon = (category) => {
+  return getCategoryDisplayConfig(category).icon;
+};

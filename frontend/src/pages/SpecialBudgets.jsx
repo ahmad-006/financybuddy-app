@@ -5,12 +5,7 @@ import SpecialBudgetModal from "../components/dashboard/budget/SpecialBudgetModa
 import BudgetSummary from "../components/dashboard/budget/BudgetSummary";
 import BudgetList from "../components/dashboard/budget/BudgetList";
 import { toast } from "react-toastify";
-import {
-  QueryClient,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   addSpecialBudget,
   deleteSpecialBudget,

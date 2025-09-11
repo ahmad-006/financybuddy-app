@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   Dialog,
@@ -34,50 +34,51 @@ const RecurringTransactionModal = ({
     formState: { errors },
   } = useForm();
 
-  const categories = [
-    "Entertainment",
-    "Housing",
-    "Income",
-    "Food",
-    "Shopping",
-    "Utilities",
-    "Transportation",
-    "Dining Out",
-  ];
+  const categories = useMemo(
+    () => [
+      "Entertainment",
+      "Housing",
+      "Income",
+      "Food",
+      "Shopping",
+      "Utilities",
+      "Transportation",
+      "Dining Out",
+    ],
+    []
+  );
+
   const frequencies = ["Daily", "Weekly", "Monthly", "Yearly"];
 
+  // Populate form values when editing
   useEffect(() => {
     if (editingTransaction) {
       setValue("title", editingTransaction.title || "");
-      setValue("amount", editingTransaction.amount);
-      setValue("type", editingTransaction.type);
-      setValue("category", editingTransaction.category);
-      setValue("frequency", editingTransaction.frequency);
-      setValue("autoAdd", editingTransaction.autoAdd);
-      if (editingTransaction.nextDue) {
-        try {
-          const date = new Date(editingTransaction.nextDue);
-          setValue("nextDue", format(date, "yyyy-MM-dd"));
-        } catch (error) {
-          setValue("nextDue", editingTransaction.nextDue);
-          console.log(error);
-        }
-      }
+      setValue("amount", editingTransaction.amount ?? 0);
+      setValue("type", editingTransaction.type || "expense");
+      setValue("category", editingTransaction.category || categories[0]);
+      setValue("frequency", editingTransaction.frequency || "Monthly");
+      setValue("isActive", editingTransaction.isActive ?? true);
+      setValue(
+        "nextDate",
+        editingTransaction.nextDate
+          ? format(new Date(editingTransaction.nextDate), "yyyy-MM-dd")
+          : format(new Date(), "yyyy-MM-dd")
+      );
     } else {
       reset();
       setValue("type", "expense");
       setValue("frequency", "Monthly");
-      setValue("autoAdd", true);
-      setValue("nextDue", format(new Date(), "yyyy-MM-dd"));
+      setValue("isActive", true);
+      setValue("nextDate", format(new Date(), "yyyy-MM-dd"));
     }
-  }, [editingTransaction, reset, setValue]);
+  }, [editingTransaction, reset, setValue, categories]);
 
   const onSubmit = (data) => {
     onSave({
       ...data,
       id: editingTransaction ? editingTransaction.id : `rt${Date.now()}`,
     });
-    onClose();
     reset();
   };
 
@@ -98,25 +99,20 @@ const RecurringTransactionModal = ({
               : "Add New Recurring Transaction"}
           </DialogTitle>
         </DialogHeader>
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-2">
           {/* Title */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Title
             </label>
-            {editingTransaction ? (
-              <p className="p-2 border rounded-md bg-gray-100 text-gray-700">
-                {editingTransaction.title}
-              </p>
-            ) : (
-              <Input
-                type="text"
-                placeholder="e.g., Netflix Subscription"
-                className={errors.title ? "border-red-500" : ""}
-                {...register("title", { required: "Title is required" })}
-              />
-            )}
-            {errors.title && !editingTransaction && (
+            <Input
+              type="text"
+              placeholder="e.g., Netflix Subscription"
+              className={errors.title ? "border-red-500" : ""}
+              {...register("title", { required: "Title is required" })}
+            />
+            {errors.title && (
               <p className="text-red-500 text-xs mt-1">
                 {errors.title.message}
               </p>
@@ -179,32 +175,28 @@ const RecurringTransactionModal = ({
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Category
             </label>
-            {editingTransaction ? (
-              <p className="p-2 border rounded-md bg-gray-100 text-gray-700">
-                {editingTransaction.category}
-              </p>
-            ) : (
-              <Controller
-                name="category"
-                control={control}
-                rules={{ required: "Category is required" }}
-                render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger className={errors.category ? "border-red-500" : ""}>
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map((cat) => (
-                        <SelectItem key={cat} value={cat.toLowerCase()}>
-                          {cat}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-            )}
-            {errors.category && !editingTransaction && (
+            <Controller
+              name="category"
+              control={control}
+              rules={{ required: "Category is required" }}
+              render={({ field }) => (
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger
+                    className={errors.category ? "border-red-500" : ""}
+                  >
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat} value={cat}>
+                        {cat}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors.category && (
               <p className="text-red-500 text-xs mt-1">
                 {errors.category.message}
               </p>
@@ -251,14 +243,14 @@ const RecurringTransactionModal = ({
             </label>
             <Input
               type="date"
-              className={errors.nextDue ? "border-red-500" : ""}
-              {...register("nextDue", {
+              className={errors.nextDate ? "border-red-500" : ""}
+              {...register("nextDate", {
                 required: "Next Due Date is required",
               })}
             />
-            {errors.nextDue && (
+            {errors.nextDate && (
               <p className="text-red-500 text-xs mt-1">
-                {errors.nextDue.message}
+                {errors.nextDate.message}
               </p>
             )}
           </div>
@@ -269,7 +261,7 @@ const RecurringTransactionModal = ({
               Auto-Add
             </label>
             <Controller
-              name="autoAdd"
+              name="isActive"
               control={control}
               render={({ field }) => (
                 <Switch

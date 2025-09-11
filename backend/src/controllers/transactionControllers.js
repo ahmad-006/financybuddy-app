@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Transaction = require("../models/Transactionmodel");
+const Transaction = require("../models/transactionModel");
 
 const getAllTransactionsOfUser = async (req, res) => {
   try {

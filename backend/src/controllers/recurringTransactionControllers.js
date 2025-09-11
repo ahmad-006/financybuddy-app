@@ -5,28 +5,30 @@ const RecurringTransactions = require("../models/recurringTransactionModel");
 exports.getAllRecurringTransactions = async (req, res) => {
   try {
     const { user } = req.body;
-    const transaction = await RecurringTransactions.find({ user });
+    const transactions = await RecurringTransactions.find({ user });
 
     res.status(200).json({
       status: "success",
-      results: transaction.length,
+      results: transactions.length,
       data: {
-        transaction,
+        transactions,
       },
     });
   } catch (error) {
-    res.status(500).json({ status: "fail", message: "Server error" });
+    res.status(500).json({ status: "fail", message: error.message });
   }
 };
 
-// Create a new Recurring Transaction
+// Create a new Recurring transactions
 exports.createRecurringTransaction = async (req, res) => {
-  const { user, title, category, amount, nextDate } = req.body;
+  const { user, title, type, frequency, category, amount, nextDate } = req.body;
   try {
     const newTransaction = await RecurringTransactions.create({
       user,
       title,
       category,
+      frequency,
+      type,
       amount,
       nextDate,
     });
@@ -37,11 +39,11 @@ exports.createRecurringTransaction = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ status: "fail", message: "Server error" });
+    res.status(500).json({ status: "fail", message: error.message });
   }
 };
 
-// Update an existing Recurring Transaction
+// Update an existing Recurring transactions
 exports.updateRecurringTransaction = async (req, res) => {
   try {
     const updatedTransaction = await RecurringTransactions.findByIdAndUpdate(
@@ -56,11 +58,11 @@ exports.updateRecurringTransaction = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ status: "fail", message: "Server error" });
+    res.status(500).json({ status: "fail", message: error.message });
   }
 };
 
-// Delete a Recurring Transaction
+// Delete a Recurring transactions
 exports.deleteRecurringTransaction = async (req, res) => {
   try {
     await RecurringTransactions.findByIdAndDelete(req.params.id);
@@ -69,6 +71,6 @@ exports.deleteRecurringTransaction = async (req, res) => {
       data: null,
     });
   } catch (error) {
-    res.status(500).json({ status: "fail", message: "Server error" });
+    res.status(500).json({ status: "fail", message: error.message });
   }
 };

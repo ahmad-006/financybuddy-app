@@ -14,6 +14,7 @@ import {
   updateMonthlyBudget,
 } from "@/utils/fetchData";
 import { toast } from "react-toastify";
+import { useMemo } from "react";
 
 const BudgetPage = () => {
   const [budgetCategories, setBudgetCategories] = useState([]);
@@ -52,10 +53,18 @@ const BudgetPage = () => {
     toast.error(fetchError?.message || "error fetching budgets");
 
   //? storing in a variable
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const budgets = monthlyBudgets?.monthlyBudgets || [];
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const transactions = transaction?.transactions || [];
+
+  const budgets = useMemo(
+    () => monthlyBudgets?.monthlyBudgets || [],
+    [monthlyBudgets]
+  );
+
+  const transactions = useMemo(
+    () => transaction?.transactions || [],
+    [transaction]
+  );
+
+  console.log(monthlyBudgets, budgets);
 
   //?Mutations functions
   const deleteMutation = useMutation({
@@ -139,7 +148,7 @@ const BudgetPage = () => {
     } catch (error) {
       console.error("Error processing budgets:", error);
     }
-  }, [month, year, transactions, budgets]);
+  }, [month, year, budgets, transactions]);
 
   const getCategoryConfig = (category) => {
     const config = {

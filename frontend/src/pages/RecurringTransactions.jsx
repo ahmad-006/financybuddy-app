@@ -1,79 +1,102 @@
 import React, { useState } from "react";
-
 import { Plus } from "lucide-react";
 import RecurringTransactionModal from "../components/dashboard/transactions/RecurringTransactionModal";
 import RecurringTransactionCard from "../components/dashboard/transactions/RecurringTransactionCard";
+import {
+  addRecurringTransaction,
+  deleteRecurringTransaction,
+  fetchRecurringTransactions,
+  updateRecurringTransaction,
+} from "@/utils/fetchData";
+import { toast } from "react-toastify";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const RecurringTransactions = () => {
   const [showModal, setShowModal] = useState(false);
-  const [recurringTransactions, setRecurringTransactions] = useState([
-    // Dummy Data for now - This will be fetched from the database later
-    {
-      id: "rt1",
-      title: "Netflix Subscription",
-      amount: 15,
-      type: "expense",
-      frequency: "Monthly",
-      nextDue: "2025-10-05",
-      category: "Entertainment",
-      autoAdd: true,
-    },
-    {
-      id: "rt2",
-      title: "Rent",
-      amount: 1200,
-      type: "expense",
-      frequency: "Monthly",
-      nextDue: "2025-10-01",
-      category: "Housing",
-      autoAdd: true,
-    },
-    {
-      id: "rt3",
-      title: "Salary",
-      amount: 3000,
-      type: "income",
-      frequency: "Monthly",
-      nextDue: "2025-09-30",
-      category: "Income",
-      autoAdd: true,
-    },
-  ]);
   const [editingRecurringTransaction, setEditingRecurringTransaction] =
     useState(null);
 
+  const queryClient = useQueryClient();
+
+  // Fetch recurring transactions
+  const { data: transactions, error: fetchError } = useQuery({
+    queryKey: ["recurringTransactions"],
+    queryFn: fetchRecurringTransactions,
+  });
+
+  if (fetchError)
+    toast.error(fetchError?.message || "Error fetching transactions");
+
+  // Normalize id
+  const recurringTransactions =
+    transactions?.transactions.map((t) => ({
+      ...t,
+      id: t.id || t._id,
+    })) || [];
+
+  // Mutations
+  const addMutation = useMutation({
+    mutationFn: (data) => addRecurringTransaction(data),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["recurringTransactions"] }),
+
+    onError: (err) => toast.error(err.message),
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }) => updateRecurringTransaction(id, data),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["recurringTransactions"] }),
+    onError: (err) =>
+      toast.error(err.message || "Failed to update transaction"),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => deleteRecurringTransaction(id),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["recurringTransactions"] }),
+    onError: (err) =>
+      toast.error(err.message || "Failed to delete transaction"),
+  });
+
+  // Save handler
   const handleSaveRecurringTransaction = (transactionData) => {
-    if (editingRecurringTransaction) {
-      setRecurringTransactions((prev) =>
-        prev.map((t) =>
-          t.id === editingRecurringTransaction.id
-            ? { ...t, ...transactionData }
-            : t
-        )
-      );
+    const { title, amount, type, category, frequency, nextDate, isActive } =
+      transactionData;
+
+    const data = {
+      title,
+      amount,
+      type,
+      category: category.toLowerCase(),
+      frequency: frequency.toLowerCase(),
+      nextDate,
+      isActive,
+    };
+    console.log(data);
+
+    if (editingRecurringTransaction?.id) {
+      updateMutation.mutate({ id: editingRecurringTransaction.id, data });
     } else {
-      setRecurringTransactions((prev) => [
-        ...prev,
-        { ...transactionData, id: `rt${Date.now()}` }, // Generate a temporary ID
-      ]);
+      addMutation.mutate(data);
     }
+
     setShowModal(false);
     setEditingRecurringTransaction(null);
   };
 
+  // Edit handler
   const handleEditRecurringTransaction = (transaction) => {
     setEditingRecurringTransaction(transaction);
     setShowModal(true);
   };
 
-  const handlePauseRecurringTransaction = (id) => {
-    setRecurringTransactions((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, autoAdd: !t.autoAdd } : t))
-    );
+  const handlePauseRecurringTransaction = (isActive, id) => {
+    updateMutation.mutate({ id, data: { isActive: !isActive } });
   };
 
   const handleDeleteRecurringTransaction = (id) => {
-    setRecurringTransactions((prev) => prev.filter((t) => t.id !== id));
+    deleteMutation.mutate(id);
   };
 
   const handleCloseModal = () => {
@@ -85,7 +108,7 @@ const RecurringTransactions = () => {
     <div className="min-h-screen bg-gray-50 text-black p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 ">
+          <h1 className="text-2xl font-bold text-gray-900">
             Recurring Transactions
           </h1>
           <button
@@ -103,7 +126,9 @@ const RecurringTransactions = () => {
               key={transaction.id}
               transaction={transaction}
               onEdit={handleEditRecurringTransaction}
-              onPause={handlePauseRecurringTransaction}
+              onPause={(isActive) =>
+                handlePauseRecurringTransaction(isActive, transaction.id)
+              }
               onDelete={handleDeleteRecurringTransaction}
             />
           ))}
@@ -114,6 +139,7 @@ const RecurringTransactions = () => {
             onClose={handleCloseModal}
             onSave={handleSaveRecurringTransaction}
             editingTransaction={editingRecurringTransaction}
+            onDelete={handleDeleteRecurringTransaction}
           />
         )}
       </div>
