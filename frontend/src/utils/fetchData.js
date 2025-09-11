@@ -36,8 +36,8 @@ const deleteTransaction = async (id) => {
 
 // Fetch budgets
 const fetchMonthlyBudgets = async () => {
-  const res = await axios.get("http://localhost:8000/api/v1/monthlyBudgets");
-  if (!res.data) throw new Error("No monthly budgets found");
+  const res = await axios.get("http://localhost:8000/api/v1/specialBudgets");
+  if (!res.data) throw new Error("No special budgets found");
 
   return res.data.data;
 };
@@ -45,7 +45,7 @@ const fetchMonthlyBudgets = async () => {
 const addMonthlyBudget = async (data) => {
   try {
     const res = await axios.post(
-      "http://localhost:8000/api/v1/monthlyBudgets",
+      "http://localhost:8000/api/v1/specialBudgets",
       data
     );
     if (!res.data) throw new Error("Failed to add transaction");
@@ -59,7 +59,7 @@ const addMonthlyBudget = async (data) => {
 // Update a Budget
 const updateMonthlyBudget = async (id, data) => {
   const res = await axios.patch(
-    `http://localhost:8000/api/v1/monthlyBudgets/${id}`,
+    `http://localhost:8000/api/v1/specialBudgets/${id}`,
     data
   );
   if (!res.data) {
@@ -72,7 +72,49 @@ const updateMonthlyBudget = async (id, data) => {
 
 // Delete a Budget
 const deleteMonthlyBudget = async (id) => {
-  await axios.delete(`http://localhost:8000/api/v1/monthlyBudgets/${id}`);
+  await axios.delete(`http://localhost:8000/api/v1/specialBudgets/${id}`);
+  return id; // return the deleted ID to update cache
+};
+
+// Fetch budgets
+const fetchSpecialBudgets = async () => {
+  const res = await axios.get("http://localhost:8000/api/v1/specialBudgets");
+  if (!res.data) throw new Error("No special budgets found");
+
+  return res.data.data;
+};
+// Add a new Budget
+const addSpecialBudget = async (data) => {
+  try {
+    const res = await axios.post(
+      "http://localhost:8000/api/v1/specialBudgets",
+      data
+    );
+    if (!res.data) throw new Error("Failed to add transaction");
+    return res.data.data; // Corrected path
+  } catch (error) {
+    toast.error(error);
+    return error;
+  }
+};
+
+// Update a Budget
+const updateSpecialBudget = async (id, data) => {
+  const res = await axios.patch(
+    `http://localhost:8000/api/v1/specialBudgets/${id}`,
+    data
+  );
+  if (!res.data) {
+    console.log("hello");
+    throw new Error("Failed to update transaction");
+  }
+
+  return res.data.data;
+};
+
+// Delete a Budget
+const deleteSpecialBudget = async (id) => {
+  await axios.delete(`http://localhost:8000/api/v1/specialBudgets/${id}`);
   return id; // return the deleted ID to update cache
 };
 
@@ -93,4 +135,8 @@ export {
   deleteMonthlyBudget,
   updateMonthlyBudget,
   fetchUser,
+  addSpecialBudget,
+  fetchSpecialBudgets,
+  updateSpecialBudget,
+  deleteSpecialBudget,
 };

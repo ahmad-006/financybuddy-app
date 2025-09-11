@@ -1,79 +1,153 @@
-import React, { useState, useEffect } from "react";
-import { mockProfiles, mockTransactions } from "../data/data";
+import React, { useState, useEffect, useMemo } from "react";
+import { mockProfiles } from "../data/data";
 import { Plus } from "lucide-react";
 import SpecialBudgetModal from "../components/dashboard/budget/SpecialBudgetModal";
 import BudgetSummary from "../components/dashboard/budget/BudgetSummary";
 import BudgetList from "../components/dashboard/budget/BudgetList";
+import { toast } from "react-toastify";
+import {
+  QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import {
+  addSpecialBudget,
+  deleteSpecialBudget,
+  fetchSpecialBudgets,
+  fetchTransactions,
+  updateSpecialBudget,
+} from "@/utils/fetchData";
 
 const SpecialBudgetsPage = ({ userId = "u1" }) => {
-  const [specialBudgets, setSpecialBudgets] = useState([
-    // Dummy Data for now
-    {
-      id: "sb1",
-      userId: "u1",
-      title: "Summer Vacation",
-      category: "Travel",
-      limit: 10000,
-      startDate: "2025-07-01",
-      endDate: "2025-07-15",
-    },
-    {
-      id: "sb2",
-      userId: "u1",
-      title: "New Laptop",
-      category: "Shopping",
-      limit: 5000,
-      startDate: "2025-08-10",
-      endDate: "2025-08-20",
-    },
-  ]);
   const [showModal, setShowModal] = useState(false);
   const [editingSpecialBudget, setEditingSpecialBudget] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-
+  const [transfornedSpecialBudgets, setTransformedSpecialBudgets] = useState(
+    []
+  );
   const currentUser = mockProfiles.find((profile) => profile.id === userId);
 
+  const queryClient = useQueryClient();
+  // initial monthlyBudget fetch
+  const { data: transaction, error: fetchError } = useQuery({
+    queryKey: ["transactions"],
+    queryFn: fetchTransactions,
+  });
+
+  if (fetchError)
+    toast.error(fetchError?.message || "error fetching transactions");
+
+  const {
+    data: specialBudgets,
+    isLoading,
+    error: budgetFetchError,
+  } = useQuery({
+    queryKey: ["specialBudgets"],
+    queryFn: fetchSpecialBudgets,
+  });
+
+  if (budgetFetchError)
+    toast.error(budgetFetchError?.message || "error fetching budgets");
+
+  //? storing in a variable
+
+  //? storing in a variable
+  //using usememo because of re renders
+  const budgets = useMemo(
+    () => specialBudgets?.specialBudgets || [],
+    [specialBudgets]
+  );
+  const transactions = useMemo(
+    () => transaction?.transactions || [],
+    [transaction]
+  );
+
+  console.log(budgets);
+  //?Mutations functions
+  const deleteMutation = useMutation({
+    mutationFn: (id) => deleteSpecialBudget(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["specialBudgets"],
+        exact: true,
+      });
+      toast.success("Budget Deleted");
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to delete budget");
+    },
+  });
+
+  const addMutation = useMutation({
+    mutationFn: (data) => addSpecialBudget(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["specialBudgets"],
+        exact: true,
+      });
+      toast.success("Budget Added");
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to Add budget");
+    },
+  });
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }) => updateSpecialBudget(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["specialBudgets"],
+        exact: true,
+      });
+      toast.success("Budget Updated");
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to update budget");
+    },
+  });
+
   useEffect(() => {
-    setIsLoading(true);
     try {
-      const transformedSpecialBudgets = specialBudgets.map((budget) => {
-        const spent = mockTransactions
+      const transformedSpecialBudgetsToSet = budgets.map((budget) => {
+        const spent = transactions
           .filter((t) => {
-            const transactionDate = new Date(t.date);
-            const budgetStartDate = new Date(budget.startDate);
-            const budgetEndDate = new Date(budget.endDate);
+            const sameCategory =
+              t.category?.toLowerCase() === budget.category?.toLowerCase();
+
+            const inRange =
+              new Date(t.date) >= new Date(budget.startDate) &&
+              new Date(t.date) <= new Date(budget.endDate);
+
+            const sameTitle = t.title
+              ?.toLowerCase()
+              .includes(budget.title.toLowerCase());
 
             return (
-              t.userId === userId &&
-              t.category === budget.category &&
-              t.type === "expense" &&
-              transactionDate >= budgetStartDate &&
-              transactionDate <= budgetEndDate
+              t.type?.toLowerCase() === "expense" &&
+              sameCategory &&
+              inRange &&
+              sameTitle
             );
           })
-          .reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
+          .reduce((sum, t) => sum + t.amount, 0);
 
         const categoryConfig = getCategoryConfig(budget.category);
 
         return {
-          id: budget.id,
-          name: budget.title,
+          id: budget._id,
+          title: budget.title,
           category: budget.category,
-          allocated: parseFloat(budget.limit) || 0,
+          limit: parseFloat(budget.limit) || 0,
           spent: spent,
           ...categoryConfig,
           startDate: budget.startDate,
           endDate: budget.endDate,
         };
       });
-
-      setSpecialBudgets(transformedSpecialBudgets);
+      setTransformedSpecialBudgets(transformedSpecialBudgetsToSet);
     } catch (error) {
       console.error("Error processing special budgets:", error);
-    } finally {
-      setIsLoading(false);
     }
-  }, [userId]); // Removed specialBudgets from dependency array to prevent loop
+  }, [userId, budgets, transactions]);
 
   const getCategoryConfig = (category) => {
     const config = {
@@ -92,37 +166,53 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
     return config[category] || { icon: "📁", color: "#CCCCCC" };
   };
 
-  const handleSaveSpecialBudget = (budgetData) => {
+  const handleSaveSpecialBudget = async (budgetData) => {
     if (editingSpecialBudget) {
-      setSpecialBudgets((prev) =>
-        prev.map((b) =>
-          b.id === editingSpecialBudget.id ? { ...b, ...budgetData } : b
-        )
-      );
+      console.log(budgetData);
+      const { id, limit, startDate, endDate, category, title } = budgetData;
+      const data = {
+        limit,
+        startDate,
+        endDate,
+        category: category.toLowerCase(),
+        title,
+      };
+      updateMutation.mutate({ id, data });
     } else {
-      setSpecialBudgets((prev) => [
-        ...prev,
-        { ...budgetData, id: `sb${Date.now()}` },
-      ]);
+      try {
+        console.log("sending");
+        const { limit, startDate, endDate, category, title } = budgetData;
+        const data = {
+          limit,
+          startDate,
+          endDate,
+          category: category.toLowerCase(),
+          title,
+        };
+        addMutation.mutate(data);
+      } catch (error) {
+        console.log(error);
+      }
     }
     setShowModal(false);
     setEditingSpecialBudget(null);
   };
 
   const handleEditSpecialBudget = (budget) => {
+    console.log(budget);
     setEditingSpecialBudget(budget);
     setShowModal(true);
   };
 
   const handleDeleteSpecialBudget = (id) => {
-    setSpecialBudgets((prev) => prev.filter((b) => b.id !== id));
+    deleteMutation.mutate(id);
   };
 
-  const totalAllocated = specialBudgets.reduce(
+  const totalAllocated = transfornedSpecialBudgets.reduce(
     (sum, budget) => sum + (parseFloat(budget.limit) || 0),
     0
   );
-  const totalSpent = specialBudgets.reduce(
+  const totalSpent = transfornedSpecialBudgets.reduce(
     (sum, budget) => sum + (parseFloat(budget.spent) || 0),
     0
   );
@@ -163,9 +253,9 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
         <div>
           {" "}
           <BudgetList
-            budgetCategories={specialBudgets}
+            budgetCategories={transfornedSpecialBudgets}
             setEditingCategory={handleEditSpecialBudget}
-            currency={currentUser?.currency}
+            currency={"PKR"}
           />
           {/* <Charts
             budgetCategories={specialBudgets}

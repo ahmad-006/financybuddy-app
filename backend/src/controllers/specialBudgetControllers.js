@@ -4,14 +4,13 @@ const specialBudget = require("../models/specialBudgetModel");
 // Get all Special Budgets for a user
 exports.getAllSpecialBudgets = async (req, res) => {
   try {
-    const { user } = req.body;
-    const budgets = await specialBudget.find({ user });
-
+    const user = req.body.user;
+    const specialBudgets = await specialBudget.find({ user });
     res.status(200).json({
       status: "success",
-      results: budgets.length,
+      results: specialBudgets.length,
       data: {
-        budgets,
+        specialBudgets,
       },
     });
   } catch (error) {
@@ -21,16 +20,8 @@ exports.getAllSpecialBudgets = async (req, res) => {
 
 // Create a new Special Budget
 exports.createSpecialBudget = async (req, res) => {
-  const { user, title, category, limit, startDate, endDate } = req.body;
   try {
-    const newBudget = await specialBudget.create({
-      user,
-      title,
-      category,
-      limit,
-      startDate,
-      endDate,
-    });
+    const newBudget = await specialBudget.create(req.body);
 
     res.status(200).json({
       status: "success",
@@ -48,14 +39,8 @@ exports.updateSpecialBudget = async (req, res) => {
   try {
     const updatedBudget = await specialBudget.findByIdAndUpdate(
       req.params.id,
-      {
-        title: req.body.title,
-        category: req.body.category,
-        limit: req.body.limit,
-        startDate: req.body.startDate,
-        endDate: req.body.endDate,
-      },
-      { new: true }
+      req.body,
+      { new: true, runValidators: true }
     );
     res.status(200).json({
       status: "success",
@@ -75,7 +60,6 @@ exports.deleteSpecialBudget = async (req, res) => {
     await specialBudget.findByIdAndDelete(req.params.id);
     res.status(200).json({
       status: "success",
-
       data: null,
     });
   } catch (error) {
