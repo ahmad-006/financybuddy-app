@@ -18,7 +18,7 @@ export default function SavingsPage() {
   const queryClient = useQueryClient();
 
   //initial fetch using react query
-  const { data: transactions, isLoading } = useQuery({
+  const { data: transactions } = useQuery({
     queryKey: ["transactions"],
     queryFn: fetchTransactions,
   });
