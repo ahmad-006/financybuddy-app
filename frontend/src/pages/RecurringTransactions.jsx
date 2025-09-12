@@ -37,8 +37,10 @@ const RecurringTransactions = () => {
   // Mutations
   const addMutation = useMutation({
     mutationFn: (data) => addRecurringTransaction(data),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["recurringTransactions"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["recurringTransactions"] });
+      toast.success();
+    },
 
     onError: (err) => toast.error(err.message),
   });
@@ -106,12 +108,8 @@ const RecurringTransactions = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 text-black p-4 sm:p-6">
-      <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded-md">
-        <p className="font-bold">Recurring Transactions Management</p>
-        <p>Automate your finances by managing recurring transactions. This page is for expenses and incomes that happen regularly, like monthly subscriptions (Netflix, Spotify), weekly allowances, or regular bill payments. By setting them up here, the application can automatically add them to your transaction list on the scheduled date, so you don't have to enter them manually every time. You can also pause or resume them as needed. This gives you a more accurate picture of your future cash flow.</p>
-      </div>
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-wrap gap-4 justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900">
             Recurring Transactions
           </h1>
