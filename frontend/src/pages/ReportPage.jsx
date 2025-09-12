@@ -53,6 +53,10 @@ const ReportPage = () => {
 
   return (
     <div className="bg-gray-50 px-4 py-6 sm:px-6 lg:px-8 text-black print-container">
+      <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded-md">
+        <p className="font-bold">Financial Reports</p>
+        <p>Dive deep into your financial data with detailed reports. Generate reports on your spending by category, income vs. expense trends, and budget performance over time. Use these insights to make informed decisions about your finances and identify areas for improvement.</p>
+      </div>
       <div className="max-w-6xl mx-auto">
         <ReportActions
           dateRange={dateRange}

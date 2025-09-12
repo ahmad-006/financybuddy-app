@@ -231,6 +231,10 @@ export default function Transactions() {
 
   return (
     <div className="relative p-4 bg-white text-gray-900 min-h-screen">
+      <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded-md">
+        <p className="font-bold">All Transactions</p>
+        <p>This is a comprehensive list of all your financial transactions. You can add new income or expenses, edit existing entries, and filter them by date, type, or category. Keeping your transaction list accurate is key to understanding your financial habits.</p>
+      </div>
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Transactions</h1>

@@ -1,3 +1,4 @@
+// This page provides a financial overview of your income, spending, and budget progress.
 // Dashboard.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import { mockProfiles } from "../data/data";
@@ -86,6 +87,10 @@ const Dashboard = () => {
 
   return (
     <div className="bg-gray-50 p-6">
+      <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded-md">
+        <p className="font-bold">Your Financial Command Center</p>
+        <p>This is your financial command center. Get a quick overview of your total income, expenses, and remaining balance. Track your recent transactions, visualize your spending habits with charts, and see how you're progressing against your budgets at a glance. Use this page to stay on top of your financial health.</p>
+      </div>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">

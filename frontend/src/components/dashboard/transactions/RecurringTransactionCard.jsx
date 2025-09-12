@@ -14,11 +14,11 @@ const RecurringTransactionCard = ({
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 transition-all duration-200 hover:shadow-xl">
       <div className="flex justify-between items-start mb-4">
-        <h3 className="font-bold text-gray-900 text-xl truncate pr-2">
+        <h3 className="font-bold text-gray-900 text-lg sm:text-xl truncate pr-2">
           {transaction.title}
         </h3>
         <span
-          className={`text-xl font-extrabold ${amountColorClass} flex-shrink-0`}
+          className={`text-lg sm:text-xl font-extrabold ${amountColorClass} flex-shrink-0`}
         >
           PKR
           {isExpense ? " -" : " +"}
@@ -39,7 +39,7 @@ const RecurringTransactionCard = ({
         </p>
       </div>
 
-      <div className="flex justify-between items-center border-t border-gray-200 pt-4 mt-4">
+      <div className="flex flex-wrap gap-4 justify-between items-center border-t border-gray-200 pt-4 mt-4">
         <div className="flex items-center space-x-2">
           <span className="text-sm font-medium text-gray-800">Auto-Add:</span>
           <Switch

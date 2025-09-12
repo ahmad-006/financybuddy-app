@@ -226,6 +226,10 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
 
   return (
     <div className="min-h-screen text-black bg-gray-50 p-4 sm:p-6">
+      <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded-md">
+        <p className="font-bold">Special Budgets</p>
+        <p>Plan for unique, one-time expenses with Special Budgets. This is perfect for events like vacations, projects, or large purchases that don't fit into your regular monthly budget. Set a specific timeframe and amount for each special budget to track your spending and stay on target for your big goals.</p>
+      </div>
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900 ">Special Budgets</h1>

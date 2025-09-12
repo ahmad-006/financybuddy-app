@@ -12,7 +12,7 @@ const SummaryCards = ({ totalIncome, totalSpending, remaining, currency }) => {
           </div>
           <div className="ml-3 min-w-0">
             <p className="text-xs text-gray-600 truncate">Total Income</p>
-            <p className="text-lg font-bold text-gray-800 truncate">
+            <p className="text-base sm:text-lg font-bold text-gray-800">
               {currency} {totalIncome.toLocaleString()}
             </p>
           </div>
@@ -27,7 +27,7 @@ const SummaryCards = ({ totalIncome, totalSpending, remaining, currency }) => {
           </div>
           <div className="ml-3 min-w-0">
             <p className="text-xs text-gray-600 truncate">Total Spending</p>
-            <p className="text-lg font-bold text-gray-800 truncate">
+            <p className="text-base sm:text-lg font-bold text-gray-800">
               {currency} {totalSpending.toLocaleString()}
             </p>
           </div>
@@ -59,7 +59,7 @@ const SummaryCards = ({ totalIncome, totalSpending, remaining, currency }) => {
               {remaining >= 0 ? "Remaining" : "Over Budget"}
             </p>
             <p
-              className={`text-lg font-bold ${
+              className={`text-base sm:text-lg font-bold ${
                 remaining >= 0 ? "text-green-700" : "text-orange-700"
               }`}
             >

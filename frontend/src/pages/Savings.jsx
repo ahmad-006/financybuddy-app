@@ -126,6 +126,10 @@ export default function SavingsPage() {
 
   return (
     <div className="relative p-4 sm:p-6 lg:p-8 bg-gray-50 text-gray-900 min-h-screen">
+      <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded-md">
+        <p className="font-bold">Savings Tracker</p>
+        <p>Track your progress towards your savings goals. Whether you're saving for a vacation, a new car, or an emergency fund, this page helps you monitor your contributions and see how close you are to reaching your targets. Visualizing your savings can be a great motivation!</p>
+      </div>
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Savings</h1>

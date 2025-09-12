@@ -37,6 +37,10 @@ function Profile() {
 
   return (
     <div className="min-h-screen p-4 sm:p-6 md:p-8 bg-gray-100 text-gray-900">
+      <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded-md">
+        <p className="font-bold">Profile Management</p>
+        <p>Manage your personal information and customize your application settings here. You can update your name, email, and profile picture. You can also set your default currency and other preferences to tailor the application to your needs.</p>
+      </div>
       <div className="max-w-2xl mx-auto">
         <h1 className="text-2xl sm:text-3xl font-bold mb-8">User Profile</h1>
 

@@ -232,6 +232,10 @@ const BudgetPage = () => {
 
   return (
     <div className="min-h-screen text-black bg-gray-50 p-4 sm:p-6">
+      <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded-md">
+        <p className="font-bold">Monthly Budget Management</p>
+        <p>Take control of your spending by creating and managing monthly budgets for different categories. Set limits for categories like 'Food', 'Utilities', and 'Entertainment' to get a clear picture of where your money is going. This page helps you stay on track with your financial goals by visualizing your spending against your allocated budgets.</p>
+      </div>
       <div className="max-w-7xl mx-auto">
         <Header
           month={month}
