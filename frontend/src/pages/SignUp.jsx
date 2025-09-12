@@ -1,4 +1,4 @@
-import { Navigate, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
@@ -8,8 +8,7 @@ import {
   faArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
-import { supabase } from "../supabase-client/supabase-client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { HidePasswordIcon, ShowPasswordIcon } from "../utils/iconFunc";
 
 export default function SignUp() {
@@ -24,51 +23,14 @@ export default function SignUp() {
   const [SignUpError, setSignUpError] = useState("");
   const [isCreatingAccount, setisCreatingAccount] = useState(false);
   const [isCreated, setIsCreated] = useState(false);
-  const [users, setUsers] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 
   const password = watch("password");
 
-  useEffect(() => {
-    const check = async () => {
-      const { data, error } = await supabase.rpc("get_users_by_status");
-      if (!error) {
-        console.log(data);
-        setUsers(data);
-        return;
-      }
-      console.log(error);
-    };
-    check();
-  }, []);
-  const onSubmit = async (info) => {
+  const onSubmit = async () => {
     setisCreatingAccount(true);
     setIsCreated(false);
     setSignUpError("");
-
-    const { username, email, password, firstName, lastName } = info;
-    const isAlreadyRegistered = users.some((user) => user.email === email);
-    if (isAlreadyRegistered) {
-      setSignUpError("Email is already registered");
-      setisCreatingAccount(false);
-      return;
-    }
-
-    const { error: authError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { username, first_name: firstName, last_name: lastName }, // 👈 store username in user_metadata
-      },
-    });
-
-    if (authError) {
-      console.error("Signup error:", authError.message);
-      setSignUpError(authError);
-      alert(authError.message);
-      setisCreatingAccount(false);
-      return;
-    }
 
     setisCreatingAccount(false);
     setIsCreated(true);

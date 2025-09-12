@@ -1,18 +1,15 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  // faUser,
   faEnvelope,
   faLock,
   faArrowRight,
   faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
-import { supabase } from "../supabase-client/supabase-client";
 import { useState } from "react";
 import { HidePasswordIcon, ShowPasswordIcon } from "../utils/iconFunc";
 
 export default function Login() {
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -23,60 +20,40 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoginError("");
-
     setLoading(true);
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) throw error;
-
-      // Get user metadata (optional)
-      const { user } = data;
-      const { username, first_name, last_name } = user.user_metadata;
-
-      navigate("/dashboard", { state: { username, first_name, last_name } });
-    } catch (err) {
-      console.error("Login error:", err.message);
-      setLoginError(err.message);
-    } finally {
-      setLoading(false);
-    }
   };
 
-  // login via google
-  const loginWithGoogle = async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: "http://localhost:5173/dashboard",
-      },
-    });
+  // // login via google
+  // const loginWithGoogle = async () => {
+  //   const { data, error } = await supabase.auth.signInWithOAuth({
+  //     provider: "google",
+  //     options: {
+  //       redirectTo: "http://localhost:5173/dashboard",
+  //     },
+  //   });
 
-    if (error) {
-      console.error("Google login error:", error.message);
-    } else {
-      console.log("Google login started:", data);
-    }
-  };
+  //   if (error) {
+  //     console.error("Google login error:", error.message);
+  //   } else {
+  //     console.log("Google login started:", data);
+  //   }
+  // };
 
-  // Function for GitHub login
-  const loginWithGitHub = async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "github",
-      options: {
-        redirectTo: "http://localhost:5173/dashboard",
-      },
-    });
+  // // Function for GitHub login
+  // const loginWithGitHub = async () => {
+  //   const { data, error } = await supabase.auth.signInWithOAuth({
+  //     provider: "github",
+  //     options: {
+  //       redirectTo: "http://localhost:5173/dashboard",
+  //     },
+  //   });
 
-    if (error) {
-      console.error("GitHub login error:", error.message);
-    } else {
-      console.log("GitHub login started:", data);
-    }
-  };
+  //   if (error) {
+  //     console.error("GitHub login error:", error.message);
+  //   } else {
+  //     console.log("GitHub login started:", data);
+  //   }
+  // };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-900 to-stone-800 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -167,7 +144,7 @@ export default function Login() {
               <button
                 type="button"
                 className="py-2 px-4 flex justify-center items-center bg-stone-700 hover:bg-stone-600 text-white rounded-lg transition-colors"
-                onClick={loginWithGitHub}
+                // onClick={}
               >
                 <svg
                   className="w-5 h-5 mr-2"
@@ -181,7 +158,7 @@ export default function Login() {
               <button
                 type="button"
                 className="py-2 px-4 flex justify-center items-center bg-stone-700 hover:bg-stone-600 text-white rounded-lg transition-colors"
-                onClick={loginWithGoogle}
+                // onClick={}
               >
                 <svg
                   className="w-5 h-5 mr-2"
