@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 export const ShowPasswordIcon = () => (
   <svg
     width="20"
