@@ -16,41 +16,13 @@ import {
   faCalendarAlt,
   faDollarSign,
 } from "@fortawesome/free-solid-svg-icons";
-import { supabase } from "../../supabase-client/supabase-client";
 
 const DashboardSidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   return async () => {
-  //     const {
-  //       data: { user },
-  //       error,
-  //     } = await supabase.auth.getUser();
-  //     if (first_name || last_name) {
-  //       setFullName(first_name + " " + last_name);
-  //       return;
-  //     }
-  //     const { full_name } = user.user_metadata;
-  //     setFullName(full_name.split(" ")[0]);
-
-  //     if (error) console.error(error);
-  //     else console.log("User:", user);
-  //   };
-  // }, []);
-
   const handleSignOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error("Error signing out:", error.message);
-    } else {
-      {
-        window.location.href = "/login";
-      }
-    }
-
     navigate("/login");
   };
 

@@ -16,7 +16,6 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const About = lazy(() => import("./pages/About"));
 const AIChatBot = lazy(() => import("./pages/AIChatBot"));
 const SignUp = lazy(() => import("./pages/SignUp"));
-const ConfirmEmail = lazy(() => import("./pages/ConfirmEmail"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const ProtectedRoute = lazy(
   () => import("./components/dashboard/ProtectedRoute")
@@ -46,7 +45,6 @@ export default function App() {
         { path: "/price", element: <Prices /> },
         { path: "/about", element: <About /> },
         { path: "/signup", element: <SignUp /> },
-        { path: "/confirm-email", element: <ConfirmEmail /> },
         { path: "/login", element: <Login /> },
         { path: "/*", element: <NotFound /> },
       ],
