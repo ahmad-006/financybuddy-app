@@ -269,6 +269,38 @@ const fetchUser = async () => {
   }
 };
 
+const updateUser = async (data) => {
+  try {
+    const res = await axios.patch(
+      "http://localhost:8000/api/v1/users/update",
+      data,
+      {
+        withCredentials: true,
+      }
+    );
+    if (!res.data) throw new Error("No user data found");
+    return res.data.data.user;
+  } catch (error) {
+    throw new Error(error?.response?.data?.message || error.message);
+  }
+};
+
+const resetPassword = async (data) => {
+  try {
+    const res = await axios.patch(
+      "http://localhost:8000/api/v1/users/reset-password",
+      data,
+      {
+        withCredentials: true,
+      }
+    );
+    if (!res.data) throw new Error("No user data found");
+    return res.data.message;
+  } catch (error) {
+    throw new Error(error?.response?.data?.message);
+  }
+};
+
 export {
   fetchTransactions,
   addTransaction,
@@ -292,4 +324,6 @@ export {
   logoutUser,
   verifyUser,
   fetchUser,
+  updateUser,
+  resetPassword,
 };

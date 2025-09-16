@@ -1,7 +1,7 @@
 // BudgetProgress.jsx
 import React from "react";
 
-const BudgetProgress = ({ budgets, transactions, currency, currentUser }) => {
+const BudgetProgress = ({ budgets, transactions, currency }) => {
   const now = new Date();
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
@@ -75,8 +75,7 @@ const BudgetProgress = ({ budgets, transactions, currency, currentUser }) => {
           {budget.isOverBudget && (
             <div className="mt-1">
               <span className="text-xs text-red-600">
-                ⚠️ {currency}{" "}
-                {(budget.spent - budget.limit).toLocaleString()}{" "}
+                ⚠️ {currency} {(budget.spent - budget.limit).toLocaleString()}{" "}
                 over budget
               </span>
             </div>

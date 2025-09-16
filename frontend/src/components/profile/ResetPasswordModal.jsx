@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export function ResetPasswordModal({ onOpenChange, onSave }) {
+export function ResetPasswordModal({ onOpenChange, onSave, loading }) {
   const {
     register,
     handleSubmit,
@@ -27,12 +27,17 @@ export function ResetPasswordModal({ onOpenChange, onSave }) {
             Reset Password
           </DialogTitle>
         </DialogHeader>
+
+        {/* Hook-form-starts  */}
+
         <form onSubmit={handleSubmit(onSave)} className="space-y-4 py-2">
           <div className="space-y-2">
             <div className="text-sm font-medium">Old Password</div>
             <Input
               type="password"
-              {...register("oldPassword", { required: "Old password is required" })}
+              {...register("oldPassword", {
+                required: "Old password is required",
+              })}
             />
             {errors.oldPassword && (
               <p className="text-red-500 text-xs mt-1">
@@ -86,7 +91,7 @@ export function ResetPasswordModal({ onOpenChange, onSave }) {
               Cancel
             </Button>
             <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-              Reset Password
+              {loading ? "Reseting" : " Reset Password"}
             </Button>
           </DialogFooter>
         </form>

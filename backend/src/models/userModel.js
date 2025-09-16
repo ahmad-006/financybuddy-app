@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
       trim: true,
-      default: "https://api.dicebear.com/9.2.0/shapes/svg?seed=Sara",
+      default: "https://api.dicebear.com/9.x/shapes/svg?seed=Sara",
     },
   },
   { timestamps: true }

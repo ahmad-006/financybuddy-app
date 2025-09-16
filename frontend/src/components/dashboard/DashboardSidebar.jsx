@@ -70,9 +70,7 @@ const DashboardSidebar = () => {
           {isOpen && (
             <div className="flex items-center">
               <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center mr-2">
-                <NavLink to={"/"}>
-                  <FontAwesomeIcon icon={faHome} className="text-white" />
-                </NavLink>
+                <FontAwesomeIcon icon={faHome} className="text-white" />
               </div>
               <h1 className="text-white font-bold text-xl">FinancyBuddy</h1>
             </div>
