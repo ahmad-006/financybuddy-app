@@ -183,6 +183,16 @@ export const mockTransactions = [
     date: "2025-06-30",
     budgetType: "monthly",
   },
+  {
+    id: "t18",
+    userId: "u1",
+    title: "Test Transaction",
+    amount: 1500,
+    category: "Entertainment",
+    type: "expense",
+    date: "2025-09-12",
+    budgetType: "monthly",
+  },
 ];
 
 export const mockBudgets = [

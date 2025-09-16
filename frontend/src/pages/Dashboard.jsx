@@ -1,7 +1,6 @@
 // This page provides a financial overview of your income, spending, and budget progress.
 // Dashboard.jsx
 import React, { useEffect, useMemo, useState } from "react";
-import { mockProfiles } from "../data/data";
 import SummaryCards from "../components/dashboard/overview/SummaryCards";
 import RecentTransactions from "../components/dashboard/overview/RecentTransactions";
 import Chart from "../components/dashboard/overview/Chart";
@@ -9,10 +8,15 @@ import BudgetProgress from "../components/dashboard/overview/BudgetProgress";
 import CategoryBreakdown from "../components/dashboard/overview/CategoryBreakdown";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
-import { fetchMonthlyBudgets, fetchTransactions } from "@/utils/fetchData";
+import {
+  fetchMonthlyBudgets,
+  fetchTransactions,
+  fetchUser,
+} from "@/utils/fetchData";
 
 const Dashboard = () => {
   const [transformedBudgets, setTransformedBudgets] = useState([]);
+  const [user, setUser] = useState("");
 
   // initial monthlyBudget fetch
   const { data: transaction, error: fetchError } = useQuery({
@@ -42,7 +46,6 @@ const Dashboard = () => {
     () => transaction?.transactions || [],
     [transaction]
   );
-  const currentUser = mockProfiles[0];
   const currency = "PKR";
 
   // Calculate totals
@@ -61,8 +64,9 @@ const Dashboard = () => {
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .slice(0, 5);
 
+  //?effect
   useEffect(() => {
-    if (budgets.length && transactions.length) {
+    if (budgets.length) {
       const result = budgets.map((budget) => {
         const spent = transactions
           .filter(
@@ -85,11 +89,29 @@ const Dashboard = () => {
     }
   }, [budgets, transactions]);
 
+  //to get userName
+  useEffect(() => {
+    //to fetch user Details
+    const fetchUserName = async () => {
+      const res = await fetchUser();
+      setUser(res);
+      console.log(res);
+    };
+
+    fetchUserName();
+  }, []);
+
   return (
     <div className="bg-gray-50 p-6">
       <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded-md">
         <p className="font-bold">Your Financial Command Center</p>
-        <p>This is your financial command center. Get a quick overview of your total income, expenses, and remaining balance. Track your recent transactions, visualize your spending habits with charts, and see how you're progressing against your budgets at a glance. Use this page to stay on top of your financial health.</p>
+        <p>
+          This is your financial command center. Get a quick overview of your
+          total income, expenses, and remaining balance. Track your recent
+          transactions, visualize your spending habits with charts, and see how
+          you're progressing against your budgets at a glance. Use this page to
+          stay on top of your financial health.
+        </p>
       </div>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
@@ -97,7 +119,9 @@ const Dashboard = () => {
           <h1 className="text-3xl font-bold text-gray-800">
             Financial Dashboard
           </h1>
-          <p className="text-gray-600 mt-2">Welcome back, {currentUser.name}</p>
+          {user && (
+            <p className="text-gray-600 mt-2">Welcome back, {user.name}</p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -143,7 +167,7 @@ const Dashboard = () => {
                 budgets={transformedBudgets}
                 transactions={transactions}
                 currency={currency}
-                currentUser={currentUser}
+                currentUser={user}
               />
             </div>
 

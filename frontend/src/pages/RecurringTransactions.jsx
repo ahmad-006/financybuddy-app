@@ -39,7 +39,7 @@ const RecurringTransactions = () => {
     mutationFn: (data) => addRecurringTransaction(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["recurringTransactions"] });
-      toast.success();
+      toast.success("Recurring transaction added successfully");
     },
 
     onError: (err) => toast.error(err.message),
@@ -47,16 +47,20 @@ const RecurringTransactions = () => {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => updateRecurringTransaction(id, data),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["recurringTransactions"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["recurringTransactions"] });
+      toast.success("Recurring transaction updated successfully");
+    },
     onError: (err) =>
       toast.error(err.message || "Failed to update transaction"),
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id) => deleteRecurringTransaction(id),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["recurringTransactions"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["recurringTransactions"] });
+      toast.success("Recurring transaction deleted successfully");
+    },
     onError: (err) =>
       toast.error(err.message || "Failed to delete transaction"),
   });
@@ -101,9 +105,11 @@ const RecurringTransactions = () => {
     deleteMutation.mutate(id);
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setEditingRecurringTransaction(null);
+  const handleModalOpenChange = (isOpen) => {
+    if (!isOpen) {
+      setShowModal(false);
+      setEditingRecurringTransaction(null);
+    }
   };
 
   return (
@@ -136,22 +142,34 @@ const RecurringTransactions = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {recurringTransactions.map((transaction) => (
-            <RecurringTransactionCard
-              key={transaction.id}
-              transaction={transaction}
-              onEdit={handleEditRecurringTransaction}
-              onPause={(isActive) =>
-                handlePauseRecurringTransaction(isActive, transaction.id)
-              }
-              onDelete={handleDeleteRecurringTransaction}
-            />
-          ))}
+          {recurringTransactions.length > 0 ? (
+            recurringTransactions.map((transaction) => (
+              <RecurringTransactionCard
+                key={transaction.id}
+                transaction={transaction}
+                onEdit={handleEditRecurringTransaction}
+                onPause={(isActive) =>
+                  handlePauseRecurringTransaction(isActive, transaction.id)
+                }
+                onDelete={handleDeleteRecurringTransaction}
+              />
+            ))
+          ) : (
+            <div className="col-span-full text-center py-16">
+              <div className="text-4xl mb-3">🔄</div>
+              <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                No recurring transactions yet
+              </h3>
+              <p className="text-gray-500 max-w-xs mx-auto">
+                Click "Add New" to set up transactions that repeat automatically.
+              </p>
+            </div>
+          )}
         </div>
 
         {showModal && (
           <RecurringTransactionModal
-            onClose={handleCloseModal}
+            onOpenChange={handleModalOpenChange}
             onSave={handleSaveRecurringTransaction}
             editingTransaction={editingRecurringTransaction}
             onDelete={handleDeleteRecurringTransaction}

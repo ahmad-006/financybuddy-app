@@ -7,6 +7,7 @@ const Header = ({
   setYear,
   setShowAddModal,
   currentUser,
+  show,
 }) => {
   const months = [
     "January",
@@ -33,9 +34,11 @@ const Header = ({
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
             Monthly Budget Manager
           </h1>
-          <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">
-            Welcome back, {currentUser?.name}
-          </p>
+          {show && (
+            <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">
+              Welcome back, {currentUser?.name}
+            </p>
+          )}
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3">

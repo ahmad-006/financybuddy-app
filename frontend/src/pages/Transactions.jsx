@@ -49,6 +49,7 @@ export default function Transactions() {
         queryKey: ["transactions"],
         exact: true,
       });
+      toast.success("Transaction added successfully");
     },
     onError: (err) => {
       toast.error(err.message);
@@ -62,6 +63,7 @@ export default function Transactions() {
         queryKey: ["transactions"],
         exact: true,
       });
+      toast.success("Transaction updated successfully");
     },
     onError: (err) => {
       toast.error(err.message || "Failed to update transaction");
@@ -75,6 +77,7 @@ export default function Transactions() {
         queryKey: ["transactions"],
         exact: true,
       });
+      toast.success("Transaction deleted successfully");
     },
     onError: (err) => {
       toast.error(err.message || "Failed to delete transaction");
@@ -186,12 +189,12 @@ export default function Transactions() {
             </div>
           </div>
           <h2 className="text-xl font-semibold mb-2">
-            {transactions.length === 0
+            {(transactions?.transactions || []).length === 0
               ? "No transactions yet"
               : "No matching transactions"}
           </h2>
           <p className="text-gray-600 max-w-xs mb-8">
-            {transactions.length === 0
+            {(transactions?.transactions || []).length === 0
               ? "Start tracking your finances by adding your first transaction"
               : "Try adjusting your search or filters to find what you're looking for"}
           </p>

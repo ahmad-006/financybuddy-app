@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 
 import ReportHeader from "../components/report/ReportHeader";
 import FinancialSummary from "../components/report/FinancialSummary";
@@ -6,11 +6,15 @@ import CategoryBreakdown from "../components/report/CategoryBreakdown";
 import TransactionDetails from "../components/report/TransactionDetails";
 import BudgetProgressReport from "../components/report/BudgetProgressReport";
 import ReportActions from "../components/report/ReportActions";
-import { mockTransactions, mockBudgets, mockProfiles } from "../data/data";
+import { mockProfiles } from "../data/data";
 import "../styles/print.css";
+import { fetchMonthlyBudgets, fetchTransactions } from "@/utils/fetchData";
+import { toast } from "react-toastify";
+import { useQuery } from "@tanstack/react-query";
 
 const ReportPage = () => {
   const reportContentRef = useRef();
+
   const getCurrentMonthRange = () => {
     const now = new Date();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -24,11 +28,37 @@ const ReportPage = () => {
   const [dateRange, setDateRange] = useState(getCurrentMonthRange());
   const [reportType, setReportType] = useState("monthly");
   const [filteredTransactions, setFilteredTransactions] = useState([]);
-
-  const transactions = mockTransactions;
-  const budgets = mockBudgets;
   const currentUser = mockProfiles[0];
-  const currency = currentUser.currency;
+  const currency = "PKR";
+
+  // initial monthlyBudget fetch
+  const { data: transaction, error: fetchError } = useQuery({
+    queryKey: ["transactions"],
+    queryFn: fetchTransactions,
+  });
+
+  if (fetchError)
+    toast.error(fetchError?.message || "error fetching transactions");
+
+  const { data: monthlyBudgets, error: budgetFetchError } = useQuery({
+    queryKey: ["monthlyBudgets"],
+    queryFn: fetchMonthlyBudgets,
+  });
+
+  if (budgetFetchError)
+    toast.error(fetchError?.message || "error fetching budgets");
+
+  //? storing in a variable
+
+  const budgets = useMemo(
+    () => monthlyBudgets?.monthlyBudgets || [],
+    [monthlyBudgets]
+  );
+
+  const transactions = useMemo(
+    () => transaction?.transactions || [],
+    [transaction]
+  );
 
   useEffect(() => {
     const filtered = transactions.filter((transaction) => {
@@ -41,21 +71,26 @@ const ReportPage = () => {
     setFilteredTransactions(filtered);
   }, [dateRange, transactions]);
 
+  //calculating finances
+
   const totalIncome = filteredTransactions
     .filter((t) => t.type === "income")
     .reduce((sum, t) => sum + t.amount, 0);
-
   const totalSpending = filteredTransactions
     .filter((t) => t.type === "expense")
     .reduce((sum, t) => sum + t.amount, 0);
-
   const netBalance = totalIncome - totalSpending;
 
   return (
     <div className="bg-gray-50 px-4 py-6 sm:px-6 lg:px-8 text-black print-container">
       <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded-md">
         <p className="font-bold">Financial Reports</p>
-        <p>Dive deep into your financial data with detailed reports. Generate reports on your spending by category, income vs. expense trends, and budget performance over time. Use these insights to make informed decisions about your finances and identify areas for improvement.</p>
+        <p>
+          Dive deep into your financial data with detailed reports. Generate
+          reports on your spending by category, income vs. expense trends, and
+          budget performance over time. Use these insights to make informed
+          decisions about your finances and identify areas for improvement.
+        </p>
       </div>
       <div className="max-w-6xl mx-auto">
         <ReportActions

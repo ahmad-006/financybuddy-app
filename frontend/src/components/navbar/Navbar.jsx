@@ -39,7 +39,7 @@ function Navbar() {
         </li>
         <li>
           <NavLink
-            to="/price"
+            to="/guide"
             className={({ isActive }) =>
               `flex items-center px-3 py-2 rounded-lg transition-all duration-300 hover:bg-stone-700 ${
                 isActive ? "text-blue-400 bg-stone-700 font-semibold" : ""
@@ -47,7 +47,7 @@ function Navbar() {
             }
           >
             <FontAwesomeIcon icon={faTags} className="mr-2" />
-            Prices
+            Guide
           </NavLink>
         </li>
         <li>

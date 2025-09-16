@@ -10,7 +10,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
-const Prices = lazy(() => import("./pages/Prices"));
+const Guide = lazy(() => import("./pages/Guide"));
 const AppLayout = lazy(() => import("./pages/AppLayout"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const About = lazy(() => import("./pages/About"));
@@ -42,7 +42,7 @@ export default function App() {
       element: <AppLayout />,
       children: [
         { path: "/", element: <Home /> },
-        { path: "/price", element: <Prices /> },
+        { path: "/guide", element: <Guide /> },
         { path: "/about", element: <About /> },
         { path: "/signup", element: <SignUp /> },
         { path: "/login", element: <Login /> },
@@ -50,7 +50,11 @@ export default function App() {
       ],
     },
     {
-      element: <DashboardLayout />,
+      element: (
+        <ProtectedRoute>
+          <DashboardLayout />
+        </ProtectedRoute>
+      ),
       children: [
         { path: "/dashboard", element: <Dashboard /> },
         { path: "/transactions", element: <Transactions /> },

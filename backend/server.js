@@ -4,12 +4,16 @@ const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
 const app = require("./app");
 
-//? DATABASE CONNECTION
+// DATABASE CONNECTION
 const DB = process.env.DATABASE.replace(
-  /<PASSWORD>/g,
+  "<PASSWORD>",
   process.env.DATABASE_PASSWORD
 );
-mongoose.connect(DB);
+
+mongoose.connect(DB); // no extra options needed in Mongoose 6+
+
+mongoose.set("strictQuery", true);
+
 const conn = mongoose.connection;
 conn.on("error", console.error.bind(console, "connection error:"));
 conn.once("open", () => {
@@ -18,6 +22,6 @@ conn.once("open", () => {
 
 //? SERVER
 const port = 8000;
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
   console.log(`App running on port ${port}...`);
 });

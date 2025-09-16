@@ -40,55 +40,50 @@ const Charts = ({
 
   // Generate monthly trend data based on actual transactions and budgets
   const monthlyTrendData = useMemo(() => {
-    const months = [
-      { name: "Jan", value: 1 },
-      { name: "Feb", value: 2 },
-      { name: "Mar", value: 3 },
-      { name: "Apr", value: 4 },
-      { name: "May", value: 5 },
-      { name: "Jun", value: 6 },
-      { name: "Jul", value: 7 },
-      { name: "Aug", value: 8 },
-      { name: "Sep", value: 9 },
-      { name: "Oct", value: 10 },
-      { name: "Nov", value: 11 },
-      { name: "Dec", value: 12 },
-    ];
+    const now = new Date();
+    const months = [];
+    for (let i = 5; i >= 0; i--) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        months.push({
+            name: d.toLocaleString('default', { month: 'short' }),
+            year: d.getFullYear(),
+            month: d.getMonth() + 1,
+        });
+    }
 
     const fullData = months.map((monthData) => {
-      const totalBudget = budgets.reduce(
-        (sum, budget) => sum + budget.limit,
-        0
-      );
+        const totalBudget = budgets.reduce(
+            (sum, budget) => sum + budget.limit,
+            0
+        );
 
-      const budgetTitles = new Set(
-        budgets.map((budget) => budget.title.toLowerCase())
-      );
-      const totalSpent = transactions
-        .filter((transaction) => {
-          const transactionDate = new Date(transaction.date);
-          const transactionMonth = transactionDate.getMonth() + 1;
-          const transactionYear = transactionDate.getFullYear();
+        const budgetTitles = new Set(
+            budgets.map((budget) => budget.title.toLowerCase())
+        );
+        const totalSpent = transactions
+            .filter((transaction) => {
+                const transactionDate = new Date(transaction.date);
+                const transactionMonth = transactionDate.getMonth() + 1;
+                const transactionYear = transactionDate.getFullYear();
 
-          return (
-            transaction.type === "expense" &&
-            transactionMonth === monthData.value &&
-            transactionYear === year &&
-            budgetTitles.has(transaction.title.toLowerCase())
-          );
-        })
-        .reduce((sum, transaction) => sum + transaction.amount, 0);
+                return (
+                    transaction.type === "expense" &&
+                    transactionMonth === monthData.month &&
+                    transactionYear === monthData.year &&
+                    budgetTitles.has(transaction.title.toLowerCase())
+                );
+            })
+            .reduce((sum, transaction) => sum + transaction.amount, 0);
 
-      return {
-        month: monthData.name,
-        budget: totalBudget,
-        spent: totalSpent,
-      };
+        return {
+            month: monthData.name,
+            budget: totalBudget,
+            spent: totalSpent,
+        };
     });
 
-    // Always return only last 6 months
-    return fullData.slice(-6);
-  }, [year, budgets, transactions]);
+    return fullData;
+  }, [budgets, transactions]);
 
   return (
     <div className="space-y-4 sm:space-y-6">

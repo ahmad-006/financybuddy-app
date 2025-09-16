@@ -4,7 +4,9 @@ const MonthlyBudget = require("../models/monthlyBudgetModal");
 // Get all Monthlybudgets for a user
 exports.getAllMonthlyBudgets = async (req, res) => {
   try {
-    const monthlyBudgets = await MonthlyBudget.find({ user: req.body.user });
+    const monthlyBudgets = await MonthlyBudget.find({
+      user: req.body.user,
+    }).populate("user", "name");
     res.status(200).json({
       status: "success",
       results: monthlyBudgets.length,

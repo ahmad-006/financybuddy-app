@@ -206,7 +206,7 @@ export default function TransactionModal({
                   >
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="max-h-72 overflow-y-auto">
                     {categories.map((cat) => (
                       <SelectItem key={cat} value={cat.toLowerCase()}>
                         {cat}

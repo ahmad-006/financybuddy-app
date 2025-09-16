@@ -16,6 +16,7 @@ import {
   faCalendarAlt,
   faDollarSign,
 } from "@fortawesome/free-solid-svg-icons";
+import { logoutUser } from "@/utils/fetchData";
 
 const DashboardSidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -23,7 +24,13 @@ const DashboardSidebar = () => {
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
-    navigate("/login");
+    try {
+      const res = await logoutUser();
+      if (res.status !== "success") throw new Error(res.message);
+      navigate("/login");
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   const menuItems = [

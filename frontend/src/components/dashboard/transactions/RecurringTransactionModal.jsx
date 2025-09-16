@@ -20,7 +20,7 @@ import { Switch } from "@/components/ui/switch";
 import { format } from "date-fns";
 
 const RecurringTransactionModal = ({
-  onClose,
+  onOpenChange,
   onSave,
   editingTransaction,
   onDelete,
@@ -36,14 +36,19 @@ const RecurringTransactionModal = ({
 
   const categories = useMemo(
     () => [
-      "Entertainment",
-      "Housing",
-      "Income",
       "Food",
+      "Dining Out",
       "Shopping",
+      "Housing",
       "Utilities",
       "Transportation",
-      "Dining Out",
+      "Entertainment",
+      "Income",
+      "Philanthropy",
+      "Healthcare",
+      "Education",
+      "Subscriptions",
+      "Savings",
     ],
     []
   );
@@ -80,32 +85,37 @@ const RecurringTransactionModal = ({
       id: editingTransaction ? editingTransaction.id : `rt${Date.now()}`,
     });
     reset();
+    onOpenChange(false);
   };
 
   const handleDelete = () => {
     if (editingTransaction && onDelete) {
       onDelete(editingTransaction.id);
-      onClose();
+      onOpenChange(false);
     }
   };
 
   return (
-    <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+    <Dialog open={true} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-center">
             {editingTransaction
               ? "Edit Recurring Transaction"
               : "Add New Recurring Transaction"}
           </DialogTitle>
+          <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-2 rounded-md flex items-center gap-2 mt-2">
+            <span className="text-lg">💡</span>
+            <p className="text-sm">
+              Recurring transactions help you automate your finances. Set them
+              up once, and they will be added automatically.
+            </p>
+          </div>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-2">
-          {/* Title */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Title
-            </label>
+          <div className="space-y-2">
+            <div className="text-sm font-medium">Title</div>
             <Input
               type="text"
               placeholder="e.g., Netflix Subscription"
@@ -119,11 +129,8 @@ const RecurringTransactionModal = ({
             )}
           </div>
 
-          {/* Amount */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Amount
-            </label>
+          <div className="space-y-2">
+            <div className="text-sm font-medium">Amount</div>
             <Input
               type="number"
               step="0.01"
@@ -142,11 +149,8 @@ const RecurringTransactionModal = ({
             )}
           </div>
 
-          {/* Type */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Type
-            </label>
+          <div className="space-y-2">
+            <div className="text-sm font-medium">Type</div>
             <Controller
               name="type"
               control={control}
@@ -170,11 +174,8 @@ const RecurringTransactionModal = ({
             )}
           </div>
 
-          {/* Category */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Category
-            </label>
+          <div className="space-y-2">
+            <div className="text-sm font-medium">Category</div>
             <Controller
               name="category"
               control={control}
@@ -186,7 +187,7 @@ const RecurringTransactionModal = ({
                   >
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="max-h-72 overflow-y-auto">
                     {categories.map((cat) => (
                       <SelectItem key={cat} value={cat}>
                         {cat}
@@ -203,11 +204,8 @@ const RecurringTransactionModal = ({
             )}
           </div>
 
-          {/* Frequency */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Frequency
-            </label>
+          <div className="space-y-2">
+            <div className="text-sm font-medium">Frequency</div>
             <Controller
               name="frequency"
               control={control}
@@ -236,11 +234,8 @@ const RecurringTransactionModal = ({
             )}
           </div>
 
-          {/* Next Due Date */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Next Due Date
-            </label>
+          <div className="space-y-2">
+            <div className="text-sm font-medium">Next Due Date</div>
             <Input
               type="date"
               className={errors.nextDate ? "border-red-500" : ""}
@@ -257,9 +252,7 @@ const RecurringTransactionModal = ({
 
           {/* Auto-Add Switch */}
           <div className="flex items-center justify-between">
-            <label className="block text-sm font-medium text-gray-700">
-              Auto-Add
-            </label>
+            <div className="text-sm font-medium">Auto-Add</div>
             <Controller
               name="isActive"
               control={control}
@@ -288,7 +281,7 @@ const RecurringTransactionModal = ({
               <Button
                 type="button"
                 variant="outline"
-                onClick={onClose}
+                onClick={() => onOpenChange(false)}
                 className="w-full sm:w-auto"
               >
                 Cancel

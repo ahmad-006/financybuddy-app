@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
@@ -6,10 +6,12 @@ import {
   faLock,
   faIdCard,
   faArrowRight,
+  faShieldAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HidePasswordIcon, ShowPasswordIcon } from "../utils/iconFunc";
+import { registerUser, verifyOTP } from "@/utils/fetchData";
 
 export default function SignUp() {
   const {
@@ -18,30 +20,214 @@ export default function SignUp() {
     watch,
     reset,
     formState: { errors },
+    setValue,
   } = useForm();
-  // const navigate = useNavigate();
-  const [SignUpError, setSignUpError] = useState("");
-  const [isCreatingAccount, setisCreatingAccount] = useState(false);
-  const [isCreated, setIsCreated] = useState(false);
+  const otpInputRef = useRef(null);
+  const [signUpError, setSignUpError] = useState("");
+  const [isCreatingAccount, setIsCreatingAccount] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+
+  // New state for OTP flow
+  const [currentStep, setCurrentStep] = useState("signup"); // 'signup' or 'otp'
+  const [userEmail, setUserEmail] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [userData, setUserData] = useState([]);
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [isResending, setIsResending] = useState(false);
 
   const password = watch("password");
 
-  const onSubmit = async () => {
-    setisCreatingAccount(true);
-    setIsCreated(false);
+  const onSubmitSignUp = async (dataForm) => {
+    setIsCreatingAccount(true);
     setSignUpError("");
 
-    setisCreatingAccount(false);
-    setIsCreated(true);
+    try {
+      const { firstName, lastName, username, email, password } = dataForm;
+      const data = {
+        name: firstName + " " + lastName,
+        username,
+        email,
+        password,
+      };
 
-    // Reset the success message after 5 seconds
-    setTimeout(() => {
-      setIsCreated(false);
-    }, 5000);
-    reset();
+      setUserData(data);
+      const res = await registerUser(data);
+      if (res.status !== "success")
+        throw new Error(
+          res?.response?.data?.message || "Sign up failed please try again"
+        );
+      setUserEmail(email);
+      setCurrentStep("otp");
+    } catch (error) {
+      setSignUpError(error.message || "Registration failed");
+    } finally {
+      setIsCreatingAccount(false);
+    }
   };
 
+  const onSubmitOTP = async (otpData) => {
+    setIsVerifying(true);
+    setSignUpError("");
+
+    try {
+      const { otp } = otpData;
+      const res = await verifyOTP({
+        otp: Number(otp.trim()),
+        email: userEmail,
+      });
+      if (res.status === "fail") throw new Error(res);
+      reset();
+      navigate("/dashboard");
+
+      setCurrentStep("signup");
+    } catch (error) {
+      console.log(error);
+      setSignUpError(error.message || "OTP verification failed");
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  const handleBackToSignUp = () => {
+    setCurrentStep("signup");
+    setSignUpError("");
+  };
+
+  const handleResendOTP = async () => {
+    if (resendCooldown > 0) return;
+
+    setIsResending(true);
+    setSignUpError("");
+
+    try {
+      await registerUser(userData);
+      setResendCooldown(60);
+    } catch (error) {
+      setSignUpError(error.message || "Failed to resend OTP");
+    } finally {
+      setIsResending(false);
+    }
+  };
+
+  useEffect(() => {
+    if (resendCooldown > 0) {
+      const timer = setInterval(() => {
+        setResendCooldown((prev) => prev - 1);
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [resendCooldown]);
+
+  useEffect(() => {
+    if (currentStep === "otp") {
+      setValue("otp", "");
+      otpInputRef.current?.focus();
+    }
+  }, [currentStep, setValue]);
+
+  // OTP Verification Form
+  if (currentStep === "otp") {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-stone-900 to-stone-800 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full bg-stone-800 rounded-2xl shadow-xl overflow-hidden">
+          <div className="p-8">
+            <div className="text-center">
+              <FontAwesomeIcon
+                icon={faShieldAlt}
+                className="text-blue-400 text-5xl mb-4"
+              />
+              <h2 className="text-3xl font-bold text-white mb-2">
+                Verify Your Email
+              </h2>
+              <p className="text-stone-400 mb-4">
+                We've sent a verification code to
+              </p>
+              <p className="text-blue-400 font-semibold mb-6">{userEmail}</p>
+            </div>
+
+            <form onSubmit={handleSubmit(onSubmitOTP)} className="space-y-6">
+              {signUpError && (
+                <div className="p-3 bg-red-900/30 border border-red-700 rounded-lg">
+                  <p className="text-red-400 text-sm">{signUpError}</p>
+                </div>
+              )}
+
+              {/* OTP Input Field */}
+              <div>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FontAwesomeIcon
+                      icon={faShieldAlt}
+                      className="text-stone-400"
+                    />
+                  </div>
+                  <input
+                    id="otp"
+                    name="otp"
+                    ref={otpInputRef}
+                    {...register("otp", {
+                      required: "Verification code is required",
+                      pattern: {
+                        value: /^\d{6}$/,
+                        message: "Please enter a valid 6-digit code",
+                      },
+                    })}
+                    type="text"
+                    placeholder="Enter 6-digit code"
+                    maxLength="6"
+                    className="w-full pl-10 pr-4 py-3 bg-stone-700 border border-stone-600 rounded-lg text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center text-xl tracking-widest"
+                  />
+                </div>
+                {errors.otp && (
+                  <p className="mt-1 text-sm text-red-400">
+                    {errors.otp.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col space-y-3">
+                <button
+                  type="submit"
+                  className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-300 ease-in-out disabled:opacity-50"
+                  disabled={isVerifying}
+                >
+                  {isVerifying ? "Verifying..." : "Verify Code"}
+                  {!isVerifying && (
+                    <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleResendOTP}
+                  className="text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={resendCooldown > 0 || isResending}
+                >
+                  {isResending
+                    ? "Sending..."
+                    : resendCooldown > 0
+                      ? `Resend OTP in (${resendCooldown}s)`
+                      : "Didn't receive the code? Resend"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleBackToSignUp}
+                  className="text-stone-400 hover:text-stone-300 text-sm font-medium transition-colors duration-300"
+                >
+                  ← Back to sign up
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Original SignUp Form (rendered by default)
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-900 to-stone-800 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full bg-stone-800 rounded-2xl shadow-xl overflow-hidden">
@@ -55,21 +241,13 @@ export default function SignUp() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {isCreated && (
-              <div>
-                <p className="text-xl font-bold font-opensans text-green-700">
-                  Account Created check your email for confirmation
-                </p>
+          <form onSubmit={handleSubmit(onSubmitSignUp)} className="space-y-4">
+            {signUpError && (
+              <div className="p-3 bg-red-900/30 border border-red-700 rounded-lg">
+                <p className="text-red-400 text-sm">{signUpError}</p>
               </div>
             )}
-            {SignUpError !== "" && (
-              <div>
-                <p className="text-xl font-bold font-opensans text-red-700">
-                  {SignUpError}
-                </p>
-              </div>
-            )}
+
             {/* First Name Field */}
             <div>
               <div className="relative">
@@ -81,14 +259,10 @@ export default function SignUp() {
                   name="firstName"
                   {...register("firstName", {
                     required: "First name is required",
-
-                    //* MaxLength
                     maxLength: {
                       value: 15,
                       message: "First name must not exceed 15 characters",
                     },
-
-                    //* check Pattern
                     pattern: {
                       value: /^\S+$/,
                       message: "Spaces are not allowed",
@@ -117,14 +291,10 @@ export default function SignUp() {
                   name="lastName"
                   {...register("lastName", {
                     required: "Last name is required",
-
-                    //* MaxLength
                     maxLength: {
                       value: 15,
                       message: "Last name must not exceed 15 characters",
                     },
-
-                    //* Check Pattern
                     pattern: {
                       value: /^\S+$/,
                       message: "Spaces are not allowed",
@@ -153,14 +323,10 @@ export default function SignUp() {
                   name="username"
                   {...register("username", {
                     required: "Username is required",
-
-                    //* MaxLength
                     maxLength: {
                       value: 15,
                       message: "Username cannot exceed 15 characters",
                     },
-
-                    //* Check Pattern
                     pattern: {
                       value: /^[a-z0-9._]+$/,
                       message:
@@ -193,8 +359,6 @@ export default function SignUp() {
                   name="email"
                   {...register("email", {
                     required: "Email is required",
-
-                    //* Check Pattern
                     pattern: {
                       value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                       message: "Please enter a valid email address",
@@ -223,18 +387,15 @@ export default function SignUp() {
                   name="password"
                   {...register("password", {
                     required: "Password is required",
-
-                    //* minLength
                     minLength: {
                       value: 8,
                       message: "Password must be at least 8 characters",
                     },
-                    //* Check Pattern
-                    pattern: {
-                      value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/,
-                      message:
-                        "Must contain at least 1 uppercase, 1 lowercase, and 1 number",
-                    },
+                    // pattern: {
+                    //   value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/,
+                    //   message:
+                    //     "Must contain at least 1 uppercase, 1 lowercase, and 1 number",
+                    // },
                   })}
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
@@ -285,16 +446,11 @@ export default function SignUp() {
                 </p>
               )}
             </div>
-            {!SignUpError && (
-              <div>
-                <p className="mt-1 text-sm text-red-400">{errors.message}</p>
-              </div>
-            )}
 
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1 mt-6"
+              className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1 mt-6 disabled:opacity-50"
               disabled={isCreatingAccount}
             >
               {isCreatingAccount ? "Creating..." : "Create Account"}

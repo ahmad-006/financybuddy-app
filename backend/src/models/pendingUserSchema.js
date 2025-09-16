@@ -1,8 +1,7 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 const validator = require("validator");
 
-const userSchema = new mongoose.Schema(
+const PendingUserSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -26,15 +25,20 @@ const userSchema = new mongoose.Schema(
       unique: true,
       minlength: 4,
     },
-    avatar: {
-      type: String,
-      trim: true,
-      default: "https://api.dicebear.com/9.2.0/shapes/svg?seed=Sara",
+    otp: {
+      type: Number,
+      required: true,
+    },
+    otpExpiresAt: {
+      type: Date,
+      required: true,
     },
   },
   { timestamps: true }
 );
 
-const User = mongoose.models.User || mongoose.model("User", userSchema);
+const PendingUser =
+  mongoose.models.PendingUser ||
+  mongoose.model("PendingUser", PendingUserSchema);
 
-module.exports = User;
+module.exports = PendingUser;

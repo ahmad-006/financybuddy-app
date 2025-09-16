@@ -34,6 +34,7 @@ export default function SavingsPage() {
         queryKey: ["transactions"],
         exact: true,
       });
+      toast.success("Saving deleted successfully");
     },
     onError: (err) => {
       toast.error(err.message || "Failed to delete transaction");
@@ -47,6 +48,7 @@ export default function SavingsPage() {
         queryKey: ["transactions"],
         exact: true,
       });
+      toast.success("Saving added successfully");
     },
     onError: (err) => {
       toast.error(err.message);
@@ -60,6 +62,7 @@ export default function SavingsPage() {
         queryKey: ["transactions"],
         exact: true,
       });
+      toast.success("Saving updated successfully");
     },
     onError: (err) => {
       toast.error(err.message || "Failed to update transaction");

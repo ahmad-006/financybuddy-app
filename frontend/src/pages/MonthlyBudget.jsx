@@ -30,6 +30,7 @@ const BudgetPage = () => {
     color: "#CCCCCC",
   });
   const queryClient = useQueryClient();
+  const showName = false;
 
   // initial monthlyBudget fetch
   const { data: transaction, error: fetchError } = useQuery({
@@ -137,7 +138,7 @@ const BudgetPage = () => {
         return {
           _id: budget._id,
           title: budget.title,
-          category: budget.category, // <-- ADDED THIS LINE
+          category: budget.category,
           limit: parseFloat(budget.limit) || 0,
           spent: spent,
           ...categoryConfig,
@@ -171,12 +172,6 @@ const BudgetPage = () => {
     }
     addMutation.mutate(newCategory);
 
-    // const newCat = {
-    //   ...newCategory,
-    //   spent: 0,
-    // };
-
-    // setBudgetCategories([...budgetCategories, newCat]);
     setNewCategory({
       title: "",
       limit: 0,
@@ -200,11 +195,6 @@ const BudgetPage = () => {
     console.log("cate:", data);
     const id = editingCategory._id;
     updateMutation.mutate({ id, data });
-    // setBudgetCategories(
-    //   budgetCategories.map((cat) =>
-    //     cat._id === editingCategory._id ? editingCategory : cat
-    //   )
-    // );
     setEditingCategory(null);
   };
 
@@ -234,10 +224,17 @@ const BudgetPage = () => {
     <div className="min-h-screen text-black bg-gray-50 p-4 sm:p-6">
       <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded-md">
         <p className="font-bold">Monthly Budget Management</p>
-        <p>Take control of your spending by creating and managing monthly budgets for different categories. Set limits for categories like 'Food', 'Utilities', and 'Entertainment' to get a clear picture of where your money is going. This page helps you stay on track with your financial goals by visualizing your spending against your allocated budgets.</p>
+        <p>
+          Take control of your spending by creating and managing monthly budgets
+          for different categories. Set limits for categories like 'Food',
+          'Utilities', and 'Entertainment' to get a clear picture of where your
+          money is going. This page helps you stay on track with your financial
+          goals by visualizing your spending against your allocated budgets.
+        </p>
       </div>
       <div className="max-w-7xl mx-auto">
         <Header
+          show={showName}
           month={month}
           year={year}
           setMonth={setMonth}

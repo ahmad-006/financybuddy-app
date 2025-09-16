@@ -1,11 +1,13 @@
+/* eslint-disable no-unused-vars */
 import axios from "axios";
 import { toast } from "react-toastify";
+axios.defaults.withCredentials = true; // 👈 allow cookies in all requests
 
 // Fetch all transactions
 const fetchTransactions = async () => {
   const res = await axios.get("http://localhost:8000/api/v1/transactions");
   if (!res.data) throw new Error("No transactions found");
-  return res.data.data; // assuming your API returns { data: { ... } }
+  return res.data.data; // { data: { ... } }
 };
 
 // Add a new transaction
@@ -118,13 +120,6 @@ const deleteSpecialBudget = async (id) => {
   return id; // return the deleted ID to update cache
 };
 
-// Fetch current user
-const fetchUser = async () => {
-  const res = await axios.get("http://localhost:8000/api/v1/users/me");
-  if (!res.data) throw new Error("No user found");
-  return res.data.data.user; // Assuming user data is nested under data.user
-};
-
 // Fetch all recurring transactions
 const fetchRecurringTransactions = async () => {
   try {
@@ -135,7 +130,7 @@ const fetchRecurringTransactions = async () => {
     return res.data.data; // assuming API returns { data: [...] }
   } catch (error) {
     toast.error("Failed to fetch recurring transactions");
-    return [error];
+    return error.message;
   }
 };
 
@@ -182,6 +177,98 @@ const deleteRecurringTransaction = async (id) => {
   }
 };
 
+// Register user (send OTP)
+const registerUser = async (data) => {
+  try {
+    const res = await axios.post(
+      "http://localhost:8000/api/v1/auth/register",
+      data,
+      { withCredentials: true } // important for cookies
+    );
+    if (!res.data) throw new Error(res.data.message);
+    return res.data; // { status, message }
+  } catch (error) {
+    toast.error(error?.response?.data?.message || error.message);
+    return error;
+  }
+};
+
+// Verify OTP
+const verifyOTP = async (data) => {
+  try {
+    const res = await axios.post(
+      "http://localhost:8000/api/v1/auth/verify-otp",
+      data,
+      { withCredentials: true }
+    );
+    console.log(res);
+    if (!res.data) throw new Error(res.data.message);
+    return res.data; // { status, message }
+  } catch (error) {
+    toast.error(error?.response?.data?.message || error.message);
+    return error?.response?.data?.message || error;
+  }
+};
+
+// Login user
+const loginUser = async (data) => {
+  try {
+    const res = await axios.post(
+      "http://localhost:8000/api/v1/auth/login",
+      data,
+      { withCredentials: true }
+    );
+    if (!res.data) throw new Error(res.data.message);
+    return res.data; // { status, message }
+  } catch (error) {
+    toast.error(error?.response?.data?.message || error.message);
+    return error?.response?.data?.message || error;
+  }
+};
+
+// Logout user
+const logoutUser = async () => {
+  try {
+    const res = await axios.post(
+      "http://localhost:8000/api/v1/auth/signout",
+      {},
+      { withCredentials: true }
+    );
+    if (!res.data) throw new Error(res.data.message);
+    return res.data; // { status, message }
+  } catch (error) {
+    toast.error(error?.response?.data?.message || error.message);
+    return error?.response?.data?.message || error;
+  }
+};
+
+// Verify user (check if JWT cookie is valid)
+const verifyUser = async () => {
+  try {
+    const res = await axios.get("http://localhost:8000/api/v1/auth/verify", {
+      withCredentials: true,
+    });
+    if (!res.data) throw new Error(res.data.message);
+    return true; // { status, message }
+  } catch (error) {
+    return false;
+  }
+};
+
+//! USER
+
+const fetchUser = async () => {
+  try {
+    const res = await axios.get("http://localhost:8000/api/v1/users/get", {
+      withCredentials: true,
+    });
+    if (!res.data) throw new Error("No user data found");
+    return res.data.data.user;
+  } catch (error) {
+    throw new Error(error?.response?.data?.message || error.message);
+  }
+};
+
 export {
   fetchTransactions,
   addTransaction,
@@ -191,7 +278,6 @@ export {
   addMonthlyBudget,
   deleteMonthlyBudget,
   updateMonthlyBudget,
-  fetchUser,
   addSpecialBudget,
   fetchSpecialBudgets,
   updateSpecialBudget,
@@ -200,4 +286,10 @@ export {
   addRecurringTransaction,
   updateRecurringTransaction,
   deleteRecurringTransaction,
+  registerUser,
+  verifyOTP,
+  loginUser,
+  logoutUser,
+  verifyUser,
+  fetchUser,
 };

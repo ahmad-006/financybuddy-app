@@ -149,7 +149,7 @@ const SpecialBudgetModal = ({ onClose, onSave, editingBudget, onDelete }) => {
                     >
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-h-72 overflow-y-auto">
                       {categories.map((cat) => (
                         <SelectItem key={cat} value={cat}>
                           {cat}

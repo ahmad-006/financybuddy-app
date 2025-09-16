@@ -60,7 +60,7 @@ const BudgetProgressReport = ({
                 Spent: {currency} {budget.spent.toLocaleString()}
               </span>
               <span>
-                Budget: {currency} {budget.monthlyLimit.toLocaleString()}
+                Budget: {currency} {budget.limit.toLocaleString()}
               </span>
             </div>
           </div>

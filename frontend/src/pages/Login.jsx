@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEnvelope,
@@ -7,20 +7,44 @@ import {
   faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { HidePasswordIcon, ShowPasswordIcon } from "../utils/iconFunc";
+import { loginUser } from "@/utils/fetchData";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [loginError, setLoginError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError,
+    clearErrors,
+  } = useForm();
 
-  //login via email and password
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const [showPassword, setShowPassword] = useState(false);
+  const [loginError, setLoginError] = useState("");
+  const navigate = useNavigate();
+
+  // Login via email and password
+  const onSubmit = async (data) => {
     setLoginError("");
-    setLoading(true);
+    clearErrors();
+
+    try {
+      const response = await loginUser({
+        email: data.email,
+        password: data.password,
+      });
+      if (response.status !== "success") throw new Error(response);
+      navigate("/dashboard");
+      console.log("Login successful:", response);
+    } catch (error) {
+      const errorMessage = error.message || "Login failed, please try again";
+      setLoginError(errorMessage);
+      setError("root", {
+        type: "manual",
+        message: errorMessage,
+      });
+    }
   };
 
   // // login via google
@@ -66,50 +90,72 @@ export default function Login() {
             </p>
           </div>
 
-          <form className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Email/Username Field */}
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FontAwesomeIcon icon={faEnvelope} className="text-stone-400" />
+            <div>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FontAwesomeIcon
+                    icon={faEnvelope}
+                    className="text-stone-400"
+                  />
+                </div>
+                <input
+                  id="email"
+                  type="text"
+                  placeholder="Email or Username"
+                  className="w-full pl-10 pr-4 py-3 bg-stone-700 border border-stone-600 rounded-lg text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  {...register("email", {
+                    required: "Email or username is required",
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: "Please enter a valid email address",
+                    },
+                  })}
+                />
               </div>
-              <input
-                id="email"
-                name="email"
-                type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email or Username"
-                className="w-full pl-10 pr-4 py-3 bg-stone-700 border border-stone-600 rounded-lg text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-400">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
+
             {/* Password Field */}
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FontAwesomeIcon icon={faLock} className="text-stone-400" />
+            <div>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FontAwesomeIcon icon={faLock} className="text-stone-400" />
+                </div>
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  className="w-full pl-10 pr-4 py-3 bg-stone-700 border border-stone-600 rounded-lg text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  {...register("password", {
+                    required: "Password is required",
+                    minLength: {
+                      value: 6,
+                      message: "Password must be at least 6 characters",
+                    },
+                  })}
+                />
+                <span
+                  onClick={() => setShowPassword((s) => !s)}
+                  className="cursor-pointer absolute md:top-2 top-3 right-2"
+                >
+                  {showPassword ? <ShowPasswordIcon /> : <HidePasswordIcon />}
+                </span>
               </div>
-              <input
-                id="password"
-                name="password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                className="w-full pl-10 pr-4 py-3  bg-stone-700 border border-stone-600 rounded-lg text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-              <span
-                onClick={() => setShowPassword((s) => !s)}
-                className="cursor-pointer absolute md:top-2 top-3 right-2"
-              >
-                {showPassword ? <ShowPasswordIcon /> : <HidePasswordIcon />}
-              </span>
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-400">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
-            {loginError !== "" && (
-              <p className="text-red-600 text-lg text-center">
-                Wrong Password Or Email
-              </p>
-            )}
+
             {/* Remember Me & Forgot Password */}
-            <div className="flex items-center justify-between">
+            {/* <div className="flex items-center justify-between">
               <div className="text-sm">
                 <NavLink
                   to="/forgot-password"
@@ -118,19 +164,29 @@ export default function Login() {
                   Forgot password?
                 </NavLink>
               </div>
-            </div>
+            </div> */}
+
+            {/* Root error message */}
+            {(errors.root || loginError) && (
+              <div className="p-3 bg-red-900/30 border border-red-700 rounded-lg">
+                <p className="text-red-400 text-sm">
+                  {errors.root?.message || loginError}
+                </p>
+              </div>
+            )}
+
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1"
-              onClick={handleSubmit}
-              disabled={loading}
+              className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isSubmitting}
             >
-              {loading ? "Signing In" : "Sign In"}
-              {!loading && (
+              {isSubmitting ? "Signing In..." : "Sign In"}
+              {!isSubmitting && (
                 <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
               )}
             </button>
+
             {/* Divider */}
             <div className="relative flex items-center">
               <div className="flex-grow border-t border-stone-600"></div>
@@ -139,12 +195,13 @@ export default function Login() {
               </span>
               <div className="flex-grow border-t border-stone-600"></div>
             </div>
-            Social Login Options
+
+            {/* Social Login Options
             <div className="grid grid-cols-2 gap-4">
               <button
                 type="button"
                 className="py-2 px-4 flex justify-center items-center bg-stone-700 hover:bg-stone-600 text-white rounded-lg transition-colors"
-                // onClick={}
+                // onClick={loginWithGitHub}
               >
                 <svg
                   className="w-5 h-5 mr-2"
@@ -158,7 +215,7 @@ export default function Login() {
               <button
                 type="button"
                 className="py-2 px-4 flex justify-center items-center bg-stone-700 hover:bg-stone-600 text-white rounded-lg transition-colors"
-                // onClick={}
+                // onClick={loginWithGoogle}
               >
                 <svg
                   className="w-5 h-5 mr-2"
@@ -169,7 +226,7 @@ export default function Login() {
                 </svg>
                 Google
               </button>
-            </div>
+            </div> */}
           </form>
 
           {/* Sign Up Link */}

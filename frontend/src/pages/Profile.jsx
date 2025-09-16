@@ -7,9 +7,12 @@ import { mockProfiles } from "@/data/data";
 import { AvatarSelectionModal } from "@/components/profile/AvatarSelectionModal";
 import { toast } from "react-toastify";
 
+import { ResetPasswordModal } from "@/components/profile/ResetPasswordModal";
+
 function Profile() {
   const [user, setUser] = useState(mockProfiles[0]);
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isResetPasswordModalOpen, setResetPasswordModalOpen] = useState(false);
   const [firstName, setFirstName] = useState(user.name.split(" ")[0]);
   const [lastName, setLastName] = useState(
     user.name.split(" ").slice(1).join(" ")
@@ -33,6 +36,12 @@ function Profile() {
 
     setUser(updatedUser);
     toast.success("Chnages Saved!");
+  };
+
+  const handleResetPassword = (data) => {
+    console.log("Resetting password with data:", data);
+    // TODO: Implement password reset logic here
+    setResetPasswordModalOpen(false);
   };
 
   return (
@@ -100,6 +109,12 @@ function Profile() {
           </div>
           <div className="flex justify-end">
             <Button
+              className="bg-blue-600 hover:bg-blue-700 text-white mr-4"
+              onClick={() => setResetPasswordModalOpen(true)}
+            >
+              Reset Password
+            </Button>
+            <Button
               className="bg-blue-600 hover:bg-blue-700 text-white"
               onClick={handleSaveChanges}
             >
@@ -107,6 +122,13 @@ function Profile() {
             </Button>
           </div>
         </div>
+
+        {isResetPasswordModalOpen && (
+          <ResetPasswordModal
+            onOpenChange={setResetPasswordModalOpen}
+            onSave={handleResetPassword}
+          />
+        )}
       </div>
     </div>
   );
