@@ -84,7 +84,7 @@ const DashboardSidebar = () => {
         </div>
 
         {/* Main navigation */}
-        <nav className="mt-6 flex-1">
+        <nav className="mt-6 flex-1 min-h-0 overflow-y-auto">
           <ul className="space-y-2 px-3">
             {menuItems.map((item) => (
               <li key={item.path}>
