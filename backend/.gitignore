@@ -1,0 +1,23 @@
+# Node modules
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+config.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Optional: coverage reports
+coverage/
+
+# Optional: build output
+dist/
+build/
