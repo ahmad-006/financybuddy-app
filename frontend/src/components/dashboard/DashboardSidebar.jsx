@@ -62,11 +62,11 @@ const DashboardSidebar = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed md:relative top-0 left-0 h-screen bg-stone-800 shadow-lg z-40 transition-all duration-300 flex flex-col overflow-y-auto
+        className={`fixed md:relative top-0 left-0 bg-stone-800 shadow-lg z-40 transition-all duration-300 flex flex-col
           ${isOpen ? "w-64" : "w-20"} 
           ${isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
-        <div className="flex items-center justify-between p-4 border-b border-stone-700">
+        <div className="flex items-center justify-between p-4 border-b border-stone-700 flex-shrink-0">
           {(isOpen || isMobileOpen) && (
             <div className="flex items-center">
               <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center mr-2">
@@ -109,7 +109,7 @@ const DashboardSidebar = () => {
         </nav>
 
         {/* User profile and sign out */}
-        <div className="p-3 border-t border-stone-700">
+        <div className="p-3 border-t border-stone-700 flex-shrink-0">
           <NavLink
             to="/user-profile"
             className={({ isActive }) =>
