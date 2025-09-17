@@ -43,10 +43,9 @@ export default function SignUp() {
     setSignUpError("");
 
     try {
-      const { firstName, lastName, username, email, password } = dataForm;
+      const { firstName, lastName, email, password } = dataForm;
       const data = {
         name: firstName + " " + lastName,
-        username,
         email,
         password,
       };
@@ -312,38 +311,7 @@ export default function SignUp() {
               )}
             </div>
 
-            {/* Username Field */}
-            <div>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FontAwesomeIcon icon={faUser} className="text-stone-400" />
-                </div>
-                <input
-                  id="username"
-                  name="username"
-                  {...register("username", {
-                    required: "Username is required",
-                    maxLength: {
-                      value: 15,
-                      message: "Username cannot exceed 15 characters",
-                    },
-                    pattern: {
-                      value: /^[a-z0-9._]+$/,
-                      message:
-                        "Only lowercase letters, numbers, periods, and underscores are allowed",
-                    },
-                  })}
-                  type="text"
-                  placeholder="Username"
-                  className="w-full pl-10 pr-4 py-3 bg-stone-700 border border-stone-600 rounded-lg text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
-              {errors.username && (
-                <p className="mt-1 text-sm text-red-400">
-                  {errors.username.message}
-                </p>
-              )}
-            </div>
+            
 
             {/* Email Field */}
             <div>

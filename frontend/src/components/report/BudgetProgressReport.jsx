@@ -3,7 +3,7 @@ import React from "react";
 const BudgetProgressReport = ({
   budgets = [],
   transactions = [],
-  currency = "$",
+  currency = " PKR ",
 }) => {
   const budgetsWithProgress = budgets.map((budget) => {
     const spent = transactions

@@ -14,7 +14,7 @@ const Chart = ({ transactions, currency }) => {
   const now = new Date();
   const currentYear = now.getFullYear();
 
-  // Pre-fill months Jan -> current month
+  // Pre-fill months Jan to current month
   const months = Array.from({ length: now.getMonth() + 1 }, (_, i) => {
     const date = new Date(currentYear, i, 1);
     return {

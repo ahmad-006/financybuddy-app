@@ -114,7 +114,7 @@ const BudgetPage = () => {
   useEffect(() => {
     try {
       const transformedBudgets = budgets.map((budget) => {
-        //calcuting spent for each category
+        //calculating spent for each category
         const spent = transactions
           .filter((t) => {
             const transactionDate = new Date(t.date);
@@ -165,7 +165,6 @@ const BudgetPage = () => {
     return config[category] || { icon: "📁", color: "#CCCCCC" };
   };
 
-  //const
   const handleAddCategory = () => {
     if (!newCategory.title || newCategory.limit <= 0 || !newCategory.category) {
       return toast.info("please provide correct information");

@@ -2,8 +2,8 @@ import React from "react";
 import BudgetCategory from "./BudgetCategory";
 
 const SpecialBudgetList = ({
-  budgetCategories, // Renamed to specialBudgets in parent, but keeping for now
-  setEditingCategory, // Renamed to setEditingSpecialBudget in parent
+  budgetCategories,
+  setEditingCategory,
   currency,
 }) => {
   const isOverBudget = (category) => category.spent > category.allocated;

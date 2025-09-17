@@ -28,10 +28,10 @@ export default function Transactions() {
     priceSort: "",
   });
 
-  //accessing querry Client
+  //accessing query Client
   const queryClient = useQueryClient();
 
-  //initial fetch using react querry
+  //initial fetch using react query
   const {
     data: transactions,
     isLoading,
@@ -210,7 +210,7 @@ export default function Transactions() {
     }
     return (
       <>
-        <div className="space-y-3">
+        <div className="space-y-3 pb-20">
           {filteredTransactions.map((t) => (
             <TransactionCard
               key={t._id}

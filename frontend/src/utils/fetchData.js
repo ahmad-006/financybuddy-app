@@ -301,6 +301,41 @@ const resetPassword = async (data) => {
   }
 };
 
+// Send password reset link to user email
+const sendPasswordResetLink = async (email) => {
+  try {
+    const res = await axios.post(
+      "http://localhost:8000/api/v1/users/forgot-password",
+      { email }
+    );
+    if (!res.data) throw new Error("Failed to send reset link");
+    toast.success(res.data.message || "Check your email for the reset link!");
+    return res.data;
+  } catch (error) {
+    toast.error(error?.response?.data?.message || error.message);
+    return error;
+  }
+};
+
+const resetForgotPassword = async (token, newPassword) => {
+  console.log(
+    `http://localhost:8000/api/v1/users/reset-password/${token}`,
+    newPassword
+  );
+  try {
+    const res = await axios.post(
+      `http://localhost:8000/api/v1/users/reset-password/${token}`,
+      { newPassword },
+      { withCredentials: true } // in case backend uses cookies
+    );
+
+    if (!res.data) throw new Error(res);
+
+    return res.data;
+  } catch (error) {
+    return error;
+  }
+};
 export {
   fetchTransactions,
   addTransaction,
@@ -326,4 +361,6 @@ export {
   fetchUser,
   updateUser,
   resetPassword,
+  sendPasswordResetLink,
+  resetForgotPassword,
 };

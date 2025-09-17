@@ -4,7 +4,6 @@ import aiSVG from "../../assets/images/home/ai.svg";
 import rtSVG from "../../assets/images/home/RT.svg";
 import reportSVG from "../../assets/images/home/reports.svg";
 import budgetSVG from "../../assets/images/home/budget.svg";
-import { NavLink } from "react-router-dom";
 
 function Features() {
   return (

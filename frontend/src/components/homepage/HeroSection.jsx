@@ -1,4 +1,3 @@
-import { NavLink } from "react-router-dom";
 import heroSVG from "../../assets/images/home/hero.svg";
 
 function HeroSection({ navigate }) {

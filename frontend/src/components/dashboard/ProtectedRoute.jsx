@@ -7,7 +7,7 @@ export default function ProtectedRoute({ children }) {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const result = await verifyUser(); // ✅ must CALL it
+      const result = await verifyUser();
       setIsVerified(result);
     };
     checkAuth();
@@ -15,7 +15,7 @@ export default function ProtectedRoute({ children }) {
 
   // Still checking
   if (isVerified === null) {
-    return <div>Loading...</div>; // or your <Loading /> component
+    return <div>Loading...</div>;
   }
 
   if (!isVerified) {

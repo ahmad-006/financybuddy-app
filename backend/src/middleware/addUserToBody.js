@@ -32,7 +32,7 @@ module.exports = (req, res, next) => {
     if (!req.body) req.body = {};
 
     // Get token from cookies
-    console.log(req.cookies);
+    
     const token = req.cookies?.token;
     if (!token) {
       return res
@@ -45,8 +45,6 @@ module.exports = (req, res, next) => {
 
     // Attach userId from token payload (instead of hardcoding)
     req.body.user = decoded.id; // assuming your token has { id: ... }
-
-    console.log("Decoded user:", decoded);
 
     next();
   } catch (error) {

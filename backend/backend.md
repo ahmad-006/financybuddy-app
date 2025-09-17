@@ -10,13 +10,7 @@ This schema stores user information, including their profile details and authent
 
 ```json
 {
-  "username": {
-    "type": "string",
-    "required": true,
-    "unique": true,
-    "trim": true,
-    "minlength": 3
-  },
+  
   "email": {
     "type": "string",
     "required": true,
@@ -129,7 +123,7 @@ Here are some hardcoded user documents that you can use to populate your `User` 
   "_id": {
     "$oid": "60d5f3f7a3b7a3b7a3b7a3b7"
   },
-  "username": "john_doe",
+  
   "email": "john.doe@example.com",
   "password": "password123",
   "avatar": "https://example.com/avatars/avatar1.jpg",
@@ -146,7 +140,7 @@ Here are some hardcoded user documents that you can use to populate your `User` 
   "_id": {
     "$oid": "60d5f3f7a3b7a3b7a3b7a3b8"
   },
-  "username": "jane_doe",
+  
   "email": "jane.doe@example.com",
   "password": "password456",
   "avatar": "https://example.com/avatars/avatar2.jpg",
@@ -163,7 +157,7 @@ Here are some hardcoded user documents that you can use to populate your `User` 
   "_id": {
     "$oid": "60d5f3f7a3b7a3b7a3b7a3b9"
   },
-  "username": "peter_jones",
+  
   "email": "peter.jones@example.com",
   "password": "password789",
   "avatar": "https://example.com/avatars/avatar3.jpg",

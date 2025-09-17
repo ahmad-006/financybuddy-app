@@ -5,10 +5,11 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/userModel");
 const PendingUser = require("../models/pendingUserSchema");
 const { sendMail } = require("../config/nodemailer");
+const { generateOtpEmailHtml, generateWelcomeEmailHtml } = require("../utils/emailTemplates");
 
 const register = async (req, res) => {
   try {
-    const { name, username, email, password } = req.body;
+    const { name, email, password } = req.body;
     const existingUser = await User.findOne({ email });
 
     if (existingUser)
@@ -24,18 +25,21 @@ const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     ////
-    console.log(password, typeof password);
 
     await PendingUser.create({
       name,
       email,
-      username,
       password: hashedPassword,
       otp,
       otpExpiresAt: Date.now() + 5 * 60 * 1000,
     });
 
-    await sendMail(email, "Please Verify Your OTP", `Your otp is ${otp}`);
+    await sendMail(
+      email,
+      "Please Verify Your OTP",
+      null,
+      generateOtpEmailHtml(otp)
+    );
     return res.status(200).json({
       status: "success",
       message: "otp sent",
@@ -51,8 +55,6 @@ const otpVerify = async (req, res) => {
   try {
     const { email, otp } = req.body;
     const record = await PendingUser.findOne({ email });
-
-    console.log(otp, record.otp);
     if (!record)
       return res.status(400).json({ message: "No pending registration" });
 
@@ -62,11 +64,14 @@ const otpVerify = async (req, res) => {
     const user = await User.create({
       email: record.email,
       password: record.password, // already hashed
-      username: record.username,
       name: record.name,
     });
 
     await PendingUser.deleteOne({ email });
+
+    // Send welcome email
+    const welcomeHtml = generateWelcomeEmailHtml(user.name);
+    await sendMail(user.email, "Welcome to FinancyBuddy!", null, welcomeHtml);
 
     const token = jwt.sign(
       { id: user._id, email: user.email },

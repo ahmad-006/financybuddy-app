@@ -103,10 +103,10 @@ export default function Login() {
                 <input
                   id="email"
                   type="text"
-                  placeholder="Email or Username"
+                  placeholder="Email"
                   className="w-full pl-10 pr-4 py-3 bg-stone-700 border border-stone-600 rounded-lg text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   {...register("email", {
-                    required: "Email or username is required",
+                    required: "Email is required",
                     pattern: {
                       value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                       message: "Please enter a valid email address",
@@ -155,7 +155,7 @@ export default function Login() {
             </div>
 
             {/* Remember Me & Forgot Password */}
-            {/* <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between">
               <div className="text-sm">
                 <NavLink
                   to="/forgot-password"
@@ -164,7 +164,7 @@ export default function Login() {
                   Forgot password?
                 </NavLink>
               </div>
-            </div> */}
+            </div>
 
             {/* Root error message */}
             {(errors.root || loginError) && (

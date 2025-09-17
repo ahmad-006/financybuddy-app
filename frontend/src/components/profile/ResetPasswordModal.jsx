@@ -90,7 +90,7 @@ export function ResetPasswordModal({ onOpenChange, onSave, loading }) {
             >
               Cancel
             </Button>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+            <Button type="submit" className="bg-blue-600 hover:bg-blue-700" disabled={loading}>
               {loading ? "Reseting" : " Reset Password"}
             </Button>
           </DialogFooter>

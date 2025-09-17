@@ -7,13 +7,14 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-async function sendMail(to, subject, text) {
+async function sendMail(to, subject, text, html) {
   try {
     await transporter.sendMail({
       from: process.env.GMAIL_USER,
       to,
       subject,
       text,
+      html,
     });
     console.log("✅ Email sent");
   } catch (err) {

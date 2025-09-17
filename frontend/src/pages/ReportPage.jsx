@@ -1,19 +1,22 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-
 import ReportHeader from "../components/report/ReportHeader";
 import FinancialSummary from "../components/report/FinancialSummary";
 import CategoryBreakdown from "../components/report/CategoryBreakdown";
 import TransactionDetails from "../components/report/TransactionDetails";
 import BudgetProgressReport from "../components/report/BudgetProgressReport";
 import ReportActions from "../components/report/ReportActions";
-import { mockProfiles } from "../data/data";
 import "../styles/print.css";
-import { fetchMonthlyBudgets, fetchTransactions } from "@/utils/fetchData";
+import {
+  fetchMonthlyBudgets,
+  fetchTransactions,
+  fetchUser,
+} from "@/utils/fetchData";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
 
 const ReportPage = () => {
   const reportContentRef = useRef();
+  const [user, setUser] = useState({});
 
   const getCurrentMonthRange = () => {
     const now = new Date();
@@ -25,10 +28,22 @@ const ReportPage = () => {
     };
   };
 
+  //use effect to get user
+
+  useEffect(() => {
+    //to fetch user Details
+    const fetchUserName = async () => {
+      const res = await fetchUser();
+      setUser(res);
+    };
+
+    fetchUserName();
+  }, []);
+
   const [dateRange, setDateRange] = useState(getCurrentMonthRange());
   const [reportType, setReportType] = useState("monthly");
   const [filteredTransactions, setFilteredTransactions] = useState([]);
-  const currentUser = mockProfiles[0];
+  const currentUser = user;
   const currency = "PKR";
 
   // initial monthlyBudget fetch

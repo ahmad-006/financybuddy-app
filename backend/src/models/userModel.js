@@ -20,17 +20,14 @@ const userSchema = new mongoose.Schema(
       required: [true, "Please provide a password"],
       minlength: 8,
     },
-    username: {
-      type: String,
-      required: [true, "Please provide a username"],
-      unique: true,
-      minlength: 4,
-    },
+    
     avatar: {
       type: String,
       trim: true,
       default: "https://api.dicebear.com/9.x/shapes/svg?seed=Sara",
     },
+    passwordResetToken: String,
+    passwordResetExpires: Date,
   },
   { timestamps: true }
 );

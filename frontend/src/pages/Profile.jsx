@@ -8,8 +8,14 @@ import { AvatarSelectionModal } from "@/components/profile/AvatarSelectionModal"
 import { toast } from "react-toastify";
 
 import { ResetPasswordModal } from "@/components/profile/ResetPasswordModal";
-import { fetchUser, resetPassword, updateUser } from "@/utils/fetchData";
+import {
+  fetchUser,
+  resetPassword,
+  updateUser,
+  fetchTransactions,
+} from "@/utils/fetchData";
 import { useForm } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Profile() {
   const {
@@ -22,7 +28,26 @@ export default function Profile() {
   const [user, setUser] = useState({});
   const [isModalOpen, setModalOpen] = useState(false);
   const [isResetPasswordModalOpen, setResetPasswordModalOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [isChangingPass, setIsChangingPass] = useState(false);
+
+  const { data: transactionsData } = useQuery({
+    queryKey: ["transactions"],
+    queryFn: fetchTransactions,
+  });
+
+  const transactions = transactionsData?.transactions || [];
+
+  const totalIncome = transactions
+    .filter((t) => t.type === "income")
+    .reduce((sum, t) => sum + t.amount, 0);
+  const totalSpending = transactions
+    .filter((t) => t.type === "expense")
+    .reduce((sum, t) => sum + t.amount, 0);
+  const totalSavings = transactions
+    .filter((t) => t.type === "saving")
+    .reduce((sum, t) => sum + t.amount, 0);
+  const numberOfTransactions = transactions.length;
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -34,7 +59,6 @@ export default function Profile() {
         setValue("firstName", nameParts[0] || "");
         setValue("lastName", nameParts[1] || "");
       }
-      setValue("username", res?.username || "");
       setValue("avatar", res?.avatar);
     };
 
@@ -46,36 +70,36 @@ export default function Profile() {
     setModalOpen(false);
   };
 
-  const handleSaveChanges = async (formData) => {
-    setIsChangingPass(true);
-    const { firstName, lastName, username, avatar } = formData;
+  const handleSaveChanges = async (data) => {
+    setIsSaving(true);
+    const { firstName, lastName, avatar } = data;
     const name = `${firstName} ${lastName}`;
-    const data = { name, username, avatar };
+    const updatedUser = { ...user, name, avatar };
     try {
-      const res = await updateUser(data);
-      console.log(res);
-      if (!res) throw new Error(res);
+      await updateUser(updatedUser);
       toast.success("Changes Saved!");
     } catch (error) {
-      console.log(error.message);
-      toast.error(error);
+      toast.error(error.message || "Failed to save changes");
     } finally {
-      setIsChangingPass(false);
+      setIsSaving(false);
     }
   };
 
-  const handleResetPassword = async (formData) => {
-    console.log("Resetting password with data:", formData);
-    const { oldPassword, newPassword } = formData;
-    const data = { oldPassword, newPassword };
+  const handleResetPassword = async (data) => {
+    setIsChangingPass(true);
+    console.log("Resetting password with data:", data);
+    const { oldPassword, newPassword } = data;
+    const passwordData = { oldPassword, newPassword };
     try {
-      const res = await resetPassword(data);
+      const res = await resetPassword(passwordData);
       console.log(res);
       toast.success("Password Changed Successfully");
     } catch (error) {
       toast.error(error);
+    } finally {
+      setIsChangingPass(false);
+      setResetPasswordModalOpen(false);
     }
-    setResetPasswordModalOpen(false);
   };
 
   return (
@@ -83,106 +107,166 @@ export default function Profile() {
       <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded-md">
         <p className="font-bold">Profile Management</p>
         <p>
-          Manage your personal information and customize your application
-          settings here. You can update your name, email, and profile picture.
-          You can also set your default currency and other preferences to tailor
-          the application to your needs.
+          Manage your personal information and financial overview here. Update
+          your name and profile picture, view your email and membership date,
+          and reset your password. Get a quick glance at your total income,
+          spending, and savings, along with your transaction count.
         </p>
       </div>
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-8">User Profile</h1>
 
-        <Dialog open={isModalOpen} onOpenChange={setModalOpen}>
-          {/* Avatar Section */}
-          <div className="flex flex-col items-center mb-8">
-            <div className="w-32 h-32 rounded-full overflow-hidden mb-4 border-4 border-gray-200">
-              <img
-                src={watch("avatar")}
-                alt={`${user.name}'s avatar`}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <DialogTrigger asChild>
-              <Button
-                variant="outline"
-                className="bg-transparent border-gray-300 hover:bg-gray-200"
-              >
-                Change Avatar
-              </Button>
-            </DialogTrigger>
-          </div>
-
-          <AvatarSelectionModal onAvatarSelect={handleAvatarSelect} />
-        </Dialog>
-
-        {/* Profile Form */}
-        <form
-          onSubmit={handleSubmit(handleSaveChanges)}
-          className="space-y-6 bg-white p-6 rounded-lg shadow-md"
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="firstName">First Name</Label>
-              <Input
-                id="firstName"
-                {...register("firstName", {
-                  required: "First name is required",
-                })}
-                className="bg-gray-50 border-gray-300 text-gray-900"
-              />
-              {errors.firstName && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.firstName.message}
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column: Financial Summary (1/3 width) */}
+        <div className="lg:col-span-1">
+          <div className="bg-white p-6 rounded-lg shadow-md h-full">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">
+              Financial Summary
+            </h2>
+            <div className="grid grid-cols-1 gap-4">
+              <div className="bg-blue-50 p-4 rounded-md">
+                <p className="text-sm text-gray-600">Total Income</p>
+                <p className="text-lg font-semibold text-blue-700">
+                  PKR {totalIncome.toLocaleString()}
                 </p>
-              )}
+              </div>
+              <div className="bg-red-50 p-4 rounded-md">
+                <p className="text-sm text-gray-600">Total Spending</p>
+                <p className="text-lg font-semibold text-red-700">
+                  PKR {totalSpending.toLocaleString()}
+                </p>
+              </div>
+              <div className="bg-green-50 p-4 rounded-md">
+                <p className="text-sm text-gray-600">Total Savings</p>
+                <p className="text-lg font-semibold text-green-700">
+                  PKR {totalSavings.toLocaleString()}
+                </p>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-md">
+                <p className="text-sm text-gray-600">Number of Transactions</p>
+                <p className="text-lg font-semibold text-gray-700">
+                  {numberOfTransactions}
+                </p>
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="lastName">Last Name</Label>
-              <Input
-                id="lastName"
-                {...register("lastName")}
-                className="bg-gray-50 border-gray-300 text-gray-900"
-              />
-            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="username">Username</Label>
-            <Input
-              id="username"
-              {...register("username", { required: "Username is required" })}
-              className="bg-gray-50 border-gray-300 text-gray-900"
-            />
-            {errors.username && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.username.message}
-              </p>
-            )}
-          </div>
-          <div className="flex justify-end">
-            <Button
-              type="button"
-              className="bg-blue-600 hover:bg-blue-700 text-white mr-4"
-              onClick={() => setResetPasswordModalOpen(true)}
-            >
-              Reset Password
-            </Button>
-            <Button
-              type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              Save Changes
-            </Button>
-          </div>
-        </form>
+        </div>
 
-        {isResetPasswordModalOpen && (
-          <ResetPasswordModal
-            onOpenChange={setResetPasswordModalOpen}
-            onSave={handleResetPassword}
-            loading={isChangingPass}
-          />
-        )}
+        {/* Right Column: User Profile and Form (2/3 width) */}
+        <div className="lg:col-span-2">
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-6">
+              User Profile
+            </h1>
+
+            <div className="flex flex-col md:flex-row gap-6">
+              {/* Avatar Section */}
+              <div className="md:w-1/3">
+                <Dialog open={isModalOpen} onOpenChange={setModalOpen}>
+                  <div className="flex flex-col items-center">
+                    <div className="w-32 h-32 rounded-full overflow-hidden mb-4 border-4 border-gray-200">
+                      <img
+                        src={watch("avatar")}
+                        alt={`${user.name}'s avatar`}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="bg-transparent border-gray-300 hover:bg-gray-200"
+                      >
+                        Change Avatar
+                      </Button>
+                    </DialogTrigger>
+                  </div>
+
+                  <AvatarSelectionModal onAvatarSelect={handleAvatarSelect} />
+                </Dialog>
+              </div>
+
+              {/* Profile Form */}
+              <div className="md:w-2/3">
+                <form
+                  onSubmit={handleSubmit(handleSaveChanges)}
+                  className="space-y-4"
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="firstName">First Name</Label>
+                      <Input
+                        id="firstName"
+                        {...register("firstName", {
+                          required: "First name is required",
+                        })}
+                        className="bg-gray-50 border-gray-300 text-gray-900"
+                      />
+                      {errors.firstName && (
+                        <p className="text-red-500 text-xs mt-1">
+                          {errors.firstName.message}
+                        </p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="lastName">Last Name</Label>
+                      <Input
+                        id="lastName"
+                        {...register("lastName")}
+                        className="bg-gray-50 border-gray-300 text-gray-900"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      value={user.email || ""}
+                      readOnly
+                      className="bg-gray-50 border-gray-300 text-gray-900"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="memberSince">Member Since</Label>
+                    <Input
+                      id="memberSince"
+                      value={
+                        user.createdAt
+                          ? new Date(user.createdAt).toLocaleDateString()
+                          : ""
+                      }
+                      readOnly
+                      className="bg-gray-50 border-gray-300 text-gray-900"
+                    />
+                  </div>
+
+                  <div className="flex justify-end pt-4">
+                    <Button
+                      type="button"
+                      className="bg-blue-600 hover:bg-blue-700 text-white mr-4"
+                      onClick={() => setResetPasswordModalOpen(true)}
+                    >
+                      Reset Password
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                      disabled={isSaving}
+                    >
+                      {isSaving ? "Saving..." : "Save Changes"}
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      {isResetPasswordModalOpen && (
+        <ResetPasswordModal
+          onOpenChange={setResetPasswordModalOpen}
+          onSave={handleResetPassword}
+          loading={isChangingPass}
+        />
+      )}
     </div>
   );
 }

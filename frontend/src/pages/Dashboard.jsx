@@ -89,13 +89,11 @@ const Dashboard = () => {
     }
   }, [budgets, transactions]);
 
-  //to get userName
   useEffect(() => {
     //to fetch user Details
     const fetchUserName = async () => {
       const res = await fetchUser();
       setUser(res);
-      console.log(res);
     };
 
     fetchUserName();
