@@ -62,12 +62,12 @@ const DashboardSidebar = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed md:relative top-0 left-0 h-screen bg-stone-800 shadow-lg z-40 transition-all duration-300 flex flex-col
+        className={`fixed md:relative top-0 left-0 h-screen bg-stone-800 shadow-lg z-40 transition-all duration-300 flex flex-col overflow-y-auto
           ${isOpen ? "w-64" : "w-20"} 
           ${isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
         <div className="flex items-center justify-between p-4 border-b border-stone-700">
-          {isOpen && (
+          {(isOpen || isMobileOpen) && (
             <div className="flex items-center">
               <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center mr-2">
                 <FontAwesomeIcon icon={faHome} className="text-white" />
@@ -101,7 +101,7 @@ const DashboardSidebar = () => {
                   onClick={() => setIsMobileOpen(false)}
                 >
                   <FontAwesomeIcon icon={item.icon} className="w-5 h-5" />
-                  {isOpen && <span className="ml-3">{item.label}</span>}
+                  {(isOpen || isMobileOpen) && <span className="ml-3">{item.label}</span>}
                 </NavLink>
               </li>
             ))}
@@ -123,7 +123,7 @@ const DashboardSidebar = () => {
             onClick={() => setIsMobileOpen(false)}
           >
             <FontAwesomeIcon icon={faUser} className="w-5 h-5" />
-            {isOpen && <span className="ml-3">Profile</span>}
+            {(isOpen || isMobileOpen) && <span className="ml-3">Profile</span>}
           </NavLink>
 
           <button
@@ -131,7 +131,7 @@ const DashboardSidebar = () => {
             className="w-full flex items-center justify-center p-2 rounded-lg bg-stone-700 hover:bg-red-600 text-white transition-colors"
           >
             <FontAwesomeIcon icon={faSignOutAlt} className="w-5 h-5" />
-            {isOpen && <span className="ml-3">Sign Out</span>}
+            {(isOpen || isMobileOpen) && <span className="ml-3">Sign Out</span>}
           </button>
         </div>
       </div>
