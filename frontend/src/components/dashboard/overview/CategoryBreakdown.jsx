@@ -14,10 +14,10 @@ const CategoryBreakdown = ({ transactions, currency, isMobile }) => {
   const spendingByCategory = transactions
     .filter((t) => t.type === "expense")
     .reduce((acc, transaction) => {
-      if (!acc[transaction.category]) {
-        acc[transaction.category] = 0;
+      if (!acc[transaction.title]) {
+        acc[transaction.title] = 0;
       }
-      acc[transaction.category] += transaction.amount;
+      acc[transaction.title] += transaction.amount;
       return acc;
     }, {});
 
@@ -138,7 +138,7 @@ const CategoryBreakdown = ({ transactions, currency, isMobile }) => {
           {/* Detailed breakdown list */}
           <div className="mt-6 space-y-3">
             <h3 className="font-semibold text-gray-800 mb-3">
-              Category Details
+              Title Details
             </h3>
             {chartData.map((category, index) => (
               <div

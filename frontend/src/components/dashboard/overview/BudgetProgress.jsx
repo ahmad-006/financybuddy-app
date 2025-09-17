@@ -11,7 +11,7 @@ const BudgetProgress = ({ budgets, transactions, currency }) => {
       .filter((t) => {
         const transactionDate = new Date(t.date);
         return (
-          t.category === budget.category &&
+          t.title === budget.title &&
           t.type === "expense" &&
           transactionDate.getMonth() === currentMonth &&
           transactionDate.getFullYear() === currentYear
@@ -36,7 +36,7 @@ const BudgetProgress = ({ budgets, transactions, currency }) => {
           {/* Header */}
           <div className="flex justify-between items-center mb-2">
             <span className="font-medium text-gray-800 text-sm sm:text-base truncate pr-2 uppercase">
-              {budget.category}
+              {budget.title}
             </span>
             <span
               className={`text-xs sm:text-sm whitespace-nowrap ${
