@@ -3,8 +3,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 axios.defaults.withCredentials = true; // 👈 allow cookies in all requests
 
-// const baseURL = "http://localhost:8000";
-const baseURL = "https://financybuddy-app-production.up.railway.app";
+const baseURL = "http://localhost:8000";
+// const baseURL = "https://financybuddy-app-production.up.railway.app";
 
 // Fetch all transactions
 const fetchTransactions = async () => {
