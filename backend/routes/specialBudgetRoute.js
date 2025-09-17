@@ -10,7 +10,7 @@ router
 
 router
   .route("/:id")
-  .delete(specialBudgetController.deleteSpecialBudget)
-  .patch(specialBudgetController.updateSpecialBudget);
+  .delete(addUserToBody, specialBudgetController.deleteSpecialBudget)
+  .patch(addUserToBody, specialBudgetController.updateSpecialBudget);
 
 module.exports = router;

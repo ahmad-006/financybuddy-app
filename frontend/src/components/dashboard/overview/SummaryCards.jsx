@@ -5,14 +5,14 @@ const SummaryCards = ({ totalIncome, totalSpending, remaining, currency }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
       {/* Total Income Card */}
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+      <div className="bg-white p-3 sm:p-4 rounded-xl shadow-sm border border-gray-200">
         <div className="flex items-center">
           <div className="bg-green-100 p-2 rounded-full flex-shrink-0">
             <span className="text-green-600 text-lg">💰</span>
           </div>
           <div className="ml-3 min-w-0">
             <p className="text-xs text-gray-600 truncate">Total Income</p>
-            <p className="text-base sm:text-lg font-bold text-gray-800">
+            <p className="text-sm sm:text-base font-bold text-gray-800">
               {currency} {totalIncome.toLocaleString()}
             </p>
           </div>
@@ -20,14 +20,14 @@ const SummaryCards = ({ totalIncome, totalSpending, remaining, currency }) => {
       </div>
 
       {/* Total Spending Card */}
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+      <div className="bg-white p-3 sm:p-4 rounded-xl shadow-sm border border-gray-200">
         <div className="flex items-center">
           <div className="bg-red-100 p-2 rounded-full flex-shrink-0">
             <span className="text-red-600 text-lg">💸</span>
           </div>
           <div className="ml-3 min-w-0">
             <p className="text-xs text-gray-600 truncate">Total Spending</p>
-            <p className="text-base sm:text-lg font-bold text-gray-800">
+            <p className="text-sm sm:text-base font-bold text-gray-800">
               {currency} {totalSpending.toLocaleString()}
             </p>
           </div>
@@ -36,7 +36,7 @@ const SummaryCards = ({ totalIncome, totalSpending, remaining, currency }) => {
 
       {/* Remaining Balance Card */}
       <div
-        className={`bg-white p-4 rounded-xl shadow-sm border ${
+        className={`bg-white p-3 sm:p-4 rounded-xl shadow-sm border ${
           remaining >= 0 ? "border-green-200" : "border-orange-200"
         }`}
       >
@@ -59,7 +59,7 @@ const SummaryCards = ({ totalIncome, totalSpending, remaining, currency }) => {
               {remaining >= 0 ? "Remaining" : "Over Budget"}
             </p>
             <p
-              className={`text-base sm:text-lg font-bold ${
+              className={`text-sm sm:text-base font-bold ${
                 remaining >= 0 ? "text-green-700" : "text-orange-700"
               }`}
             >

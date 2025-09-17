@@ -135,7 +135,7 @@ export default function Transactions() {
   // FUNCTIONS Mutating Data
   const handleAdd = async (data) => {
     addMutation.mutateAsync(data);
-    console.log(transactions);
+    
   };
 
   const handleEdit = (transaction) => {
@@ -171,7 +171,7 @@ export default function Transactions() {
     //showing loading when data is being fetched
     if (isLoading) {
       return (
-        <div className="flex justify-center items-center py-16">
+        <div className="min-h-screen flex justify-center items-center bg-white">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
         </div>
       );
@@ -234,9 +234,11 @@ export default function Transactions() {
 
   return (
     <div className="relative p-4 bg-white text-gray-900 min-h-screen">
-      <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded-md">
+      <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-3 sm:p-4 mb-6 rounded-md">
         <p className="font-bold">All Transactions</p>
-        <p>This is a comprehensive list of all your financial transactions. You can add new income or expenses, edit existing entries, and filter them by date, type, or category. Keeping your transaction list accurate is key to understanding your financial habits.</p>
+        <p className="text-sm">
+          A comprehensive list of your financial transactions. Add, edit, or filter entries by date, type, or category to understand your financial habits.
+        </p>
       </div>
       {/* Header */}
       <div className="flex justify-between items-center mb-4">

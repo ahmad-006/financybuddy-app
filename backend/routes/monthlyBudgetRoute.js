@@ -11,7 +11,7 @@ router
 
 router
   .route("/:id")
-  .delete(monthlyBudgetController.deleteMonthlyBudget)
-  .patch(monthlyBudgetController.updateMonthlyBudget);
+  .delete(addUserToBody, monthlyBudgetController.deleteMonthlyBudget)
+  .patch(addUserToBody, monthlyBudgetController.updateMonthlyBudget);
 
 module.exports = router;

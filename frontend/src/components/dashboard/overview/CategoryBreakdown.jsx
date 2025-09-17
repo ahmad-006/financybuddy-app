@@ -9,7 +9,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const CategoryBreakdown = ({ transactions, currency }) => {
+const CategoryBreakdown = ({ transactions, currency, isMobile }) => {
   // Calculate spending by category
   const spendingByCategory = transactions
     .filter((t) => t.type === "expense")
@@ -73,11 +73,14 @@ const CategoryBreakdown = ({ transactions, currency }) => {
   const renderLegend = (props) => {
     const { payload } = props;
     return (
-      <div className="flex flex-wrap justify-center gap-3 mt-4">
+      <div className="flex flex-wrap justify-center gap-2 mt-4">
         {payload.map((entry, index) => (
-          <div key={`legend-${index}`} className="flex items-center text-xs">
+          <div
+            key={`legend-${index}`}
+            className="flex items-center text-xs sm:text-sm"
+          >
             <div
-              className="w-3 h-3 rounded-full mr-2"
+              className="w-2.5 h-2.5 rounded-full mr-1.5"
               style={{ backgroundColor: entry.color }}
             />
             <span className="text-gray-700">{entry.value}</span>
@@ -91,20 +94,26 @@ const CategoryBreakdown = ({ transactions, currency }) => {
     <div>
       {chartData.length > 0 ? (
         <>
-          <div className="h-64">
+          <div className="h-64 sm:h-80">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={chartData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
+                  innerRadius={isMobile ? "30%" : "40%"}
+                  outerRadius={isMobile ? "60%" : "70%"}
                   paddingAngle={2}
                   dataKey="value"
-                  label={({ name, percentage }) =>
-                    percentage > 5 ? `${name}\n${percentage.toFixed(0)}%` : ""
-                  }
+                  // Adjust label display based on screen size
+                  label={({ percentage }) => {
+                    // Show percentage only if it's large enough or on desktop
+                    if (isMobile) {
+                      return percentage > 8 ? `${percentage.toFixed(0)}%` : "";
+                    } else {
+                      return percentage > 5 ? `${percentage.toFixed(0)}%` : "";
+                    }
+                  }}
                   labelLine={false}
                 >
                   {chartData.map((entry, index) => (
@@ -115,7 +124,13 @@ const CategoryBreakdown = ({ transactions, currency }) => {
                   ))}
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
-                <Legend content={renderLegend} />
+                <Legend
+                  content={renderLegend}
+                  layout="horizontal"
+                  align="center"
+                  verticalAlign="bottom"
+                  wrapperStyle={{ paddingTop: 20 }}
+                />
               </PieChart>
             </ResponsiveContainer>
           </div>

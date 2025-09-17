@@ -14,6 +14,8 @@ const EditBudgetModal = ({
   handleUpdateCategory,
   handleDeleteCategory,
   currency,
+  isUpdating,
+  isDeleting,
 }) => {
   const categories = [
     "Food",
@@ -103,27 +105,29 @@ const EditBudgetModal = ({
 
           <div className="flex justify-between items-center pt-4">
             <button
-              className="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+              className="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={() => {
                 handleDeleteCategory(editingCategory._id);
-                setEditingCategory(null);
               }}
+              disabled={isDeleting}
             >
-              Delete
+              {isDeleting ? "Deleting..." : "Delete"}
             </button>
 
             <div className="flex gap-3">
               <button
                 className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
                 onClick={() => setEditingCategory(null)}
+                disabled={isUpdating || isDeleting}
               >
                 Cancel
               </button>
               <button
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={handleUpdateCategory}
+                disabled={isUpdating}
               >
-                Update
+                {isUpdating ? "Updating..." : "Update"}
               </button>
             </div>
           </div>

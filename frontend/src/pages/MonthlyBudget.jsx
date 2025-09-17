@@ -29,6 +29,10 @@ const BudgetPage = () => {
     category: "",
     color: "#CCCCCC",
   });
+  const [isAdding, setIsAdding] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  
   const queryClient = useQueryClient();
   const showName = false;
 
@@ -65,20 +69,27 @@ const BudgetPage = () => {
     [transaction]
   );
 
-  console.log(monthlyBudgets, budgets);
+  
 
   //?Mutations functions
   const deleteMutation = useMutation({
     mutationFn: (id) => deleteMonthlyBudget(id),
+    onMutate: () => {
+      setIsDeleting(true);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["monthlyBudgets"],
         exact: true,
       });
       toast.success("Budget Deleted");
+      setEditingCategory(null);
     },
     onError: (err) => {
       toast.error(err.message || "Failed to delete budget");
+    },
+    onSettled: () => {
+      setIsDeleting(false);
     },
   });
 
@@ -90,22 +101,31 @@ const BudgetPage = () => {
         exact: true,
       });
       toast.success("Budget Added");
+      setShowAddModal(false);
     },
     onError: (err) => {
       toast.error(err.message || "Failed to Add budget");
     },
+    
   });
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => updateMonthlyBudget(id, data),
+    onMutate: () => {
+      setIsUpdating(true);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["monthlyBudgets"],
         exact: true,
       });
       toast.success("Budget Updated");
+      setEditingCategory(null);
     },
     onError: (err) => {
       toast.error(err.message || "Failed to update budget");
+    },
+    onSettled: () => {
+      setIsUpdating(false);
     },
   });
 
@@ -165,11 +185,12 @@ const BudgetPage = () => {
     return config[category] || { icon: "📁", color: "#CCCCCC" };
   };
 
-  const handleAddCategory = () => {
+  const handleAddCategory = async () => {
     if (!newCategory.title || newCategory.limit <= 0 || !newCategory.category) {
       return toast.info("please provide correct information");
     }
-    addMutation.mutate(newCategory);
+    setIsAdding(true);
+    await addMutation.mutateAsync(newCategory);
 
     setNewCategory({
       title: "",
@@ -177,10 +198,9 @@ const BudgetPage = () => {
       category: "",
       color: "#CCCCCC",
     });
-    setShowAddModal(false);
   };
 
-  const handleUpdateCategory = () => {
+  const handleUpdateCategory = async () => {
     if (
       !editingCategory.title ||
       editingCategory.limit <= 0 ||
@@ -191,14 +211,13 @@ const BudgetPage = () => {
     const { title, category, limit } = editingCategory;
 
     const data = { title, category: category.toLowerCase(), limit };
-    console.log("cate:", data);
+    
     const id = editingCategory._id;
-    updateMutation.mutate({ id, data });
-    setEditingCategory(null);
+    await updateMutation.mutateAsync({ id, data });
   };
 
-  const handleDeleteCategory = (id) => {
-    deleteMutation.mutate(id);
+  const handleDeleteCategory = async (id) => {
+    await deleteMutation.mutateAsync(id);
   };
 
   const totalAllocated = budgetCategories.reduce(
@@ -210,10 +229,10 @@ const BudgetPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-4 flex items-center justify-center">
+      <div className="min-h-screen bg-white p-4 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading budget data...</p>
+          <p className="mt-4 text-gray-700">Loading budget data...</p>
         </div>
       </div>
     );
@@ -221,14 +240,10 @@ const BudgetPage = () => {
 
   return (
     <div className="min-h-screen text-black bg-gray-50 p-4 sm:p-6">
-      <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded-md">
+      <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-3 sm:p-4 mb-6 rounded-md">
         <p className="font-bold">Monthly Budget Management</p>
-        <p>
-          Take control of your spending by creating and managing monthly budgets
-          for different categories. Set limits for categories like 'Food',
-          'Utilities', and 'Entertainment' to get a clear picture of where your
-          money is going. This page helps you stay on track with your financial
-          goals by visualizing your spending against your allocated budgets.
+        <p className="text-sm">
+          Control your spending by creating and managing monthly budgets for different categories. Stay on track with your financial goals.
         </p>
       </div>
       <div className="max-w-7xl mx-auto">
@@ -249,21 +264,24 @@ const BudgetPage = () => {
           currency={"PKR"}
         />
 
-        <div className="mt-6 grid grid-cols-1 xl:grid-cols-2 gap-6 min-h-[300px] flex-grow">
-          <BudgetList
-            budgetCategories={budgetCategories}
-            setEditingCategory={setEditingCategory}
-            currency={"PKR"}
-          />
-
-          <Charts
-            key={`${year}-${transactions.length}-${budgets.length}`}
-            budgetCategories={budgetCategories}
-            currency={"PKR"}
-            year={year}
-            budgets={budgets}
-            transactions={transactions}
-          />
+        <div className="mt-6 grid grid-cols-1 xl:grid-cols-5 gap-6">
+          <div className="xl:col-span-3">
+            <BudgetList
+              budgetCategories={budgetCategories}
+              setEditingCategory={setEditingCategory}
+              currency={"PKR"}
+            />
+          </div>
+          <div className="xl:col-span-2">
+            <Charts
+              key={`${year}-${transactions.length}-${budgets.length}`}
+              budgetCategories={budgetCategories}
+              currency={"PKR"}
+              year={year}
+              budgets={budgets}
+              transactions={transactions}
+            />
+          </div>
         </div>
 
         {showAddModal && (
@@ -273,6 +291,7 @@ const BudgetPage = () => {
             setShowAddModal={setShowAddModal}
             handleAddCategory={handleAddCategory}
             currency={"PKR"}
+            isAdding={isAdding}
           />
         )}
 
@@ -283,6 +302,8 @@ const BudgetPage = () => {
             handleUpdateCategory={handleUpdateCategory}
             handleDeleteCategory={handleDeleteCategory}
             currency={"PKR"}
+            isUpdating={isUpdating}
+            isDeleting={isDeleting}
           />
         )}
       </div>

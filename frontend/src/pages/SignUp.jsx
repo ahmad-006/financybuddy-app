@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faUser,
+  
   faEnvelope,
   faLock,
   faIdCard,
@@ -81,7 +81,7 @@ export default function SignUp() {
 
       setCurrentStep("signup");
     } catch (error) {
-      console.log(error);
+      
       setSignUpError(error.message || "OTP verification failed");
     } finally {
       setIsVerifying(false);

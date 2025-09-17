@@ -24,6 +24,7 @@ const RecurringTransactionModal = ({
   onSave,
   editingTransaction,
   onDelete,
+  isLoading,
 }) => {
   const {
     register,
@@ -79,8 +80,8 @@ const RecurringTransactionModal = ({
     }
   }, [editingTransaction, reset, setValue, categories]);
 
-  const onSubmit = (data) => {
-    onSave({
+  const onSubmit = async (data) => {
+    await onSave({
       ...data,
       id: editingTransaction ? editingTransaction.id : `rt${Date.now()}`,
     });
@@ -88,9 +89,9 @@ const RecurringTransactionModal = ({
     onOpenChange(false);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (editingTransaction && onDelete) {
-      onDelete(editingTransaction.id);
+      await onDelete(editingTransaction.id);
       onOpenChange(false);
     }
   };
@@ -273,8 +274,9 @@ const RecurringTransactionModal = ({
                 variant="destructive"
                 onClick={handleDelete}
                 className="w-full sm:w-auto"
+                disabled={isLoading}
               >
-                Delete
+                {isLoading ? "Deleting..." : "Delete"}
               </Button>
             )}
             <div className="flex gap-2">
@@ -289,8 +291,9 @@ const RecurringTransactionModal = ({
               <Button
                 type="submit"
                 className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
+                disabled={isLoading}
               >
-                {editingTransaction ? "Update" : "Add"} Recurring Transaction
+                {isLoading ? (editingTransaction ? "Updating..." : "Adding...") : (editingTransaction ? "Update" : "Add")} Recurring Transaction
               </Button>
             </div>
           </DialogFooter>

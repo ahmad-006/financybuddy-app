@@ -15,7 +15,11 @@ export default function ProtectedRoute({ children }) {
 
   // Still checking
   if (isVerified === null) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <p className="text-gray-700 text-lg">Verifying your session...</p>
+      </div>
+    );
   }
 
   if (!isVerified) {

@@ -1,13 +1,11 @@
 import { useForm } from "react-hook-form";
-import { useParams, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
 
 import { useState } from "react";
 import { resetForgotPassword } from "@/utils/fetchData";
 
 export default function ResetPassword() {
   const { token } = useParams();
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
@@ -24,14 +22,19 @@ export default function ResetPassword() {
     setIsLoading(true);
     setApiError(null); // Clear previous API errors
     try {
-      console.log("Resetting password with token:", token, "and data:", data);
+
       const { newPassword } = data;
       const res = await resetForgotPassword(token, newPassword);
 
       if (res && res.message && !res.response) {
         setSuccessMessage(res.message || "Password reset successfully!");
         setApiError(null);
-      } else if (res && res.response && res.response.data && res.response.data.message) {
+      } else if (
+        res &&
+        res.response &&
+        res.response.data &&
+        res.response.data.message
+      ) {
         setApiError(res.response.data.message);
         setSuccessMessage(null);
       } else if (res && res.message) {
@@ -42,8 +45,13 @@ export default function ResetPassword() {
         setSuccessMessage(null);
       }
     } catch (error) {
-      console.log(error);
-      if (error && error.response && error.response.data && error.response.data.message) {
+      
+      if (
+        error &&
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
         setApiError(error.response.data.message);
       } else if (error && error.message) {
         setApiError(error.message);
@@ -76,7 +84,9 @@ export default function ResetPassword() {
             )}
             {successMessage && (
               <div className="p-3 bg-green-900/30 border border-green-700 rounded-lg">
-                <p className="text-green-400 text-sm text-center">{successMessage}</p>
+                <p className="text-green-400 text-sm text-center">
+                  {successMessage}
+                </p>
               </div>
             )}
             <div className="space-y-2">

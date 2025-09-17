@@ -21,7 +21,7 @@ function getCurrentDate() {
   return `${day} ${month} ${year}`;
 }
 
-console.log(getCurrentDate());
+
 
 const calcSpending = (transactions, userId, category) => {
   return transactions

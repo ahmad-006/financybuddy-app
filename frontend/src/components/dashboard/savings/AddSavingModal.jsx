@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
 
-const AddSavingModal = ({ onClose, onSave, editingSaving, onDelete }) => {
+const AddSavingModal = ({ onClose, onSave, editingSaving, onDelete, isLoading }) => {
   const {
     register,
     handleSubmit,
@@ -36,17 +36,17 @@ const AddSavingModal = ({ onClose, onSave, editingSaving, onDelete }) => {
     }
   }, [editingSaving, reset, setValue]);
 
-  const onSubmit = (data) => {
-    onSave({
+  const onSubmit = async (data) => {
+    await onSave({
       ...data,
     });
     onClose();
     reset();
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (editingSaving && onDelete) {
-      onDelete(editingSaving._id);
+      await onDelete(editingSaving._id);
       onClose();
     }
   };
@@ -121,8 +121,9 @@ const AddSavingModal = ({ onClose, onSave, editingSaving, onDelete }) => {
                 variant="destructive"
                 onClick={handleDelete}
                 className="w-full sm:w-auto"
+                disabled={isLoading}
               >
-                Delete
+                {isLoading ? "Deleting..." : "Delete"}
               </Button>
             )}
             <div className="flex gap-2">
@@ -137,8 +138,9 @@ const AddSavingModal = ({ onClose, onSave, editingSaving, onDelete }) => {
               <Button
                 type="submit"
                 className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
+                disabled={isLoading}
               >
-                {editingSaving ? "Update" : "Add"} Saving
+                {isLoading ? (editingSaving ? "Updating..." : "Adding...") : (editingSaving ? "Update" : "Add")} Saving
               </Button>
             </div>
           </DialogFooter>

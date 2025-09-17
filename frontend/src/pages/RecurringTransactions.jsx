@@ -18,18 +18,23 @@ const RecurringTransactions = () => {
 
   const queryClient = useQueryClient();
 
-  // Fetch recurring transactions
-  const { data: transactions, error: fetchError } = useQuery({
+  // Fetch recurring transactions with loading state
+  const {
+    data: transactions,
+    error: fetchError,
+    isLoading,
+  } = useQuery({
     queryKey: ["recurringTransactions"],
     queryFn: fetchRecurringTransactions,
   });
 
-  if (fetchError)
+  if (fetchError) {
     toast.error(fetchError?.message || "Error fetching transactions");
+  }
 
   // Normalize id
   const recurringTransactions =
-    transactions?.transactions.map((t) => ({
+    transactions?.transactions?.map((t) => ({
       ...t,
       id: t.id || t._id,
     })) || [];
@@ -41,7 +46,6 @@ const RecurringTransactions = () => {
       queryClient.invalidateQueries({ queryKey: ["recurringTransactions"] });
       toast.success("Recurring transaction added successfully");
     },
-
     onError: (err) => toast.error(err.message),
   });
 
@@ -79,7 +83,6 @@ const RecurringTransactions = () => {
       nextDate,
       isActive,
     };
-    console.log(data);
 
     if (editingRecurringTransaction?.id) {
       updateMutation.mutate({ id: editingRecurringTransaction.id, data });
@@ -112,19 +115,41 @@ const RecurringTransactions = () => {
     }
   };
 
+  // Show loading state while data is being fetched
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 text-black p-4 sm:p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-bold text-gray-900">
+              Recurring Transactions
+            </h1>
+            <button
+              disabled
+              className="bg-blue-400 text-white px-4 py-2 rounded-lg shadow-md cursor-not-allowed"
+            >
+              <Plus className="inline-block w-5 h-5 mr-2" />
+              Add New
+            </button>
+          </div>
+
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+              <p className="mt-4 text-gray-600">Loading transactions...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 text-black p-4 sm:p-6">
-      <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded-md">
+      <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-3 sm:p-4 mb-6 rounded-md">
         <p className="font-bold">Recurring Transactions Management</p>
-        <p>
-          Automate your finances by managing recurring transactions. This page
-          is for expenses and incomes that happen regularly, like monthly
-          subscriptions (Netflix, Spotify), weekly allowances, or regular bill
-          payments. By setting them up here, the application can automatically
-          add them to your transaction list on the scheduled date, so you don't
-          have to enter them manually every time. You can also pause or resume
-          them as needed. This gives you a more accurate picture of your future
-          cash flow.
+        <p className="text-sm">
+          Automate your finances by managing recurring transactions. Set up regular expenses and incomes to automatically add them to your transaction list.
         </p>
       </div>
       <div className="max-w-7xl mx-auto">
@@ -161,7 +186,8 @@ const RecurringTransactions = () => {
                 No recurring transactions yet
               </h3>
               <p className="text-gray-500 max-w-xs mx-auto">
-                Click "Add New" to set up transactions that repeat automatically.
+                Click "Add New" to set up transactions that repeat
+                automatically.
               </p>
             </div>
           )}

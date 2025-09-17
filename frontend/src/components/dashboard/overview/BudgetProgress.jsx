@@ -32,7 +32,7 @@ const BudgetProgress = ({ budgets, transactions, currency }) => {
   return (
     <div className="space-y-3">
       {budgetsWithProgress.map((budget) => (
-        <div key={budget._id} className="bg-gray-50 p-3 rounded-lg">
+        <div key={budget.title} className="bg-gray-50 p-3 rounded-lg">
           {/* Header */}
           <div className="flex justify-between items-center mb-2">
             <span className="font-medium text-gray-800 text-sm sm:text-base truncate pr-2 uppercase">

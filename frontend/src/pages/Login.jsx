@@ -36,7 +36,7 @@ export default function Login() {
       });
       if (response.status !== "success") throw new Error(response);
       navigate("/dashboard");
-      console.log("Login successful:", response);
+
     } catch (error) {
       const errorMessage = error.message || "Login failed, please try again";
       setLoginError(errorMessage);
@@ -59,7 +59,7 @@ export default function Login() {
   //   if (error) {
   //     console.error("Google login error:", error.message);
   //   } else {
-  //     console.log("Google login started:", data);
+  
   //   }
   // };
 
@@ -75,7 +75,7 @@ export default function Login() {
   //   if (error) {
   //     console.error("GitHub login error:", error.message);
   //   } else {
-  //     console.log("GitHub login started:", data);
+  
   //   }
   // };
 

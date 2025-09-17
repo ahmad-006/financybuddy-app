@@ -79,7 +79,7 @@ export default function TransactionCard({ transaction, onEdit, onDelete }) {
 
   return (
     <div
-      className={`w-full ${bgColor} ${borderColor} p-3 sm:p-4 rounded-lg border shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3`}
+      className={`w-full ${bgColor} ${borderColor} p-3 sm:p-4 rounded-lg border shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:shadow-md hover:scale-[1.01] transition-all duration-200`}
     >
       <div className="flex items-center gap-3 w-full sm:w-auto">
         <div
@@ -132,16 +132,16 @@ export default function TransactionCard({ transaction, onEdit, onDelete }) {
         </div>
 
         {(onEdit || onDelete) && (
-          <div className="flex gap-1 sm:gap-2 ml-2">
+          <div className="flex gap-2 sm:gap-3 ml-2">
             {onEdit && (
               <button
                 onClick={() => onEdit(transaction)}
-                className="p-1.5 sm:p-2 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200 transition-colors flex-shrink-0"
+                className="p-2 sm:p-2.5 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200 transition-colors flex-shrink-0"
                 aria-label="Edit transaction"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-3 w-3 sm:h-4 sm:w-4"
+                  className="h-4 w-4 sm:h-5 sm:w-5"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -158,12 +158,12 @@ export default function TransactionCard({ transaction, onEdit, onDelete }) {
             {onDelete && (
               <button
                 onClick={() => onDelete(transaction._id)}
-                className="p-1.5 sm:p-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200 transition-colors flex-shrink-0"
+                className="p-2 sm:p-2.5 bg-red-100 text-red-600 rounded-full hover:bg-red-200 transition-colors flex-shrink-0"
                 aria-label="Delete transaction"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-3 w-3 sm:h-4 sm:w-4"
+                  className="h-4 w-4 sm:h-5 sm:w-5"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"

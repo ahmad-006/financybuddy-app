@@ -1,8 +1,19 @@
-/* eslint-disable no-unused-vars */
 import axios from "axios";
 import { toast } from "react-toastify";
 axios.defaults.withCredentials = true; // 👈 allow cookies in all requests
 
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 // const baseURL = "http://localhost:8000";
 const baseURL = "https://backend-test-lac.vercel.app";
 // const baseURL = "https://financybuddy-app-production.up.railway.app";
@@ -57,7 +68,6 @@ const addMonthlyBudget = async (data) => {
 const updateMonthlyBudget = async (id, data) => {
   const res = await axios.patch(`${baseURL}/api/v1/monthlyBudgets/${id}`, data);
   if (!res.data) {
-    console.log("hello");
     throw new Error("Failed to update transaction");
   }
 
@@ -93,7 +103,6 @@ const addSpecialBudget = async (data) => {
 const updateSpecialBudget = async (id, data) => {
   const res = await axios.patch(`${baseURL}/api/v1/specialBudgets/${id}`, data);
   if (!res.data) {
-    console.log("hello");
     throw new Error("Failed to update transaction");
   }
 
@@ -181,9 +190,10 @@ const verifyOTP = async (data) => {
     const res = await axios.post(`${baseURL}/api/v1/auth/verify-otp`, data, {
       withCredentials: true,
     });
-    console.log(res);
+
     if (!res.data) throw new Error(res.data.message);
-    return res.data; // { status, message }
+    localStorage.setItem("jwtToken", res.data.token); // Store the token
+    return res.data; // { status, message, token }
   } catch (error) {
     toast.error(error?.response?.data?.message || error.message);
     return error?.response?.data?.message || error;
@@ -196,8 +206,10 @@ const loginUser = async (data) => {
     const res = await axios.post(`${baseURL}/api/v1/auth/login`, data, {
       withCredentials: true,
     });
+
     if (!res.data) throw new Error(res.data.message);
-    return res.data; // { status, message }
+    localStorage.setItem("jwtToken", res.data.token); // Store the token
+    return res.data; // { status, message, token }
   } catch (error) {
     toast.error(error?.response?.data?.message || error.message);
     return error?.response?.data?.message || error;
@@ -213,6 +225,7 @@ const logoutUser = async () => {
       { withCredentials: true }
     );
     if (!res.data) throw new Error(res.data.message);
+    localStorage.removeItem("jwtToken"); // Remove the token
     return res.data; // { status, message }
   } catch (error) {
     toast.error(error?.response?.data?.message || error.message);
@@ -223,12 +236,12 @@ const logoutUser = async () => {
 // Verify user (check if JWT cookie is valid)
 const verifyUser = async () => {
   try {
-    const res = await axios.get(`${baseURL}/api/v1/auth/verify`, {
-      withCredentials: true,
-    });
+    const res = await axios.get(`${baseURL}/api/v1/auth/verify`);
+
     if (!res.data) throw new Error(res.data.message);
     return true; // { status, message }
   } catch (error) {
+    console.error("Verify User Error:", error);
     return false;
   }
 };
@@ -291,7 +304,6 @@ const sendPasswordResetLink = async (email) => {
 };
 
 const resetForgotPassword = async (token, newPassword) => {
-  console.log(`${baseURL}/api/v1/users/reset-password/${token}`, newPassword);
   try {
     const res = await axios.post(
       `${baseURL}/api/v1/users/reset-password/${token}`,

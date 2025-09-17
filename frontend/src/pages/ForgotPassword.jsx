@@ -1,7 +1,7 @@
 import { sendPasswordResetLink } from "@/utils/fetchData";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { toast } from "react-toastify";
+
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");

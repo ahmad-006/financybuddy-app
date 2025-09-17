@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 import { format } from "date-fns";
 
-const SpecialBudgetModal = ({ onClose, onSave, editingBudget, onDelete }) => {
+const SpecialBudgetModal = ({ onClose, onSave, editingBudget, onDelete, isLoading }) => {
   const {
     register,
     handleSubmit,
@@ -83,8 +83,8 @@ const SpecialBudgetModal = ({ onClose, onSave, editingBudget, onDelete }) => {
     }
   }, [editingBudget, reset, setValue]);
 
-  const onSubmit = (data) => {
-    onSave({
+  const onSubmit = async (data) => {
+    await onSave({
       ...data,
       id: editingBudget ? editingBudget.id : `sb${Date.now()}`,
     });
@@ -92,9 +92,9 @@ const SpecialBudgetModal = ({ onClose, onSave, editingBudget, onDelete }) => {
     reset();
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (editingBudget && onDelete) {
-      onDelete(editingBudget.id);
+      await onDelete(editingBudget.id);
       onClose();
     }
   };
@@ -236,8 +236,9 @@ const SpecialBudgetModal = ({ onClose, onSave, editingBudget, onDelete }) => {
                 variant="destructive"
                 onClick={handleDelete}
                 className="w-full sm:w-auto"
+                disabled={isLoading}
               >
-                Delete
+                {isLoading ? "Deleting..." : "Delete"}
               </Button>
             )}
             <div className="flex gap-2">
@@ -252,8 +253,9 @@ const SpecialBudgetModal = ({ onClose, onSave, editingBudget, onDelete }) => {
               <Button
                 type="submit"
                 className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
+                disabled={isLoading}
               >
-                {editingBudget ? "Update" : "Add"} Special Budget
+                {isLoading ? (editingBudget ? "Updating..." : "Adding...") : (editingBudget ? "Update" : "Add")} Special Budget
               </Button>
             </div>
           </DialogFooter>

@@ -16,7 +16,7 @@ router
 
 router
   .route("/:id")
-  .delete(recurringTransactionController.deleteRecurringTransaction)
-  .patch(recurringTransactionController.updateRecurringTransaction);
+  .delete(addUserToBody, recurringTransactionController.deleteRecurringTransaction)
+  .patch(addUserToBody, recurringTransactionController.updateRecurringTransaction);
 
 module.exports = router;

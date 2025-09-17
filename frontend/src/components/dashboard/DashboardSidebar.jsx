@@ -91,7 +91,7 @@ const DashboardSidebar = () => {
                 <NavLink
                   to={item.path}
                   className={({ isActive }) =>
-                    `flex items-center p-3 rounded-lg transition-colors
+                    `flex items-center p-2 rounded-lg transition-colors
                     ${
                       isActive
                         ? "bg-blue-600 text-white"
@@ -113,7 +113,7 @@ const DashboardSidebar = () => {
           <NavLink
             to="/user-profile"
             className={({ isActive }) =>
-              `flex items-center p-3 rounded-lg transition-colors mb-2
+              `flex items-center p-2 rounded-lg transition-colors mb-2
               ${
                 isActive
                   ? "bg-stone-700 text-white"
@@ -128,7 +128,7 @@ const DashboardSidebar = () => {
 
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center justify-center p-3 rounded-lg bg-stone-700 hover:bg-red-600 text-white transition-colors"
+            className="w-full flex items-center justify-center p-2 rounded-lg bg-stone-700 hover:bg-red-600 text-white transition-colors"
           >
             <FontAwesomeIcon icon={faSignOutAlt} className="w-5 h-5" />
             {isOpen && <span className="ml-3">Sign Out</span>}

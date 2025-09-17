@@ -46,6 +46,20 @@ const Dashboard = () => {
     () => transaction?.transactions || [],
     [transaction]
   );
+
+  // Filter transactions for the last 4 months for the chart
+  const fourMonthsAgo = useMemo(() => {
+    const date = new Date();
+    date.setMonth(date.getMonth() - 3); // Current month + 3 previous months = 4 months
+    date.setDate(1); // Start from the first day of that month
+    date.setHours(0, 0, 0, 0);
+    return date;
+  }, []);
+
+  const chartTransactions = useMemo(() => {
+    return transactions.filter((t) => new Date(t.date) >= fourMonthsAgo);
+  }, [transactions, fourMonthsAgo]);
+
   const currency = "PKR";
 
   // Calculate totals
@@ -100,21 +114,19 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="bg-gray-50 p-6">
-      <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded-md">
+    <div className="bg-gray-50 p-4 sm:p-6 pb-20">
+      <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-3 sm:p-4 mb-6 rounded-md">
         <p className="font-bold">Your Financial Command Center</p>
-        <p>
-          This is your financial command center. Get a quick overview of your
-          total income, expenses, and remaining balance. Track your recent
-          transactions, visualize your spending habits with charts, and see how
-          you're progressing against your budgets at a glance. Use this page to
-          stay on top of your financial health.
+        <p className="text-sm">
+          Get a quick overview of your income, expenses, and budget progress.
+          Track transactions, visualize spending, and stay on top of your
+          financial health.
         </p>
       </div>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
             Financial Dashboard
           </h1>
           {user && (
@@ -122,9 +134,9 @@ const Dashboard = () => {
           )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left Column */}
-          <div className="space-y-6">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
+          {/* Left Column - Takes 2/3 width */}
+          <div className="xl:col-span-2 space-y-4 sm:space-y-6">
             <SummaryCards
               totalIncome={totalIncome}
               totalSpending={totalSpending}
@@ -132,14 +144,19 @@ const Dashboard = () => {
               currency={currency}
             />
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-xl font-semibold text-gray-800 mb-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4 sm:mb-6">
                 Income vs Spending
               </h2>
-              <Chart transactions={transactions} currency={currency} />
+              <div className="w-full h-72 sm:h-96">
+                <Chart
+                  transactions={chartTransactions}
+                  currency={currency}
+                />
+              </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">
                 Recent Transactions
               </h2>
@@ -150,9 +167,9 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Right Column */}
-          <div className="space-y-6">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          {/* Right Column - Takes 1/3 width */}
+          <div className="space-y-4 sm:space-y-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
               <div className="mb-4">
                 <h2 className="text-xl font-semibold text-gray-800">
                   Budget Progress
@@ -169,14 +186,16 @@ const Dashboard = () => {
               />
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">
                 Spending by Category
               </h2>
-              <CategoryBreakdown
-                transactions={transactions}
-                currency={currency}
-              />
+              <div className="w-full h-72 sm:h-96">
+                <CategoryBreakdown
+                  transactions={transactions}
+                  currency={currency}
+                />
+              </div>
             </div>
           </div>
         </div>

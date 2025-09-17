@@ -24,6 +24,7 @@ export default function TransactionModal({
   onSave,
   editingTransaction,
   onDelete,
+  isLoading,
 }) {
   const {
     register,
@@ -72,7 +73,7 @@ export default function TransactionModal({
               format(new Date(editingTransaction.date), "yyyy-MM-dd")
             );
           } catch (e) {
-            console.log(e);
+            console.error("Error formatting date:", e);
             setValue("date", format(new Date(), "yyyy-MM-dd"));
           }
         }
@@ -108,9 +109,9 @@ export default function TransactionModal({
     }
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (editingTransaction && onDelete) {
-      onDelete(editingTransaction._id);
+      await onDelete(editingTransaction._id);
       onOpenChange(false);
     }
   };
@@ -272,8 +273,9 @@ export default function TransactionModal({
                   variant="destructive"
                   onClick={handleDelete}
                   className="w-full sm:w-auto"
+                  disabled={isLoading}
                 >
-                  Delete
+                  {isLoading ? "Deleting..." : "Delete"}
                 </Button>
               )}
             </div>
@@ -289,8 +291,9 @@ export default function TransactionModal({
               <Button
                 type="submit"
                 className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
+                disabled={isLoading}
               >
-                {editingTransaction ? "Update" : "Add"} Transaction
+                {isLoading ? (editingTransaction ? "Updating..." : "Adding...") : (editingTransaction ? "Update" : "Add")} Transaction
               </Button>
             </div>
           </DialogFooter>

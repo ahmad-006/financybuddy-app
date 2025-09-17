@@ -6,8 +6,12 @@ module.exports = (req, res, next) => {
     // Ensure body exists
     if (!req.body) req.body = {};
 
-    // Get token from cookies
-    const token = req.cookies?.token;
+    // Get token from Authorization header
+    let token;
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+      token = req.headers.authorization.split(' ')[1];
+    }
+
     if (!token) {
       return res
         .status(401)

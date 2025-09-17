@@ -23,7 +23,7 @@ const TransactionDetails = ({ transactions = [], currency = "$" }) => {
           .sort((a, b) => new Date(b.date) - new Date(a.date))
           .map((transaction) => (
             <div
-              key={transaction.id}
+              key={transaction._id}
               className="flex items-center justify-between p-3 border-b border-gray-100 last:border-b-0"
             >
               <div className="flex items-center">

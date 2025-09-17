@@ -24,11 +24,10 @@ const register = async (req, res) => {
     const otp = crypto.randomInt(100000, 900000).toString();
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    ////
-
     await PendingUser.create({
       name,
       email,
+
       password: hashedPassword,
       otp,
       otpExpiresAt: Date.now() + 5 * 60 * 1000,
@@ -55,6 +54,8 @@ const otpVerify = async (req, res) => {
   try {
     const { email, otp } = req.body;
     const record = await PendingUser.findOne({ email });
+
+    //if no user
     if (!record)
       return res.status(400).json({ message: "No pending registration" });
 
@@ -63,15 +64,11 @@ const otpVerify = async (req, res) => {
 
     const user = await User.create({
       email: record.email,
-      password: record.password, // already hashed
+      password: record.password,
       name: record.name,
     });
 
     await PendingUser.deleteOne({ email });
-
-    // Send welcome email
-    const welcomeHtml = generateWelcomeEmailHtml(user.name);
-    await sendMail(user.email, "Welcome to FinancyBuddy!", null, welcomeHtml);
 
     const token = jwt.sign(
       { id: user._id, email: user.email },
@@ -79,13 +76,13 @@ const otpVerify = async (req, res) => {
       { expiresIn: "1d" }
     );
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-    });
-
-    res.status(200).json({ status: "success" });
+    res
+      .status(200)
+      .json({
+        status: "success",
+        token,
+        user: { id: user._id, email: user.email, name: user.name },
+      });
   } catch (err) {
     res.status(400).json({ status: "fail", message: err.message });
   }
@@ -138,15 +135,11 @@ const login = async (req, res) => {
       { expiresIn: "1d" }
     );
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-    });
-
     res.status(200).json({
       status: "success",
       message: "User logged in",
+      token,
+      user: { id: user._id, email: user.email, name: user.name },
     });
   } catch (err) {
     console.error("Login error:", err);
@@ -158,13 +151,6 @@ const login = async (req, res) => {
 };
 
 const signOut = (req, res) => {
-  // Clear the JWT cookie
-  res.clearCookie("token", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-  });
-
   return res.status(200).json({
     status: "success",
     message: "User logged out successfully",
@@ -172,7 +158,11 @@ const signOut = (req, res) => {
 };
 
 const verifyUser = (req, res) => {
-  const token = req.cookies.token;
+  let token;
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+
   if (!token)
     return res
       .status(401)

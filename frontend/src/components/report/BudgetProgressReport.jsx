@@ -28,7 +28,7 @@ const BudgetProgressReport = ({
       </h3>
       <div className="space-y-3">
         {budgetsWithProgress.map((budget) => (
-          <div key={budget.id} className="bg-gray-50 p-3 rounded-lg">
+          <div key={budget._id} className="bg-gray-50 p-3 rounded-lg">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm font-medium text-gray-800">
                 {budget.category}

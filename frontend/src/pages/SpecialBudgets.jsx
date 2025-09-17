@@ -3,6 +3,7 @@ import { Plus } from "lucide-react";
 import SpecialBudgetModal from "../components/dashboard/budget/SpecialBudgetModal";
 import BudgetSummary from "../components/dashboard/budget/BudgetSummary";
 import BudgetList from "../components/dashboard/budget/BudgetList";
+import BudgetCategory from "../components/dashboard/budget/BudgetCategory";
 import { toast } from "react-toastify";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -20,6 +21,7 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
   const [transfornedSpecialBudgets, setTransformedSpecialBudgets] = useState(
     []
   );
+  
   const [user, setUser] = useState({});
 
   //effect to get current USER
@@ -67,7 +69,6 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
     [transaction]
   );
 
-  console.log(budgets);
   //?Mutations functions
   const deleteMutation = useMutation({
     mutationFn: (id) => deleteSpecialBudget(id),
@@ -138,7 +139,7 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
         const categoryConfig = getCategoryConfig(budget.category);
 
         return {
-          id: budget._id,
+          _id: budget._id,
           title: budget.title,
           category: budget.category,
           limit: parseFloat(budget.limit) || 0,
@@ -173,7 +174,6 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
 
   const handleSaveSpecialBudget = async (budgetData) => {
     if (editingSpecialBudget) {
-      console.log(budgetData);
       const { id, limit, startDate, endDate, category, title } = budgetData;
       const data = {
         limit,
@@ -184,27 +184,21 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
       };
       updateMutation.mutate({ id, data });
     } else {
-      try {
-        console.log("sending");
-        const { limit, startDate, endDate, category, title } = budgetData;
-        const data = {
-          limit,
-          startDate,
-          endDate,
-          category: category.toLowerCase(),
-          title,
-        };
-        addMutation.mutate(data);
-      } catch (error) {
-        console.log(error);
-      }
+      const { limit, startDate, endDate, category, title } = budgetData;
+      const data = {
+        limit,
+        startDate,
+        endDate,
+        category: category.toLowerCase(),
+        title,
+      };
+      addMutation.mutate(data);
     }
     setShowModal(false);
     setEditingSpecialBudget(null);
   };
 
   const handleEditSpecialBudget = (budget) => {
-    console.log(budget);
     setEditingSpecialBudget(budget);
     setShowModal(true);
   };
@@ -225,10 +219,10 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-4 flex items-center justify-center">
+      <div className="min-h-screen bg-white p-4 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading special budget data...</p>
+          <p className="mt-4 text-gray-700">Loading special budget data...</p>
         </div>
       </div>
     );
@@ -236,25 +230,22 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
 
   return (
     <div className="min-h-screen text-black bg-gray-50 p-4 sm:p-6">
-      <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded-md">
+      <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-3 sm:p-4 mb-6 rounded-md">
         <p className="font-bold">Special Budgets</p>
-        <p>
-          Plan for unique, one-time expenses with Special Budgets. This is
-          perfect for events like vacations, projects, or large purchases that
-          don't fit into your regular monthly budget. Set a specific timeframe
-          and amount for each special budget to track your spending and stay on
-          target for your big goals.
+        <p className="text-sm">
+          Plan for unique, one-time expenses. Set a timeframe and amount to
+          track spending for vacations, projects, or large purchases.
         </p>
       </div>
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 ">Special Budgets</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Special Budgets</h1>
           <button
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition-colors"
+            className="bg-blue-600 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg shadow-md hover:bg-blue-700 transition-colors flex items-center"
             onClick={() => setShowModal(true)}
           >
-            <Plus className="inline-block w-5 h-5 mr-2" />
-            Add New Special Budget
+            <Plus className="w-5 h-5 sm:mr-2" />
+            <span className="hidden sm:inline">Add New Special Budget</span>
           </button>
         </div>
 
@@ -265,7 +256,7 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
           currency={currentUser?.currency}
         />
 
-        <div>
+        <div className="grid grid-cols-1 gap-4">
           {" "}
           <BudgetList
             budgetCategories={transfornedSpecialBudgets}
@@ -287,6 +278,7 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
             editingBudget={editingSpecialBudget}
             onDelete={handleDeleteSpecialBudget}
             currency={currentUser?.currency}
+            isLoading={addMutation.isPending || updateMutation.isPending || deleteMutation.isPending}
           />
         )}
       </div>

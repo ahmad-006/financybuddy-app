@@ -18,7 +18,7 @@ const RecentTransactions = ({ transactions, currency }) => {
     <div className="space-y-3">
       {transactions.map((transaction) => (
         <div
-          key={transaction.id}
+          key={transaction._id}
           className="flex items-center justify-between p-4 border-b border-gray-100 last:border-b-0"
         >
           <div className="flex items-center">
