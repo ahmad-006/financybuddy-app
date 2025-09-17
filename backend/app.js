@@ -6,16 +6,12 @@ const morgan = require("morgan");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
-const RecurringTransactions = require("./src/models/recurringTransactionModel");
-const Transaction = require("./src/models/transactionModel");
-const authRouter = require("./src/routes/authRoute");
-const monthlyBudgetRouter = require("./src/routes/monthlyBudgetRoute");
-const transactionRouter = require("./src/routes/transactionRoute");
-const SpecialBudgetRouter = require("./src/routes/specialBudgetRoute");
-const recurringTransactionRouter = require("./src/routes/recurringTransactionRoute");
-const userRouter = require("./src/routes/userRoute");
-
-const scheduleTransactions = require("./src/config/cronjob");
+const authRouter = require("./routes/authRoute");
+const monthlyBudgetRouter = require("./routes/monthlyBudgetRoute");
+const transactionRouter = require("./routes/transactionRoute");
+const SpecialBudgetRouter = require("./routes/specialBudgetRoute");
+const recurringTransactionRouter = require("./routes/recurringTransactionRoute");
+const userRouter = require("./routes/userRoute");
 
 //? built-in MIDDLEWARES
 app.use(

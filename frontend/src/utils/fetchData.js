@@ -3,9 +3,11 @@ import axios from "axios";
 import { toast } from "react-toastify";
 axios.defaults.withCredentials = true; // 👈 allow cookies in all requests
 
+const baseURL = "http://localhost:8000";
+
 // Fetch all transactions
 const fetchTransactions = async () => {
-  const res = await axios.get("http://localhost:8000/api/v1/transactions");
+  const res = await axios.get(`${baseURL}/api/v1/transactions`);
   if (!res.data) throw new Error("No transactions found");
   return res.data.data; // { data: { ... } }
 };
@@ -13,7 +15,7 @@ const fetchTransactions = async () => {
 // Add a new transaction
 const addTransaction = async (data) => {
   const res = await axios.post(
-    "http://localhost:8000/api/v1/transactions",
+    `${baseURL}/api/v1/transactions`,
     data
   );
   if (!res.data) throw new Error("Failed to add transaction");
@@ -23,7 +25,7 @@ const addTransaction = async (data) => {
 // Update a transaction
 const updateTransaction = async (id, data) => {
   const res = await axios.patch(
-    `http://localhost:8000/api/v1/transactions/${id}`,
+    `${baseURL}/api/v1/transactions/${id}`,
     data
   );
   if (!res.data) throw new Error("Failed to update transaction");
@@ -32,13 +34,13 @@ const updateTransaction = async (id, data) => {
 
 // Delete a transaction
 const deleteTransaction = async (id) => {
-  await axios.delete(`http://localhost:8000/api/v1/transactions/${id}`);
+  await axios.delete(`${baseURL}/api/v1/transactions/${id}`);
   return id; // return the deleted ID to update cache
 };
 
 // Fetch budgets
 const fetchMonthlyBudgets = async () => {
-  const res = await axios.get("http://localhost:8000/api/v1/monthlyBudgets");
+  const res = await axios.get(`${baseURL}/api/v1/monthlyBudgets`);
   if (!res.data) throw new Error("No special budgets found");
 
   return res.data.data;
@@ -47,7 +49,7 @@ const fetchMonthlyBudgets = async () => {
 const addMonthlyBudget = async (data) => {
   try {
     const res = await axios.post(
-      "http://localhost:8000/api/v1/monthlyBudgets",
+      `${baseURL}/api/v1/monthlyBudgets`,
       data
     );
     if (!res.data) throw new Error("Failed to add transaction");
@@ -61,7 +63,7 @@ const addMonthlyBudget = async (data) => {
 // Update a Budget
 const updateMonthlyBudget = async (id, data) => {
   const res = await axios.patch(
-    `http://localhost:8000/api/v1/monthlyBudgets/${id}`,
+    `${baseURL}/api/v1/monthlyBudgets/${id}`,
     data
   );
   if (!res.data) {
@@ -74,13 +76,13 @@ const updateMonthlyBudget = async (id, data) => {
 
 // Delete a Budget
 const deleteMonthlyBudget = async (id) => {
-  await axios.delete(`http://localhost:8000/api/v1/monthlyBudgets/${id}`);
+  await axios.delete(`${baseURL}/api/v1/monthlyBudgets/${id}`);
   return id; // return the deleted ID to update cache
 };
 
 // Fetch budgets
 const fetchSpecialBudgets = async () => {
-  const res = await axios.get("http://localhost:8000/api/v1/specialBudgets");
+  const res = await axios.get(`${baseURL}/api/v1/specialBudgets`);
   if (!res.data) throw new Error("No special budgets found");
 
   return res.data.data;
@@ -89,7 +91,7 @@ const fetchSpecialBudgets = async () => {
 const addSpecialBudget = async (data) => {
   try {
     const res = await axios.post(
-      "http://localhost:8000/api/v1/specialBudgets",
+      `${baseURL}/api/v1/specialBudgets`,
       data
     );
     if (!res.data) throw new Error("Failed to add transaction");
@@ -103,7 +105,7 @@ const addSpecialBudget = async (data) => {
 // Update a Budget
 const updateSpecialBudget = async (id, data) => {
   const res = await axios.patch(
-    `http://localhost:8000/api/v1/specialBudgets/${id}`,
+    `${baseURL}/api/v1/specialBudgets/${id}`,
     data
   );
   if (!res.data) {
@@ -116,7 +118,7 @@ const updateSpecialBudget = async (id, data) => {
 
 // Delete a Budget
 const deleteSpecialBudget = async (id) => {
-  await axios.delete(`http://localhost:8000/api/v1/specialBudgets/${id}`);
+  await axios.delete(`${baseURL}/api/v1/specialBudgets/${id}`);
   return id; // return the deleted ID to update cache
 };
 
@@ -124,7 +126,7 @@ const deleteSpecialBudget = async (id) => {
 const fetchRecurringTransactions = async () => {
   try {
     const res = await axios.get(
-      "http://localhost:8000/api/v1/recurringTransactions"
+      `${baseURL}/api/v1/recurringTransactions`
     );
     if (!res.data) throw new Error("No recurring transactions found");
     return res.data.data; // assuming API returns { data: [...] }
@@ -138,7 +140,7 @@ const fetchRecurringTransactions = async () => {
 const addRecurringTransaction = async (data) => {
   try {
     const res = await axios.post(
-      "http://localhost:8000/api/v1/recurringTransactions",
+      `${baseURL}/api/v1/recurringTransactions`,
       data
     );
     if (!res.data) throw new Error("Failed to add recurring transaction");
@@ -153,7 +155,7 @@ const addRecurringTransaction = async (data) => {
 const updateRecurringTransaction = async (id, data) => {
   try {
     const res = await axios.patch(
-      `http://localhost:8000/api/v1/recurringTransactions/${id}`,
+      `${baseURL}/api/v1/recurringTransactions/${id}`,
       data
     );
     if (!res.data) throw new Error("Failed to update recurring transaction");
@@ -168,7 +170,7 @@ const updateRecurringTransaction = async (id, data) => {
 const deleteRecurringTransaction = async (id) => {
   try {
     await axios.delete(
-      `http://localhost:8000/api/v1/recurringTransactions/${id}`
+      `${baseURL}/api/v1/recurringTransactions/${id}`
     );
     return id; // return the deleted ID for cache update
   } catch (error) {
@@ -181,7 +183,7 @@ const deleteRecurringTransaction = async (id) => {
 const registerUser = async (data) => {
   try {
     const res = await axios.post(
-      "http://localhost:8000/api/v1/auth/register",
+      `${baseURL}/api/v1/auth/register`,
       data,
       { withCredentials: true } // important for cookies
     );
@@ -197,7 +199,7 @@ const registerUser = async (data) => {
 const verifyOTP = async (data) => {
   try {
     const res = await axios.post(
-      "http://localhost:8000/api/v1/auth/verify-otp",
+      `${baseURL}/api/v1/auth/verify-otp`,
       data,
       { withCredentials: true }
     );
@@ -214,7 +216,7 @@ const verifyOTP = async (data) => {
 const loginUser = async (data) => {
   try {
     const res = await axios.post(
-      "http://localhost:8000/api/v1/auth/login",
+      `${baseURL}/api/v1/auth/login`,
       data,
       { withCredentials: true }
     );
@@ -230,7 +232,7 @@ const loginUser = async (data) => {
 const logoutUser = async () => {
   try {
     const res = await axios.post(
-      "http://localhost:8000/api/v1/auth/signout",
+      `${baseURL}/api/v1/auth/signout`,
       {},
       { withCredentials: true }
     );
@@ -245,7 +247,7 @@ const logoutUser = async () => {
 // Verify user (check if JWT cookie is valid)
 const verifyUser = async () => {
   try {
-    const res = await axios.get("http://localhost:8000/api/v1/auth/verify", {
+    const res = await axios.get(`${baseURL}/api/v1/auth/verify`, {
       withCredentials: true,
     });
     if (!res.data) throw new Error(res.data.message);
@@ -259,7 +261,7 @@ const verifyUser = async () => {
 
 const fetchUser = async () => {
   try {
-    const res = await axios.get("http://localhost:8000/api/v1/users/get", {
+    const res = await axios.get(`${baseURL}/api/v1/users/get`, {
       withCredentials: true,
     });
     if (!res.data) throw new Error("No user data found");
@@ -272,7 +274,7 @@ const fetchUser = async () => {
 const updateUser = async (data) => {
   try {
     const res = await axios.patch(
-      "http://localhost:8000/api/v1/users/update",
+      `${baseURL}/api/v1/users/update`,
       data,
       {
         withCredentials: true,
@@ -288,7 +290,7 @@ const updateUser = async (data) => {
 const resetPassword = async (data) => {
   try {
     const res = await axios.patch(
-      "http://localhost:8000/api/v1/users/reset-password",
+      `${baseURL}/api/v1/users/reset-password`,
       data,
       {
         withCredentials: true,
@@ -305,7 +307,7 @@ const resetPassword = async (data) => {
 const sendPasswordResetLink = async (email) => {
   try {
     const res = await axios.post(
-      "http://localhost:8000/api/v1/users/forgot-password",
+      `${baseURL}/api/v1/users/forgot-password`,
       { email }
     );
     if (!res.data) throw new Error("Failed to send reset link");
@@ -319,12 +321,12 @@ const sendPasswordResetLink = async (email) => {
 
 const resetForgotPassword = async (token, newPassword) => {
   console.log(
-    `http://localhost:8000/api/v1/users/reset-password/${token}`,
+    `${baseURL}/api/v1/users/reset-password/${token}`,
     newPassword
   );
   try {
     const res = await axios.post(
-      `http://localhost:8000/api/v1/users/reset-password/${token}`,
+      `${baseURL}/api/v1/users/reset-password/${token}`,
       { newPassword },
       { withCredentials: true } // in case backend uses cookies
     );
