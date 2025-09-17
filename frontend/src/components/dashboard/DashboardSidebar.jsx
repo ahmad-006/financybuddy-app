@@ -62,7 +62,7 @@ const DashboardSidebar = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed md:relative top-0 left-0 bg-stone-800 shadow-lg z-40 transition-all duration-300 flex flex-col
+        className={`fixed md:relative top-0 left-0 h-screen bg-stone-800 shadow-lg z-40 transition-all duration-300 flex flex-col ios-fix-h-screen
           ${isOpen ? "w-64" : "w-20"} 
           ${isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >

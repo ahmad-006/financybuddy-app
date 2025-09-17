@@ -1,0 +1,6 @@
+/* Fix for 100vh on iOS Safari */
+@supports (-webkit-touch-callout: none) {
+  .ios-fix-h-screen {
+    height: -webkit-fill-available;
+  }
+}
