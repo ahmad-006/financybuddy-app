@@ -90,12 +90,18 @@ function Navbar() {
       <div
         className={`fixed inset-0 z-40 transition-opacity duration-300 md:hidden ${menuOpen ? "opacity-100 visible" : "opacity-0 invisible"}`}
       >
+
+
         {/* Overlay */}
         <div
           className="absolute inset-0 bg-black bg-opacity-70"
           onClick={() => setMenuOpen(false)}
         ></div>
 
+        
+
+
+        
         {/* Slide-in menu */}
         <div
           className={`absolute top-0 right-0 h-full w-3/4 max-w-xs bg-stone-800 shadow-2xl transform transition-transform duration-300 ${menuOpen ? "translate-x-0" : "translate-x-full"}`}

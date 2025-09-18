@@ -5,7 +5,6 @@ import CategoryBreakdown from "../components/report/CategoryBreakdown";
 import TransactionDetails from "../components/report/TransactionDetails";
 import BudgetProgressReport from "../components/report/BudgetProgressReport";
 import ReportActions from "../components/report/ReportActions";
-import "../styles/print.css";
 import {
   fetchMonthlyBudgets,
   fetchTransactions,
@@ -101,7 +100,8 @@ const ReportPage = () => {
       <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-3 sm:p-4 mb-6 rounded-md">
         <p className="font-bold">Financial Reports</p>
         <p className="text-sm">
-          Dive deep into your financial data. Generate reports on spending by category, income vs. expense trends, and budget performance.
+          Dive deep into your financial data. Generate reports on spending by
+          category, income vs. expense trends, and budget performance.
         </p>
       </div>
       <div className="max-w-6xl mx-auto">

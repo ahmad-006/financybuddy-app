@@ -6,18 +6,18 @@ import {
 
 // A curated list of diverse avatars from DiceBear
 const avatarChoices = [
-  "https://api.dicebear.com/9.x/adventurer/svg?seed=Felix",
-  "https://api.dicebear.com/9.x/bottts/svg?seed=Max",
-  "https://api.dicebear.com/9.x/fun-emoji/svg?seed=Lucy",
-  "https://api.dicebear.com/9.x/shapes/svg?seed=Leo",
-  "https://api.dicebear.com/9.x/rings/svg?seed=Zoe",
-  "https://api.dicebear.com/9.x/pixel-art/svg?seed=Milo",
-  "https://api.dicebear.com/9.x/lorelei/svg?seed=Cleo",
-  "https://api.dicebear.com/9.x/miniavs/svg?seed=Rocky",
-  "https://api.dicebear.com/9.x/adventurer-neutral/svg?seed=Jasper",
-  "https://api.dicebear.com/9.x/croodles/svg?seed=Lola",
-  "https://api.dicebear.com/9.x/micah/svg?seed=Oscar",
-  "https://api.dicebear.com/9.x/notionists/svg?seed=Ruby",
+  "https://api.dicebear.com/9.2.0/adventurer/svg?seed=Felix",
+  "https://api.dicebear.com/9.2.0/bottts/svg?seed=Max",
+  "https://api.dicebear.com/9.2.0/fun-emoji/svg?seed=Lucy",
+  "https://api.dicebear.com/9.2.0/shapes/svg?seed=Leo",
+  "https://api.dicebear.com/9.2.0/rings/svg?seed=Zoe",
+  "https://api.dicebear.com/9.2.0/pixel-art/svg?seed=Milo",
+  "https://api.dicebear.com/9.2.0/lorelei/svg?seed=Cleo",
+  "https://api.dicebear.com/9.2.0/miniavs/svg?seed=Rocky",
+  "https://api.dicebear.com/9.2.0/adventurer-neutral/svg?seed=Jasper",
+  "https://api.dicebear.com/9.2.0/croodles/svg?seed=Lola",
+  "https://api.dicebear.com/9.2.0/micah/svg?seed=Oscar",
+  "https://api.dicebear.com/9.2.0/notionists/svg?seed=Ruby",
 ];
 
 export function AvatarSelectionModal({ onAvatarSelect }) {

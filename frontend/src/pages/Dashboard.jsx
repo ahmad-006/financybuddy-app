@@ -114,7 +114,7 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="bg-gray-50 p-4 sm:p-6 pb-20">
+    <div className="bg-gray-50 p-4 sm:p-6 flex-grow">
       <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-3 sm:p-4 mb-6 rounded-md">
         <p className="font-bold">Your Financial Command Center</p>
         <p className="text-sm">

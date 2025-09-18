@@ -6,7 +6,6 @@ function logo() {
     <div className="flex gap-1 p-1 text-2xl sm:text-xl ">
       <FontAwesomeIcon
         icon={faMoneyBill1Wave}
-        // size="2xl"
         style={{ color: "blue" }}
       />
       <h2 className="font-macondo text-2xl sm:text-xl text-white">

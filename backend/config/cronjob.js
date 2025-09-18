@@ -15,8 +15,9 @@ const scheduleTransactions = async () => {
     for (const rec of recurringTransactions) {
       const nextDue = new Date(rec.nextDate);
       if (nextDue <= today) {
-        // Create a new transaction
 
+
+        // Create a new transaction
         await Transaction.create({
           user: "68becd58e352b61918d93318",
           title: rec.title,

@@ -126,10 +126,10 @@ const RecurringTransactions = () => {
             </h1>
             <button
               disabled
-              className="bg-blue-400 text-white px-4 py-2 rounded-lg shadow-md cursor-not-allowed"
+              className="bg-blue-400 text-white px-3 py-2 sm:px-4 rounded-lg shadow-md cursor-not-allowed flex items-center justify-center"
             >
-              <Plus className="inline-block w-5 h-5 mr-2" />
-              Add New
+              <Plus className="inline-block w-5 h-5 sm:mr-2" />
+              <span className="hidden sm:inline">Add New</span>
             </button>
           </div>
 
@@ -158,11 +158,11 @@ const RecurringTransactions = () => {
             Recurring Transactions
           </h1>
           <button
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition-colors"
+            className="bg-blue-600 text-white px-3 py-2 sm:px-4 rounded-lg shadow-md hover:bg-blue-700 transition-colors flex items-center justify-center"
             onClick={() => setShowModal(true)}
           >
-            <Plus className="inline-block w-5 h-5 mr-2" />
-            Add New
+            <Plus className="inline-block w-5 h-5 sm:mr-2" />
+            <span className="hidden sm:inline">Add New</span>
           </button>
         </div>
 
