@@ -69,7 +69,6 @@ export default function SavingsPage() {
     },
   });
 
-  //calculating total savings for summary section
   const totalSavings = Array.isArray(savings)
     ? savings.reduce((sum, s) => sum + s.amount, 0)
     : 0;
@@ -87,7 +86,6 @@ export default function SavingsPage() {
         .reduce((sum, s) => sum + s.amount, 0)
     : 0;
 
-  //handling api updating
   const handleAddNew = () => {
     setEditingSaving(null);
     setOpen(true);
@@ -132,7 +130,8 @@ export default function SavingsPage() {
       <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-3 sm:p-4 mb-6 rounded-md">
         <p className="font-bold">Savings Tracker</p>
         <p className="text-sm">
-          Track your progress towards your savings goals. Monitor contributions and see how close you are to reaching your targets.
+          Track your progress towards your savings goals. Monitor contributions
+          and see how close you are to reaching your targets.
         </p>
       </div>
       {/* Header */}

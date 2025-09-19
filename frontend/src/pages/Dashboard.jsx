@@ -14,27 +14,54 @@ import {
 
 const Dashboard = () => {
   const [transformedBudgets, setTransformedBudgets] = useState([]);
-  const [user, setUser] = useState("");
 
-  // initial monthlyBudget fetch
-  const { data: transaction, error: fetchError } = useQuery({
+  const {
+    data: transaction,
+    error: transactionsError,
+    isLoading: isLoadingTransactions,
+  } = useQuery({
     queryKey: ["transactions"],
     queryFn: fetchTransactions,
   });
 
-  if (fetchError)
-    toast.error(fetchError?.message || "error fetching transactions");
-
-  const { data: monthlyBudgets, error: budgetFetchError } = useQuery({
+  const {
+    data: monthlyBudgets,
+    error: monthlyBudgetsError,
+    isLoading: isLoadingMonthlyBudgets,
+  } = useQuery({
     queryKey: ["monthlyBudgets"],
     queryFn: fetchMonthlyBudgets,
   });
 
-  if (budgetFetchError)
-    toast.error(fetchError?.message || "error fetching budgets");
+  const [user, setUser] = useState(null);
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        setIsLoadingUser(true);
+        const res = await fetchUser();
+        setUser(res);
+      } catch (err) {
+        toast.error(err?.message || "Error fetching user details");
+      } finally {
+        setIsLoadingUser(false);
+      }
+    };
+    getUser();
+  }, []);
 
-  //? storing in a variable
-  //using usememo because of re renders
+  const isLoading =
+    isLoadingTransactions || isLoadingMonthlyBudgets || isLoadingUser;
+
+  useEffect(() => {
+    if (transactionsError) {
+      toast.error(transactionsError?.message || "Error fetching transactions");
+    }
+    if (monthlyBudgetsError) {
+      toast.error(monthlyBudgetsError?.message || "Error fetching budgets");
+    }
+  }, [transactionsError, monthlyBudgetsError]);
+
   const budgets = useMemo(
     () => monthlyBudgets?.monthlyBudgets || [],
     [monthlyBudgets]
@@ -45,11 +72,10 @@ const Dashboard = () => {
     [transaction]
   );
 
-  // Filter transactions for the last 4 months for the chart
   const fourMonthsAgo = useMemo(() => {
     const date = new Date();
-    date.setMonth(date.getMonth() - 3); // Current month + 3 previous months = 4 months
-    date.setDate(1); // Start from the first day of that month
+    date.setMonth(date.getMonth() - 3);
+    date.setDate(1);
     date.setHours(0, 0, 0, 0);
     return date;
   }, []);
@@ -60,7 +86,6 @@ const Dashboard = () => {
 
   const currency = "PKR";
 
-  // Calculate totals
   const totalIncome = transactions
     .filter((t) => t.type === "income")
     .reduce((sum, t) => sum + t.amount, 0);
@@ -71,12 +96,10 @@ const Dashboard = () => {
 
   const remaining = totalIncome - totalSpending;
 
-  // Get recent transactions (last 5)
   const recentTransactions = [...transactions]
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .slice(0, 5);
 
-  //?effect
   useEffect(() => {
     if (budgets.length) {
       const result = budgets.map((budget) => {
@@ -101,15 +124,16 @@ const Dashboard = () => {
     }
   }, [budgets, transactions]);
 
-  useEffect(() => {
-    //to fetch user Details
-    const fetchUserName = async () => {
-      const res = await fetchUser();
-      setUser(res);
-    };
-
-    fetchUserName();
-  }, []);
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 text-black p-4 sm:p-6 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading dashboard data...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-50 p-4 sm:p-6 ">
@@ -122,7 +146,6 @@ const Dashboard = () => {
         </p>
       </div>
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
             Financial Dashboard
@@ -133,7 +156,7 @@ const Dashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
-          {/* Left Column*/}
+          {/* Left Column */}
           <div className="xl:col-span-2 space-y-4 sm:space-y-6">
             <SummaryCards
               totalIncome={totalIncome}
@@ -142,11 +165,11 @@ const Dashboard = () => {
               currency={currency}
             />
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 flex flex-col">
               <h2 className="text-xl font-semibold text-gray-800 mb-4 sm:mb-6">
                 Income vs Spending
               </h2>
-              <div className="w-full h-72 sm:h-96">
+              <div className="w-full flex-grow">
                 <Chart transactions={chartTransactions} currency={currency} />
               </div>
             </div>
@@ -162,7 +185,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Right Column - Takes 1/3 width */}
+          {/* Right Column */}
           <div className="space-y-4 sm:space-y-6">
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
               <div className="mb-4">

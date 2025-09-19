@@ -17,12 +17,10 @@ function Navbar() {
 
   return (
     <nav className="sticky top-0 py-3 flex justify-between px-5 lg:px-16 items-center bg-gradient-to-r from-stone-800 to-stone-900 shadow-lg z-50">
-      {/* Logo */}
       <NavLink to={"/"} className="flex items-center group">
         <Logo />
       </NavLink>
 
-      {/* Desktop menu */}
       <ul className="hidden md:flex space-x-6 text-white">
         <li>
           <NavLink
@@ -65,7 +63,6 @@ function Navbar() {
         </li>
       </ul>
 
-      {/* Login button for desktop */}
       <div className="hidden md:flex">
         <NavLink
           to="/login"
@@ -86,22 +83,14 @@ function Navbar() {
         <FontAwesomeIcon icon={menuOpen ? faTimes : faBars} />
       </button>
 
-      {/* Mobile dropdown with overlay */}
       <div
         className={`fixed inset-0 z-40 transition-opacity duration-300 md:hidden ${menuOpen ? "opacity-100 visible" : "opacity-0 invisible"}`}
       >
-
-
-        {/* Overlay */}
         <div
           className="absolute inset-0 bg-black bg-opacity-70"
           onClick={() => setMenuOpen(false)}
         ></div>
 
-        
-
-
-        
         {/* Slide-in menu */}
         <div
           className={`absolute top-0 right-0 h-full w-3/4 max-w-xs bg-stone-800 shadow-2xl transform transition-transform duration-300 ${menuOpen ? "translate-x-0" : "translate-x-full"}`}

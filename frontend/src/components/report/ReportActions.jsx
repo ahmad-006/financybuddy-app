@@ -85,7 +85,7 @@ const ReportActions = ({
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 print:hidden">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div className="flex flex-col sm:flex-row gap-4">
-          {/* Date Range Selector */}
+          {/* date selector */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Date Range
@@ -102,7 +102,6 @@ const ReportActions = ({
               <option value="custom">Custom</option>
             </select>
           </div>
-
           {reportType === "custom" && (
             <div className="flex gap-2">
               <input

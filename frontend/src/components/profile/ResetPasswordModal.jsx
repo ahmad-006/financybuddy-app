@@ -28,8 +28,6 @@ export function ResetPasswordModal({ onOpenChange, onSave, loading }) {
           </DialogTitle>
         </DialogHeader>
 
-        {/* Hook-form-starts  */}
-
         <form onSubmit={handleSubmit(onSave)} className="space-y-4 py-2">
           <div className="space-y-2">
             <div className="text-sm font-medium">Old Password</div>
@@ -90,7 +88,11 @@ export function ResetPasswordModal({ onOpenChange, onSave, loading }) {
             >
               Cancel
             </Button>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700" disabled={loading}>
+            <Button
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700"
+              disabled={loading}
+            >
               {loading ? "Reseting" : " Reset Password"}
             </Button>
           </DialogFooter>

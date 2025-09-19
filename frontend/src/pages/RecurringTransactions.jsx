@@ -32,7 +32,6 @@ const RecurringTransactions = () => {
     toast.error(fetchError?.message || "Error fetching transactions");
   }
 
-  // Normalize id
   const recurringTransactions =
     transactions?.transactions?.map((t) => ({
       ...t,
@@ -94,7 +93,6 @@ const RecurringTransactions = () => {
     setEditingRecurringTransaction(null);
   };
 
-  // Edit handler
   const handleEditRecurringTransaction = (transaction) => {
     setEditingRecurringTransaction(transaction);
     setShowModal(true);
@@ -115,7 +113,6 @@ const RecurringTransactions = () => {
     }
   };
 
-  // Show loading state while data is being fetched
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 text-black p-4 sm:p-6">
@@ -149,7 +146,9 @@ const RecurringTransactions = () => {
       <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-3 sm:p-4 mb-6 rounded-md">
         <p className="font-bold">Recurring Transactions Management</p>
         <p className="text-sm">
-          Automate your finances by managing recurring transactions. Set up regular expenses and incomes to automatically add them to your transaction list.
+          Automate your finances by managing recurring transactions. Set up
+          regular expenses and incomes to automatically add them to your
+          transaction list.
         </p>
       </div>
       <div className="max-w-7xl mx-auto">

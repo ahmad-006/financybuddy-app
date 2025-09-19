@@ -132,7 +132,6 @@ const BudgetPage = () => {
   useEffect(() => {
     try {
       const transformedBudgets = budgets.map((budget) => {
-        //calculating spent for each category
         const spent = transactions
           .filter((t) => {
             const transactionDate = new Date(t.date);
@@ -144,7 +143,7 @@ const BudgetPage = () => {
                 budget.title.toLowerCase().trim() &&
               t.category === budget.category.toLowerCase() &&
               t.type === "expense" &&
-              t.budgetType === "monthly" && // Added filter for monthly budget type
+              t.budgetType === "monthly" &&
               transactionMonth === month &&
               transactionYear === year
             );

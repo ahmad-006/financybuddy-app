@@ -123,7 +123,7 @@ export default function Profile() {
       </div>
 
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column: Financial Summary (1/3 width) */}
+        {/* Left Column: Financial Summary */}
         <div className="lg:col-span-1">
           <div className="bg-white p-6 rounded-lg shadow-md h-full">
             <h2 className="text-xl font-bold text-gray-800 mb-4">
@@ -158,7 +158,7 @@ export default function Profile() {
           </div>
         </div>
 
-        {/* Right Column: User Profile and Form (2/3 width) */}
+        {/* Right Column: User Profile */}
         <div className="lg:col-span-2">
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h1 className="text-2xl sm:text-3xl font-bold mb-6">
@@ -172,7 +172,6 @@ export default function Profile() {
                 </div>
               ) : (
                 <>
-                  {/* Avatar Section */}
                   <div className="md:w-1/3">
                     <Dialog open={isModalOpen} onOpenChange={setModalOpen}>
                       <div className="flex flex-col items-center">
@@ -193,11 +192,12 @@ export default function Profile() {
                         </DialogTrigger>
                       </div>
 
-                      <AvatarSelectionModal onAvatarSelect={handleAvatarSelect} />
+                      <AvatarSelectionModal
+                        onAvatarSelect={handleAvatarSelect}
+                      />
                     </Dialog>
                   </div>
 
-                  {/* Profile Form */}
                   <div className="md:w-2/3">
                     <form
                       onSubmit={handleSubmit(handleSaveChanges)}

@@ -4,7 +4,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-// A curated list of diverse avatars from DiceBear
 const avatarChoices = [
   "https://api.dicebear.com/9.2.0/adventurer/svg?seed=Felix",
   "https://api.dicebear.com/9.2.0/bottts/svg?seed=Max",

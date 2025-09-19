@@ -2,7 +2,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import { ToastContainer, Bounce } from "react-toastify";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const Budget = lazy(() => import("./pages/MonthlyBudget"));
 const ReportPage = lazy(() => import("./pages/ReportPage"));
@@ -39,6 +38,7 @@ const queryClient = new QueryClient({
     },
   },
 });
+
 export default function App() {
   const routes = createBrowserRouter([
     {

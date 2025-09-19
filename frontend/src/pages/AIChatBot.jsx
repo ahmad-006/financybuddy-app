@@ -9,10 +9,8 @@ function AIChatBot() {
     { role: "model", content: "Hi there, How can I help you" },
   ]);
 
-  // Ref for auto-scrolling
   const messagesEndRef = useRef(null);
 
-  // Scroll to bottom whenever messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -20,9 +18,9 @@ function AIChatBot() {
   const generateBotResponse = async (history) => {
     try {
       const payload = history
-        .filter((msg) => !msg.hideInChat) // exclude hidden messages
+        .filter((msg) => !msg.hideInChat)
         .map((msg) => ({
-          role: msg.role, // user or model
+          role: msg.role,
           parts: [{ text: msg.content }],
         }));
 
@@ -45,7 +43,7 @@ function AIChatBot() {
 
       setMessages((prev) => {
         const updated = [...prev];
-        updated.pop(); // remove "thinking..." if any
+        updated.pop();
         return [...updated, { role: "model", content: result }];
       });
     } catch (error) {
@@ -53,7 +51,7 @@ function AIChatBot() {
 
       setMessages((prev) => {
         const updated = [...prev];
-        updated.pop(); // remove "thinking..."
+        updated.pop();
         return [
           ...updated,
           { role: "model", content: error.message || "⚠️Server Issue" },
@@ -70,7 +68,7 @@ function AIChatBot() {
           {messages.map((msg, index) => (
             <Messages msg={msg} key={index} />
           ))}
-          {/* Empty div to scroll into view */}
+
           <div ref={messagesEndRef} />
         </div>
         <AIFooter

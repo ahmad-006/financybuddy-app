@@ -9,7 +9,6 @@ export default function LastSection() {
       <div className="absolute bottom-0 -right-20 w-80 h-80 bg-purple-600/10 rounded-full blur-3xl"></div>
 
       <div className="max-w-7xl mx-auto relative z-10 items-center flex flex-col-reverse md:flex-row gap-12 md:gap-16">
-        {/* Text */}
         <div className="flex items-start flex-col flex-1">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
             Ready to Transform Your{" "}
@@ -79,7 +78,6 @@ export default function LastSection() {
           </div>
         </div>
 
-        {/* Image */}
         <div className="flex justify-center flex-1">
           <div className="relative">
             <img

@@ -24,7 +24,6 @@ export default function Login() {
   const [loginError, setLoginError] = useState("");
   const navigate = useNavigate();
 
-  // Login via email and password
   const onSubmit = async (data) => {
     setLoginError("");
     clearErrors();
@@ -36,7 +35,6 @@ export default function Login() {
       });
       if (response.status !== "success") throw new Error(response);
       navigate("/dashboard");
-
     } catch (error) {
       const errorMessage = error.message || "Login failed, please try again";
       setLoginError(errorMessage);
@@ -46,38 +44,6 @@ export default function Login() {
       });
     }
   };
-
-  // // login via google
-  // const loginWithGoogle = async () => {
-  //   const { data, error } = await supabase.auth.signInWithOAuth({
-  //     provider: "google",
-  //     options: {
-  //       redirectTo: "http://localhost:5173/dashboard",
-  //     },
-  //   });
-
-  //   if (error) {
-  //     console.error("Google login error:", error.message);
-  //   } else {
-  
-  //   }
-  // };
-
-  // // Function for GitHub login
-  // const loginWithGitHub = async () => {
-  //   const { data, error } = await supabase.auth.signInWithOAuth({
-  //     provider: "github",
-  //     options: {
-  //       redirectTo: "http://localhost:5173/dashboard",
-  //     },
-  //   });
-
-  //   if (error) {
-  //     console.error("GitHub login error:", error.message);
-  //   } else {
-  
-  //   }
-  // };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-900 to-stone-800 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">

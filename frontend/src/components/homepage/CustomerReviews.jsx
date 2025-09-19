@@ -77,7 +77,6 @@ const CustomerReviews = () => {
     setCurrentIndex(index);
   };
 
-  // Reset transitioning state after animation completes
   useEffect(() => {
     if (isTransitioning) {
       const timer = setTimeout(() => {
@@ -87,7 +86,6 @@ const CustomerReviews = () => {
     }
   }, [isTransitioning, currentIndex]);
 
-  // Auto-advance reviews
   useEffect(() => {
     const interval = setInterval(() => {
       nextReview();
@@ -99,7 +97,6 @@ const CustomerReviews = () => {
   return (
     <section className="py-16 px-4 bg-gradient-to-br from-gray-900 to-gray-800">
       <div className="max-w-4xl mx-auto">
-        {/* Section Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Trusted by <span className="text-blue-400">Thousands</span> of Users
@@ -110,7 +107,6 @@ const CustomerReviews = () => {
           </p>
         </div>
 
-        {/* Review Card Container */}
         <div className="relative h-96 md:h-80 mb-10 overflow-hidden rounded-xl">
           {reviews.map((review, index) => (
             <div
@@ -124,7 +120,6 @@ const CustomerReviews = () => {
                       : "opacity-0 translate-x-full"
                 }`}
             >
-              {/* Rating */}
               <div className="flex mb-6 justify-center">
                 {[...Array(5)].map((_, i) => (
                   <span
@@ -136,12 +131,10 @@ const CustomerReviews = () => {
                 ))}
               </div>
 
-              {/* Review Content */}
               <p className="text-gray-200 text-center text-lg md:text-xl mb-8 italic px-4">
                 "{review.content}"
               </p>
 
-              {/* Reviewer Info */}
               <div className="flex items-center justify-center">
                 <div
                   className={`flex-shrink-0 flex items-center justify-center w-14 h-14 ${review.color} rounded-full text-white font-bold text-xl`}
@@ -159,7 +152,6 @@ const CustomerReviews = () => {
           ))}
         </div>
 
-        {/* Navigation Controls */}
         <div className="flex items-center justify-center space-x-6">
           <button
             onClick={prevReview}
@@ -169,7 +161,6 @@ const CustomerReviews = () => {
             <span className="text-white text-xl font-bold">←</span>
           </button>
 
-          {/* Dots Indicator */}
           <div className="flex space-x-3">
             {reviews.map((_, index) => (
               <button
@@ -190,7 +181,6 @@ const CustomerReviews = () => {
           </button>
         </div>
 
-        {/* Review Counter */}
         <div className="text-center mt-6 text-gray-400">
           {currentIndex + 1} / {reviews.length}
         </div>

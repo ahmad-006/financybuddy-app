@@ -9,7 +9,6 @@ function Messages({ msg }) {
           isUser ? "justify-end" : "justify-start items-start"
         }`}
       >
-        {/* Show avatar (svg) only for model */}
         {isModel && (
           <svg
             xmlns="http://www.w3.org/2000/svg"

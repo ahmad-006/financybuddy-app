@@ -33,7 +33,7 @@ const BudgetProgress = ({ budgets, transactions, currency }) => {
     <div className="space-y-3">
       {budgetsWithProgress.map((budget) => (
         <div key={budget.title} className="bg-gray-50 p-3 rounded-lg">
-          {/* Header */}
+          //? Header
           <div className="flex justify-between items-center mb-2">
             <span className="font-medium text-gray-800 text-sm sm:text-base truncate pr-2 uppercase">
               {budget.title}
@@ -46,7 +46,6 @@ const BudgetProgress = ({ budgets, transactions, currency }) => {
               {Math.round(budget.progress)}%
             </span>
           </div>
-
           {/* Progress Bar */}
           <div className="w-full bg-gray-200 rounded-full h-2 mb-1">
             <div
@@ -60,7 +59,6 @@ const BudgetProgress = ({ budgets, transactions, currency }) => {
               style={{ width: `${Math.min(100, budget.progress)}%` }}
             ></div>
           </div>
-
           {/* Amounts */}
           <div className="flex justify-between items-center mb-1">
             <span className="text-xs text-gray-600">
@@ -70,7 +68,6 @@ const BudgetProgress = ({ budgets, transactions, currency }) => {
               Budget: {currency} {budget.limit.toLocaleString()}
             </span>
           </div>
-
           {/* Over Budget Warning */}
           {budget.isOverBudget && (
             <div className="mt-1">

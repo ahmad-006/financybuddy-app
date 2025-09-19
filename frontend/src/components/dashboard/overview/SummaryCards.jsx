@@ -4,7 +4,6 @@ import React from "react";
 const SummaryCards = ({ totalIncome, totalSpending, remaining, currency }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
-      {/* Total Income Card */}
       <div className="bg-white p-3 sm:p-4 rounded-xl shadow-sm border border-gray-200">
         <div className="flex items-center">
           <div className="bg-green-100 p-2 rounded-full flex-shrink-0">
@@ -19,7 +18,6 @@ const SummaryCards = ({ totalIncome, totalSpending, remaining, currency }) => {
         </div>
       </div>
 
-      {/* Total Spending Card */}
       <div className="bg-white p-3 sm:p-4 rounded-xl shadow-sm border border-gray-200">
         <div className="flex items-center">
           <div className="bg-red-100 p-2 rounded-full flex-shrink-0">
@@ -34,7 +32,6 @@ const SummaryCards = ({ totalIncome, totalSpending, remaining, currency }) => {
         </div>
       </div>
 
-      {/* Remaining Balance Card */}
       <div
         className={`bg-white p-3 sm:p-4 rounded-xl shadow-sm border ${
           remaining >= 0 ? "border-green-200" : "border-orange-200"

@@ -14,7 +14,6 @@ import {
 } from "@/utils/fetchData";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-// Main Transactions Page
 export default function Transactions() {
   const [open, setOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
@@ -148,7 +147,6 @@ export default function Transactions() {
   // FUNCTIONS Mutating Data
   const handleAdd = async (data) => {
     addMutation.mutateAsync(data);
-    
   };
 
   const handleEdit = (transaction) => {
@@ -179,7 +177,6 @@ export default function Transactions() {
     setEditingTransaction(null);
   };
 
-  //rendering on the basis of conditions in Main section
   const renderContent = () => {
     //showing loading when data is being fetched
     if (isLoading) {
@@ -250,10 +247,12 @@ export default function Transactions() {
       <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-3 sm:p-4 mb-6 rounded-md">
         <p className="font-bold">All Transactions</p>
         <p className="text-sm">
-          A comprehensive list of your financial transactions. Add, edit, or filter entries by date, type, or category to understand your financial habits.
+          A comprehensive list of your financial transactions. Add, edit, or
+          filter entries by date, type, or category to understand your financial
+          habits.
         </p>
       </div>
-      {/* Header */}
+
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Transactions</h1>
         <div className="flex items-center space-x-2">
@@ -270,13 +269,10 @@ export default function Transactions() {
         </div>
       </div>
 
-      {/* Filter Bar */}
       <TransactionFilterBar filters={filters} setFilters={setFilters} />
 
-      {/* Content Area */}
       <div className="mt-6">{renderContent()}</div>
 
-      {/* Modal */}
       <TransactionModal
         open={open}
         onOpenChange={handleModalClose}

@@ -16,7 +16,7 @@ import {
   faCalendarAlt,
   faDollarSign,
 } from "@fortawesome/free-solid-svg-icons";
-import { logoutUser } from "@/utils/fetchData"; // Import logoutUser
+import { logoutUser } from "@/utils/fetchData";
 
 const DashboardSidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -30,12 +30,10 @@ const DashboardSidebar = () => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
 
-      // Auto-close sidebar on mobile when switching to desktop
       if (!mobile && isMobileOpen) {
         setIsMobileOpen(false);
       }
 
-      // Auto-collapse sidebar on mobile
       if (mobile) {
         setIsOpen(false);
       } else {
@@ -79,7 +77,6 @@ const DashboardSidebar = () => {
         <FontAwesomeIcon icon={isMobileOpen ? faTimes : faBars} />
       </button>
 
-      {/* Overlay for mobile */}
       {isMobileOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
@@ -113,7 +110,7 @@ const DashboardSidebar = () => {
           )}
         </div>
 
-        {/* Main navigation with improved spacing */}
+        {/* Main navigation  */}
         <nav className="flex-1 overflow-y-auto py-2">
           <ul className="space-y-1 px-2">
             {menuItems.map((item) => (
@@ -140,7 +137,6 @@ const DashboardSidebar = () => {
           </ul>
         </nav>
 
-        {/* User profile and sign out with improved spacing */}
         <div className="p-2 border-t border-stone-700 flex-shrink-0 sidebar-footer">
           <NavLink
             to="/user-profile"

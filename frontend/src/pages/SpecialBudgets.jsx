@@ -263,12 +263,6 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
             setEditingCategory={handleEditSpecialBudget}
             currency={"PKR"}
           />
-          {/* <Charts
-            budgetCategories={specialBudgets}
-            currency={currentUser?.currency}
-            year={year}
-            userId={userId}
-          /> */}
         </div>
 
         {showModal && (

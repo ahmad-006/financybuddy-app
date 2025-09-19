@@ -8,7 +8,6 @@ const FinancialSummary = ({
 }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      {/* Total Income */}
       <div className="bg-green-50 border border-green-200 rounded-lg p-6">
         <div className="flex items-center justify-between">
           <div>
@@ -25,7 +24,6 @@ const FinancialSummary = ({
         </div>
       </div>
 
-      {/* Total Spending */}
       <div className="bg-red-50 border border-red-200 rounded-lg p-6">
         <div className="flex items-center justify-between">
           <div>
@@ -42,7 +40,6 @@ const FinancialSummary = ({
         </div>
       </div>
 
-      {/* Net Balance */}
       <div
         className={`${netBalance >= 0 ? "bg-blue-50 border-blue-200" : "bg-orange-50 border-orange-200"} border rounded-lg p-6`}
       >
