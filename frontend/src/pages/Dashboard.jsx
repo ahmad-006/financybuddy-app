@@ -1,5 +1,3 @@
-// This page provides a financial overview of your income, spending, and budget progress.
-// Dashboard.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import SummaryCards from "../components/dashboard/overview/SummaryCards";
 import RecentTransactions from "../components/dashboard/overview/RecentTransactions";
@@ -114,7 +112,7 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="bg-gray-50 p-4 sm:p-6 flex-grow">
+    <div className="bg-gray-50 p-4 sm:p-6 ">
       <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-3 sm:p-4 mb-6 rounded-md">
         <p className="font-bold">Your Financial Command Center</p>
         <p className="text-sm">
@@ -135,7 +133,7 @@ const Dashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
-          {/* Left Column - Takes 2/3 width */}
+          {/* Left Column*/}
           <div className="xl:col-span-2 space-y-4 sm:space-y-6">
             <SummaryCards
               totalIncome={totalIncome}
@@ -149,10 +147,7 @@ const Dashboard = () => {
                 Income vs Spending
               </h2>
               <div className="w-full h-72 sm:h-96">
-                <Chart
-                  transactions={chartTransactions}
-                  currency={currency}
-                />
+                <Chart transactions={chartTransactions} currency={currency} />
               </div>
             </div>
 
@@ -186,11 +181,11 @@ const Dashboard = () => {
               />
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 flex flex-col">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">
                 Spending by Category
               </h2>
-              <div className="w-full h-72 sm:h-96">
+              <div className="w-full flex-grow">
                 <CategoryBreakdown
                   transactions={transactions}
                   currency={currency}

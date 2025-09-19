@@ -32,7 +32,7 @@ const BudgetPage = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  
+
   const queryClient = useQueryClient();
   const showName = false;
 
@@ -69,8 +69,6 @@ const BudgetPage = () => {
     [transaction]
   );
 
-  
-
   //?Mutations functions
   const deleteMutation = useMutation({
     mutationFn: (id) => deleteMonthlyBudget(id),
@@ -102,11 +100,11 @@ const BudgetPage = () => {
       });
       toast.success("Budget Added");
       setShowAddModal(false);
+      setIsAdding(false);
     },
     onError: (err) => {
       toast.error(err.message || "Failed to Add budget");
     },
-    
   });
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => updateMonthlyBudget(id, data),
@@ -191,7 +189,7 @@ const BudgetPage = () => {
     }
     setIsAdding(true);
     await addMutation.mutateAsync(newCategory);
-
+    setIsAdding(false);
     setNewCategory({
       title: "",
       limit: 0,
@@ -201,6 +199,7 @@ const BudgetPage = () => {
   };
 
   const handleUpdateCategory = async () => {
+    setIsUpdating(true);
     if (
       !editingCategory.title ||
       editingCategory.limit <= 0 ||
@@ -211,13 +210,16 @@ const BudgetPage = () => {
     const { title, category, limit } = editingCategory;
 
     const data = { title, category: category.toLowerCase(), limit };
-    
+
     const id = editingCategory._id;
     await updateMutation.mutateAsync({ id, data });
+    setIsUpdating(false);
   };
 
   const handleDeleteCategory = async (id) => {
+    setIsDeleting(true);
     await deleteMutation.mutateAsync(id);
+    setIsDeleting(false);
   };
 
   const totalAllocated = budgetCategories.reduce(
@@ -243,7 +245,8 @@ const BudgetPage = () => {
       <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-3 sm:p-4 mb-6 rounded-md">
         <p className="font-bold">Monthly Budget Management</p>
         <p className="text-sm">
-          Control your spending by creating and managing monthly budgets for different categories. Stay on track with your financial goals.
+          Control your spending by creating and managing monthly budgets for
+          different categories. Stay on track with your financial goals.
         </p>
       </div>
       <div className="max-w-7xl mx-auto">

@@ -56,9 +56,9 @@ export default function App() {
     },
     {
       element: (
-        <ProtectedRoute>
-          <DashboardLayout />
-        </ProtectedRoute>
+        // <ProtectedRoute>
+        <DashboardLayout />
+        // </ProtectedRoute>
       ),
       children: [
         { path: "/dashboard", element: <Dashboard /> },

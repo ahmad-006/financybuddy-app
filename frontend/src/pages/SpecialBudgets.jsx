@@ -21,7 +21,7 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
   const [transfornedSpecialBudgets, setTransformedSpecialBudgets] = useState(
     []
   );
-  
+
   const [user, setUser] = useState({});
 
   //effect to get current USER
@@ -278,7 +278,11 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
             editingBudget={editingSpecialBudget}
             onDelete={handleDeleteSpecialBudget}
             currency={currentUser?.currency}
-            isLoading={addMutation.isPending || updateMutation.isPending || deleteMutation.isPending}
+            isLoading={
+              addMutation.isPending ||
+              updateMutation.isPending ||
+              deleteMutation.isPending
+            }
           />
         )}
       </div>
