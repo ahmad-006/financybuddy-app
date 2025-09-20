@@ -35,6 +35,7 @@ const Dashboard = () => {
 
   const [user, setUser] = useState(null);
   const [isLoadingUser, setIsLoadingUser] = useState(true);
+
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -81,7 +82,11 @@ const Dashboard = () => {
   }, []);
 
   const chartTransactions = useMemo(() => {
-    return transactions.filter((t) => new Date(t.date) >= fourMonthsAgo);
+    const filtered = transactions.filter((t) => {
+      const transactionDate = new Date(t.date);
+      return transactionDate >= fourMonthsAgo;
+    });
+    return filtered;
   }, [transactions, fourMonthsAgo]);
 
   const currency = "PKR";
@@ -156,7 +161,6 @@ const Dashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
-          {/* Left Column */}
           <div className="xl:col-span-2 space-y-4 sm:space-y-6">
             <SummaryCards
               totalIncome={totalIncome}
@@ -164,13 +168,26 @@ const Dashboard = () => {
               remaining={remaining}
               currency={currency}
             />
-
+            {/* Left Column */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 flex flex-col">
               <h2 className="text-xl font-semibold text-gray-800 mb-4 sm:mb-6">
                 Income vs Spending
               </h2>
-              <div className="w-full flex-grow">
-                <Chart transactions={chartTransactions} currency={currency} />
+              <div className="w-full h-72 sm:h-96">
+                {chartTransactions.length > 0 ? (
+                  <Chart transactions={chartTransactions} currency={currency} />
+                ) : (
+                  <div className="text-center py-12">
+                    <div className="text-4xl mb-3">📊</div>
+                    <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                      No income or spending data available
+                    </h3>
+                    <p className="text-gray-500 max-w-xs mx-auto">
+                      Add some transactions to see your income vs spending
+                      chart.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 
