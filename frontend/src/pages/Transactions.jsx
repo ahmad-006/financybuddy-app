@@ -17,7 +17,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 export default function Transactions() {
   const [open, setOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
-  const [isSaving, setIsSaving] = useState(false);
+
   const [filters, setFilters] = useState({
     search: "",
     type: "",
@@ -44,41 +44,33 @@ export default function Transactions() {
   //handling mutations like adding, deleting , updating
   const addMutation = useMutation({
     mutationFn: (data) => addTransaction(data),
-    onMutate: () => {
-      setIsSaving(true);
-    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["transactions"],
         exact: true,
       });
       toast.success("Transaction added successfully");
+      setOpen(false);
+      setEditingTransaction(null);
     },
     onError: (err) => {
       toast.error(err.message);
-    },
-    onSettled: () => {
-      setIsSaving(false);
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => updateTransaction(id, data),
-    onMutate: () => {
-      setIsSaving(true);
-    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["transactions"],
         exact: true,
       });
       toast.success("Transaction updated successfully");
+      setOpen(false);
+      setEditingTransaction(null);
     },
     onError: (err) => {
       toast.error(err.message || "Failed to update transaction");
-    },
-    onSettled: () => {
-      setIsSaving(false);
     },
   });
 
@@ -146,7 +138,7 @@ export default function Transactions() {
 
   // FUNCTIONS Mutating Data
   const handleAdd = async (data) => {
-    addMutation.mutateAsync(data);
+    await addMutation.mutateAsync(data);
   };
 
   const handleEdit = (transaction) => {
@@ -156,19 +148,18 @@ export default function Transactions() {
 
   const handleUpdate = async (data) => {
     const id = editingTransaction._id;
-    updateMutation.mutateAsync({ id, data });
-    setEditingTransaction(null);
+    await updateMutation.mutateAsync({ id, data });
   };
 
   const handleDelete = async (id) => {
     deleteMutation.mutateAsync(id);
   };
 
-  const handleSave = (data) => {
+  const handleSave = async (data) => {
     if (editingTransaction) {
-      handleUpdate(data);
+      await handleUpdate(data);
     } else {
-      handleAdd(data);
+      await handleAdd(data);
     }
   };
 
@@ -279,7 +270,7 @@ export default function Transactions() {
         onSave={handleSave}
         onDelete={handleDelete}
         editingTransaction={editingTransaction}
-        isLoading={isSaving}
+        isLoading={addMutation.isPending || updateMutation.isPending}
       />
     </div>
   );

@@ -42,6 +42,12 @@ exports.updateSpecialBudget = async (req, res) => {
       req.body,
       { new: true, runValidators: true }
     );
+
+    if (!updatedBudget) {
+      return res
+        .status(404)
+        .json({ status: "fail", message: "Special Budget not found" });
+    }
     res.status(200).json({
       status: "success",
 

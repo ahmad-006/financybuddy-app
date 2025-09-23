@@ -29,9 +29,7 @@ const BudgetPage = () => {
     category: "",
     color: "#CCCCCC",
   });
-  const [isAdding, setIsAdding] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+
 
   const queryClient = useQueryClient();
   const showName = false;
@@ -72,9 +70,6 @@ const BudgetPage = () => {
   //?Mutations functions
   const deleteMutation = useMutation({
     mutationFn: (id) => deleteMonthlyBudget(id),
-    onMutate: () => {
-      setIsDeleting(true);
-    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["monthlyBudgets"],
@@ -85,9 +80,6 @@ const BudgetPage = () => {
     },
     onError: (err) => {
       toast.error(err.message || "Failed to delete budget");
-    },
-    onSettled: () => {
-      setIsDeleting(false);
     },
   });
 
@@ -100,7 +92,6 @@ const BudgetPage = () => {
       });
       toast.success("Budget Added");
       setShowAddModal(false);
-      setIsAdding(false);
     },
     onError: (err) => {
       toast.error(err.message || "Failed to Add budget");
@@ -108,9 +99,6 @@ const BudgetPage = () => {
   });
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => updateMonthlyBudget(id, data),
-    onMutate: () => {
-      setIsUpdating(true);
-    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["monthlyBudgets"],
@@ -121,9 +109,6 @@ const BudgetPage = () => {
     },
     onError: (err) => {
       toast.error(err.message || "Failed to update budget");
-    },
-    onSettled: () => {
-      setIsUpdating(false);
     },
   });
 
@@ -186,9 +171,7 @@ const BudgetPage = () => {
     if (!newCategory.title || newCategory.limit <= 0 || !newCategory.category) {
       return toast.info("please provide correct information");
     }
-    setIsAdding(true);
     await addMutation.mutateAsync(newCategory);
-    setIsAdding(false);
     setNewCategory({
       title: "",
       limit: 0,
@@ -198,7 +181,6 @@ const BudgetPage = () => {
   };
 
   const handleUpdateCategory = async () => {
-    setIsUpdating(true);
     if (
       !editingCategory.title ||
       editingCategory.limit <= 0 ||
@@ -212,13 +194,10 @@ const BudgetPage = () => {
 
     const id = editingCategory._id;
     await updateMutation.mutateAsync({ id, data });
-    setIsUpdating(false);
   };
 
   const handleDeleteCategory = async (id) => {
-    setIsDeleting(true);
     await deleteMutation.mutateAsync(id);
-    setIsDeleting(false);
   };
 
   const totalAllocated = budgetCategories.reduce(
@@ -293,7 +272,7 @@ const BudgetPage = () => {
             setShowAddModal={setShowAddModal}
             handleAddCategory={handleAddCategory}
             currency={"PKR"}
-            isAdding={isAdding}
+            isAdding={addMutation.isPending}
           />
         )}
 
@@ -304,8 +283,8 @@ const BudgetPage = () => {
             handleUpdateCategory={handleUpdateCategory}
             handleDeleteCategory={handleDeleteCategory}
             currency={"PKR"}
-            isUpdating={isUpdating}
-            isDeleting={isDeleting}
+            isUpdating={updateMutation.isPending}
+            isDeleting={deleteMutation.isPending}
           />
         )}
       </div>

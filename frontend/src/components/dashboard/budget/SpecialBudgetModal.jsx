@@ -86,7 +86,7 @@ const SpecialBudgetModal = ({ onClose, onSave, editingBudget, onDelete, isLoadin
   const onSubmit = async (data) => {
     await onSave({
       ...data,
-      id: editingBudget ? editingBudget.id : `sb${Date.now()}`,
+      _id: editingBudget ? editingBudget._id : undefined,
     });
     onClose();
     reset();
@@ -94,7 +94,7 @@ const SpecialBudgetModal = ({ onClose, onSave, editingBudget, onDelete, isLoadin
 
   const handleDelete = async () => {
     if (editingBudget && onDelete) {
-      await onDelete(editingBudget.id);
+      await onDelete(editingBudget._id);
       onClose();
     }
   };

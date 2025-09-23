@@ -17,17 +17,14 @@ const RecurringTransactions = () => {
     useState(null);
 
   const queryClient = useQueryClient();
-  const [isLoading, setIsLoading] = useState(false);
 
-  // Fetch recurring transactions with loading state
-  const { data: transactions, error: fetchError } = useQuery({
+
+  const { data: transactions, isLoading: isFetching, error: fetchError } = useQuery({
     queryKey: ["recurringTransactions"],
     queryFn: fetchRecurringTransactions,
   });
 
-  if (fetchError) {
-    toast.error(fetchError?.message || "Error fetching transactions");
-  }
+
 
   //converting mongodb _id to id
   const recurringTransactions =
@@ -42,6 +39,8 @@ const RecurringTransactions = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["recurringTransactions"] });
       toast.success("Recurring transaction added successfully");
+      setShowModal(false);
+      setEditingRecurringTransaction(null);
     },
     onError: (err) => toast.error(err.message),
   });
@@ -51,6 +50,8 @@ const RecurringTransactions = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["recurringTransactions"] });
       toast.success("Recurring transaction updated successfully");
+      setShowModal(false);
+      setEditingRecurringTransaction(null);
     },
     onError: (err) =>
       toast.error(err.message || "Failed to update transaction"),
@@ -66,8 +67,10 @@ const RecurringTransactions = () => {
       toast.error(err.message || "Failed to delete transaction"),
   });
 
+  const isPageLoading = isFetching;
+
   // Save handler
-  const handleSaveRecurringTransaction = (transactionData) => {
+  const handleSaveRecurringTransaction = async (transactionData) => {
     const { title, amount, type, category, frequency, nextDate, isActive } =
       transactionData;
 
@@ -80,16 +83,11 @@ const RecurringTransactions = () => {
       nextDate,
       isActive,
     };
-    setIsLoading(true);
     if (editingRecurringTransaction?.id) {
-      updateMutation.mutate({ id: editingRecurringTransaction.id, data });
+      await updateMutation.mutateAsync({ id: editingRecurringTransaction.id, data });
     } else {
-      addMutation.mutate(data);
+      await addMutation.mutateAsync(data);
     }
-
-    setIsLoading(false);
-    setShowModal(false);
-    setEditingRecurringTransaction(null);
   };
 
   const handleEditRecurringTransaction = (transaction) => {
@@ -102,9 +100,7 @@ const RecurringTransactions = () => {
   };
 
   const handleDeleteRecurringTransaction = (id) => {
-    setIsLoading(true);
     deleteMutation.mutate(id);
-    setIsLoading(false);
   };
 
   const handleModalOpenChange = (isOpen) => {
@@ -114,7 +110,7 @@ const RecurringTransactions = () => {
     }
   };
 
-  if (isLoading) {
+  if (isPageLoading) {
     return (
       <div className="min-h-screen bg-gray-50 text-black p-4 sm:p-6">
         <div className="max-w-7xl mx-auto">
@@ -177,6 +173,7 @@ const RecurringTransactions = () => {
                   handlePauseRecurringTransaction(isActive, transaction.id)
                 }
                 onDelete={handleDeleteRecurringTransaction}
+                isMutating={updateMutation.isPending || deleteMutation.isPending}
               />
             ))
           ) : (
@@ -199,6 +196,7 @@ const RecurringTransactions = () => {
             onSave={handleSaveRecurringTransaction}
             editingTransaction={editingRecurringTransaction}
             onDelete={handleDeleteRecurringTransaction}
+            isLoading={addMutation.isPending || updateMutation.isPending || deleteMutation.isPending}
           />
         )}
       </div>

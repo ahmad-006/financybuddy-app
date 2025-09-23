@@ -14,35 +14,35 @@ axios.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-// const baseURL = "http://localhost:8000";
-const baseURL = "https://backend-test-lac.vercel.app";
+const baseURL = "http://localhost:8000";
+// const baseURL = "https://backend-test-lac.vercel.app";
 // const baseURL = "https://financybuddy-app-production.up.railway.app";
 
 // Fetch all transactions
 const fetchTransactions = async () => {
   const res = await axios.get(`${baseURL}/api/v1/transactions`);
   if (!res.data) throw new Error("No transactions found");
-  return res.data.data; // { data: { ... } }
+  return res.data.data;
 };
 
 // Add a new transaction
 const addTransaction = async (data) => {
   const res = await axios.post(`${baseURL}/api/v1/transactions`, data);
   if (!res.data) throw new Error("Failed to add transaction");
-  return res.data.data; // Corrected path
+  return res.data.data;
 };
 
 // Update a transaction
 const updateTransaction = async (id, data) => {
   const res = await axios.patch(`${baseURL}/api/v1/transactions/${id}`, data);
   if (!res.data) throw new Error("Failed to update transaction");
-  return res.data.data; // Corrected path
+  return res.data.data;
 };
 
 // Delete a transaction
 const deleteTransaction = async (id) => {
   await axios.delete(`${baseURL}/api/v1/transactions/${id}`);
-  return id; // return the deleted ID to update cache
+  return id;
 };
 
 // Fetch budgets
@@ -57,7 +57,7 @@ const addMonthlyBudget = async (data) => {
   try {
     const res = await axios.post(`${baseURL}/api/v1/monthlyBudgets`, data);
     if (!res.data) throw new Error("Failed to add transaction");
-    return res.data.data; // Corrected path
+    return res.data.data;
   } catch (error) {
     toast.error(error);
     return error;
@@ -77,7 +77,7 @@ const updateMonthlyBudget = async (id, data) => {
 // Delete a Budget
 const deleteMonthlyBudget = async (id) => {
   await axios.delete(`${baseURL}/api/v1/monthlyBudgets/${id}`);
-  return id; // return the deleted ID to update cache
+  return id;
 };
 
 // Fetch budgets
@@ -92,7 +92,7 @@ const addSpecialBudget = async (data) => {
   try {
     const res = await axios.post(`${baseURL}/api/v1/specialBudgets`, data);
     if (!res.data) throw new Error("Failed to add transaction");
-    return res.data.data; // Corrected path
+    return res.data.data;
   } catch (error) {
     toast.error(error);
     return error;
@@ -112,7 +112,7 @@ const updateSpecialBudget = async (id, data) => {
 // Delete a Budget
 const deleteSpecialBudget = async (id) => {
   await axios.delete(`${baseURL}/api/v1/specialBudgets/${id}`);
-  return id; // return the deleted ID to update cache
+  return id;
 };
 
 // Fetch all recurring transactions
@@ -120,7 +120,7 @@ const fetchRecurringTransactions = async () => {
   try {
     const res = await axios.get(`${baseURL}/api/v1/recurringTransactions`);
     if (!res.data) throw new Error("No recurring transactions found");
-    return res.data.data; // assuming API returns { data: [...] }
+    return res.data.data;
   } catch (error) {
     toast.error("Failed to fetch recurring transactions");
     return error.message;
@@ -161,7 +161,7 @@ const updateRecurringTransaction = async (id, data) => {
 const deleteRecurringTransaction = async (id) => {
   try {
     await axios.delete(`${baseURL}/api/v1/recurringTransactions/${id}`);
-    return id; // return the deleted ID for cache update
+    return id;
   } catch (error) {
     toast.error(error?.response?.data?.message || error.message);
     return error;
@@ -171,13 +171,11 @@ const deleteRecurringTransaction = async (id) => {
 // Register user (send OTP)
 const registerUser = async (data) => {
   try {
-    const res = await axios.post(
-      `${baseURL}/api/v1/auth/register`,
-      data,
-      { withCredentials: true } // important for cookies
-    );
+    const res = await axios.post(`${baseURL}/api/v1/auth/register`, data, {
+      withCredentials: true,
+    });
     if (!res.data) throw new Error(res.data.message);
-    return res.data; // { status, message }
+    return res.data;
   } catch (error) {
     toast.error(error?.response?.data?.message || error.message);
     return error;
@@ -192,8 +190,8 @@ const verifyOTP = async (data) => {
     });
 
     if (!res.data) throw new Error(res.data.message);
-    localStorage.setItem("jwtToken", res.data.token); // Store the token
-    return res.data; // { status, message, token }
+    localStorage.setItem("jwtToken", res.data.token);
+    return res.data;
   } catch (error) {
     toast.error(error?.response?.data?.message || error.message);
     return error?.response?.data?.message || error;
@@ -208,8 +206,8 @@ const loginUser = async (data) => {
     });
 
     if (!res.data) throw new Error(res.data.message);
-    localStorage.setItem("jwtToken", res.data.token); // Store the token
-    return res.data; // { status, message, token }
+    localStorage.setItem("jwtToken", res.data.token);
+    return res.data;
   } catch (error) {
     toast.error(error?.response?.data?.message || error.message);
     return error?.response?.data?.message || error;
@@ -225,8 +223,8 @@ const logoutUser = async () => {
       { withCredentials: true }
     );
     if (!res.data) throw new Error(res.data.message);
-    localStorage.removeItem("jwtToken"); // Remove the token
-    return res.data; // { status, message }
+    localStorage.removeItem("jwtToken");
+    return res.data;
   } catch (error) {
     toast.error(error?.response?.data?.message || error.message);
     return error?.response?.data?.message || error;
@@ -239,7 +237,7 @@ const verifyUser = async () => {
     const res = await axios.get(`${baseURL}/api/v1/auth/verify`);
 
     if (!res.data) throw new Error(res.data.message);
-    return true; // { status, message }
+    return true;
   } catch (error) {
     console.error("Verify User Error:", error);
     return false;
@@ -308,7 +306,7 @@ const resetForgotPassword = async (token, newPassword) => {
     const res = await axios.post(
       `${baseURL}/api/v1/users/reset-password/${token}`,
       { newPassword },
-      { withCredentials: true } // in case backend uses cookies
+      { withCredentials: true }
     );
 
     if (!res.data) throw new Error(res);

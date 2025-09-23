@@ -78,6 +78,8 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
         exact: true,
       });
       toast.success("Budget Deleted");
+      setShowModal(false);
+      setEditingSpecialBudget(null);
     },
     onError: (err) => {
       toast.error(err.message || "Failed to delete budget");
@@ -92,6 +94,8 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
         exact: true,
       });
       toast.success("Budget Added");
+      setShowModal(false);
+      setEditingSpecialBudget(null);
     },
     onError: (err) => {
       toast.error(err.message || "Failed to Add budget");
@@ -105,6 +109,8 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
         exact: true,
       });
       toast.success("Budget Updated");
+      setShowModal(false);
+      setEditingSpecialBudget(null);
     },
     onError: (err) => {
       toast.error(err.message || "Failed to update budget");
@@ -174,7 +180,7 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
 
   const handleSaveSpecialBudget = async (budgetData) => {
     if (editingSpecialBudget) {
-      const { id, limit, startDate, endDate, category, title } = budgetData;
+      const { _id, limit, startDate, endDate, category, title } = budgetData;
       const data = {
         limit,
         startDate,
@@ -182,7 +188,7 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
         category: category.toLowerCase(),
         title,
       };
-      updateMutation.mutate({ id, data });
+      await updateMutation.mutateAsync({ id: _id, data });
     } else {
       const { limit, startDate, endDate, category, title } = budgetData;
       const data = {
@@ -192,10 +198,8 @@ const SpecialBudgetsPage = ({ userId = "u1" }) => {
         category: category.toLowerCase(),
         title,
       };
-      addMutation.mutate(data);
+      await addMutation.mutateAsync(data);
     }
-    setShowModal(false);
-    setEditingSpecialBudget(null);
   };
 
   const handleEditSpecialBudget = (budget) => {
