@@ -30,7 +30,6 @@ const BudgetPage = () => {
     color: "#CCCCCC",
   });
 
-
   const queryClient = useQueryClient();
   const showName = false;
 
@@ -164,7 +163,7 @@ const BudgetPage = () => {
       "Dining Out": { icon: "🍽️", color: "#9966FF" },
     };
 
-    return config[category] || { icon: "📁", color: "#CCCCCC" };
+    return config[category] || { icon: "📁", color: "#FFD93D" };
   };
 
   const handleAddCategory = async () => {

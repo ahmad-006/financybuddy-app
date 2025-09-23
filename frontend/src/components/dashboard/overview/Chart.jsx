@@ -15,66 +15,54 @@ const Chart = ({ transactions, currency }) => {
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
 
- 
-  const months = Array.from({ length: 4 }, (_, i) => {
-    const monthIndex = (currentMonth - 3 + i + 12) % 12; 
-    const year = currentYear + Math.floor((currentMonth - 3 + i) / 12); 
-    const date = new Date(year, monthIndex, 1);
-    return {
-      key: `${year}-${monthIndex + 1}`,
+  // Create last 4 months array
+  const months = [];
+  for (let i = 3; i >= 0; i--) {
+    const date = new Date(currentYear, currentMonth - i, 1);
+    months.push({
+      key: `${date.getFullYear()}-${date.getMonth() + 1}`,
       month: date.toLocaleString("default", { month: "short" }),
       income: 0,
       spending: 0,
-    };
-  });
+    });
+  }
 
-  const monthlyData = months.reduce((acc, m) => {
-    acc[m.key] = m;
-    return acc;
-  }, {});
+  // Convert to object for easy access
+  const monthData = {};
+  months.forEach((m) => (monthData[m.key] = m));
 
-  transactions.forEach((transaction) => {
-    const date = new Date(transaction.date);
-    const monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`;
-
-    if (monthlyData[monthKey]) {
-      if (transaction.type.toLowerCase() === "income") {
-        monthlyData[monthKey].income += transaction.amount;
-      } else if (transaction.type.toLowerCase() === "expense") {
-        monthlyData[monthKey].spending += transaction.amount;
-      }
+  // Fill data
+  transactions.forEach((t) => {
+    const date = new Date(t.date);
+    const key = `${date.getFullYear()}-${date.getMonth() + 1}`;
+    if (monthData[key]) {
+      if (t.type.toLowerCase() === "income") monthData[key].income += t.amount;
+      else monthData[key].spending += t.amount;
     }
   });
 
-  const chartData = Object.values(monthlyData);
+  //get only values
+  const chartData = Object.values(monthData);
+  console.log(chartData);
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer width="100%" height={300}>
       <BarChart
         data={chartData}
-        margin={{
-          top: 5,
-          right: 10,
-          left: 0,
-          bottom: 10,
-        }}
+        margin={{ top: 20, right: 20, bottom: 20, left: 0 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis
-          dataKey="month"
-          angle={-45}
-          textAnchor="end"
-          height={60}
-          tick={{ fontSize: 12 }}
-        />
-        <YAxis tick={{ fontSize: 12 }} />
+        <XAxis dataKey="month" />
+        <YAxis />
         <Tooltip
-          formatter={(value) => [`${currency} ${value.toLocaleString()}`, "Amount"]}
-          contentStyle={{ backgroundColor: "#f9fafb", border: "1px solid #e5e7eb" }}
+          formatter={(value) => [
+            `${currency} ${value.toLocaleString()}`,
+            "Amount",
+          ]}
         />
         <Legend />
-        <Bar dataKey="income" fill="#4CAF50" name="Income" barSize={25} />
-        <Bar dataKey="spending" fill="#F44336" name="Spending" barSize={25} />
+        <Bar dataKey="income" fill="#4CAF50" name="Income" />
+        <Bar dataKey="spending" fill="#F44336" name="Spending" />
       </BarChart>
     </ResponsiveContainer>
   );

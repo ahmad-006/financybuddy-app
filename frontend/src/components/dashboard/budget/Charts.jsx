@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import {
   PieChart,
   Pie,
@@ -7,183 +7,109 @@ import {
   Bar,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   Legend,
   ResponsiveContainer,
 } from "recharts";
 
-const CustomXAxisTick = ({ x, y, payload }) => {
-  return (
-    <g transform={`translate(${x},${y})`}>
-      <text x={0} y={0} dy={10} textAnchor="middle" fill="#666">
-        {payload.value}
-      </text>
-    </g>
-  );
-};
+const COLORS = [
+  "#3B82F6",
+  "#10F981",
+  "#F55E0B",
+  "#EF4444",
+  "#8B5CF6",
+  "#EC4899",
+  "#06B6D4",
+  "#84CC16",
+  "#F97316",
+  "#6366F1",
+];
 
-const RADIAN = Math.PI / 180;
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-  return (
-    <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-      {`${(percent * 100).toFixed(0)}%`}
-    </text>
-  );
-};
-
-const Charts = ({
-  budgetCategories,
-  currency,
-  year,
-  transactions,
-  budgets,
-}) => {
-  const pieChartData = budgetCategories
-    .filter((category) => category.spent > 0)
-    .map((category) => ({
-      name: category.title,
-      value: category.spent,
-      color: category.color,
+const Charts = ({ budgetCategories, currency, transactions, budgets }) => {
+  const pieData = budgetCategories
+    .filter((cat) => cat.spent > 0)
+    .map((cat, index) => ({
+      name: cat.title,
+      value: cat.spent,
+      color: COLORS[index % COLORS.length],
     }));
 
-  // Generate monthly trend data based on actual transactions and budgets
-  const monthlyTrendData = useMemo(() => {
-    const now = new Date();
-    const months = [];
-    for (let i = 5; i >= 0; i--) {
-        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        months.push({
-            name: d.toLocaleString('default', { month: 'short' }),
-            year: d.getFullYear(),
-            month: d.getMonth() + 1,
-        });
-    }
+  // Bar Chart: for last 6 months
+  const monthlyData = [];
+  const now = new Date();
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const monthName = d.toLocaleString("default", { month: "short" });
+    const monthNumber = d.getMonth() + 1;
+    const year = d.getFullYear();
 
-    const fullData = months.map((monthData) => {
-        const totalBudget = budgets.reduce(
-            (sum, budget) => sum + budget.limit,
-            0
+    const totalBudget = budgets.reduce((sum, b) => sum + b.limit, 0);
+
+    const totalSpent = transactions
+      .filter((t) => t.type === "expense")
+      .filter((t) => {
+        const tDate = new Date(t.date);
+        return (
+          tDate.getMonth() + 1 === monthNumber && tDate.getFullYear() === year
         );
+      })
+      .reduce((sum, t) => sum + t.amount, 0);
 
-        const budgetTitles = new Set(
-            budgets.map((budget) => budget.title.toLowerCase())
-        );
-        const totalSpent = transactions
-            .filter((transaction) => {
-                const transactionDate = new Date(transaction.date);
-                const transactionMonth = transactionDate.getMonth() + 1;
-                const transactionYear = transactionDate.getFullYear();
-
-                return (
-                    transaction.type === "expense" &&
-                    transactionMonth === monthData.month &&
-                    transactionYear === monthData.year &&
-                    budgetTitles.has(transaction.title.toLowerCase())
-                );
-            })
-            .reduce((sum, transaction) => sum + transaction.amount, 0);
-
-        return {
-            month: monthData.name,
-            budget: totalBudget,
-            spent: totalSpent,
-        };
+    monthlyData.push({
+      month: monthName,
+      budget: totalBudget,
+      spent: totalSpent,
     });
-
-    return fullData;
-  }, [budgets, transactions]);
+  }
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      {/* Spending by Category Chart */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
-        <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 sm:mb-6">
-          Spending by Category
-        </h2>
-        {pieChartData.length > 0 ? (
-          <div className="h-72 sm:h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={pieChartData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={renderCustomizedLabel}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {pieChartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  formatter={(value) => [`${currency} ${value}`, "Spent"]}
-                />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        ) : (
-          <div className="h-64 flex items-center justify-center">
-            <p className="text-gray-500">
-              No spending data for selected period
-            </p>
-          </div>
-        )}
-      </div>
-
-      {/* Monthly Trends Chart */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
-        <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 sm:mb-6">
-          Monthly Trends (Last 6 Months)
-        </h2>
-        {monthlyTrendData && monthlyTrendData.length > 0 ? (
-          <div className="h-72 sm:h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={monthlyTrendData}
-                key={`${year}-${transactions.length}-${budgets.length}`}
+    <div>
+      {/* Pie Chart */}
+      <h2>Spending by Category</h2>
+      {pieData.length > 0 ? (
+        <div style={{ width: "100%", height: 300 }}>
+          <ResponsiveContainer>
+            <PieChart>
+              <Pie
+                data={pieData}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={80}
+                label
               >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="month"
-                  interval={0}
-                  type="category"
-                  tick={<CustomXAxisTick />}
-                />
-                <YAxis
-                  domain={[0, "auto"]}
-                  tickFormatter={(value) =>
-                    `${currency} ${value.toLocaleString()}`
-                  }
-                />
-                <Tooltip
-                  formatter={(value, name) => [
-                    `${currency} ${value.toLocaleString()}`,
-                    name,
-                  ]}
-                />
-                <Legend />
-                <Bar dataKey="spent" fill="#FF6384" name="Amount Spent" />
-                <Bar dataKey="budget" fill="#36A2EB" name="Budget Limit" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        ) : (
-          <div className="h-64 flex items-center justify-center">
-            <p className="text-gray-500">
-              No monthly trend data available for {year}
-            </p>
-          </div>
-        )}
-      </div>
+                {pieData.map((entry, index) => (
+                  <Cell key={index} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip formatter={(value) => `${currency} ${value}`} />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      ) : (
+        <p>No spending data</p>
+      )}
+
+      {/* Bar Chart */}
+      <h2>Monthly Trends (Last 6 Months)</h2>
+      {monthlyData.length > 0 ? (
+        <div style={{ width: "100%", height: 300 }}>
+          <ResponsiveContainer>
+            <BarChart data={monthlyData}>
+              <XAxis dataKey="month" />
+              <YAxis />
+              <Tooltip formatter={(value) => `${currency} ${value}`} />
+              <Legend />
+              <Bar dataKey="spent" fill={COLORS[3]} name="Spent" />
+              <Bar dataKey="budget" fill={COLORS[6]} name="Budget" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      ) : (
+        <p>No monthly data</p>
+      )}
     </div>
   );
 };
