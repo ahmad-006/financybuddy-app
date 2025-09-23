@@ -14,7 +14,7 @@ export default function ProtectedRoute({ children }) {
     checkAuth();
   }, []);
 
-  //checking
+  //while checking
   if (isVerified === null) {
     return <Loading />;
   }

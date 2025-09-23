@@ -8,14 +8,14 @@ export default function DashboardLayout() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   useEffect(() => {
-    // Detect screen size changes
+    
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
 
     window.addEventListener("resize", handleResize);
 
-    // to scroll to top when route changes
+    //scroll to top
     if (mainContentRef.current) {
       mainContentRef.current.scrollTop = 0;
     }
@@ -25,7 +25,7 @@ export default function DashboardLayout() {
     document.documentElement.classList.add("dashboard-active");
     document.getElementById("root").classList.add("dashboard-active");
 
-    // Cleanup when leaving dashboard
+  //remove all added classes to fix layout 
     return () => {
       document.body.classList.remove("dashboard-active");
       document.documentElement.classList.remove("dashboard-active");

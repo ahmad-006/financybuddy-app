@@ -1,4 +1,4 @@
-// BudgetProgress.jsx
+
 import React from "react";
 
 const BudgetProgress = ({ budgets, transactions, currency }) => {
@@ -33,7 +33,9 @@ const BudgetProgress = ({ budgets, transactions, currency }) => {
     <div className="space-y-3">
       {budgetsWithProgress.map((budget) => (
         <div key={budget.title} className="bg-gray-50 p-3 rounded-lg">
+
           //? Header
+
           <div className="flex justify-between items-center mb-2">
             <span className="font-medium text-gray-800 text-sm sm:text-base truncate pr-2 uppercase">
               {budget.title}

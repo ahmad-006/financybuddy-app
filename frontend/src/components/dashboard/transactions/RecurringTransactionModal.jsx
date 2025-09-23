@@ -293,7 +293,15 @@ const RecurringTransactionModal = ({
                 className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
                 disabled={isLoading}
               >
-                {isLoading ? (editingTransaction ? "Updating..." : "Adding...") : (editingTransaction ? "Update" : "Add")} Recurring Transaction
+                {isLoading
+                  ? editingTransaction
+                    ? "Updating..."
+                    : "Adding..."
+                  : editingTransaction
+                    ? "Update"
+                    : "Add"}{" "}
+                Recurring Transaction
+                {console.log(isLoading)}
               </Button>
             </div>
           </DialogFooter>

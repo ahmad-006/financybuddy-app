@@ -20,7 +20,7 @@ export default function ResetPassword() {
 
   const onSubmit = async (data) => {
     setIsLoading(true);
-    setApiError(null); // Clear previous API errors
+    setApiError(null); 
     try {
 
       const { newPassword } = data;

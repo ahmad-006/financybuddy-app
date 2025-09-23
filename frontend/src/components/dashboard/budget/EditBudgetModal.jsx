@@ -6,7 +6,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Title } from "@radix-ui/react-dialog";
 
 const EditBudgetModal = ({
   editingCategory,

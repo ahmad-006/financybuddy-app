@@ -7,7 +7,7 @@ export default function About() {
       {/* Hero Section */}
       <section className="py-20 px-6">
         <div className="max-w-7xl mx-auto flex md:flex-row flex-col-reverse gap-12 items-center">
-          {/* Text */}
+        
           <div className="md:w-1/2">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-blue-400">
               About
@@ -30,7 +30,7 @@ export default function About() {
             </button>
           </div>
 
-          {/* Image */}
+      
           <div className="md:w-1/2 flex justify-center">
             <img
               src={aboutSVG}
@@ -41,7 +41,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* Mission & Values Section */}
+      {/* Section 2*/}
       <section className="py-16 px-6 bg-gray-800">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12 text-blue-400">
@@ -83,7 +83,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* Team Section */}
+      {/*  Section 3*/}
       <section className="py-16 px-6">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12 text-blue-400">
@@ -146,7 +146,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* Stats Section */}
+      {/*  Section 4 */}
       <section className="py-16 px-6 bg-gray-800">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12 text-blue-400">
@@ -179,7 +179,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/*  Section 5*/}
       <section className="py-16 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-6 text-blue-400">

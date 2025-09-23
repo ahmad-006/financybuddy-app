@@ -15,10 +15,10 @@ const Chart = ({ transactions, currency }) => {
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
 
-  // Pre-fill months for the last 4 months
+ 
   const months = Array.from({ length: 4 }, (_, i) => {
-    const monthIndex = (currentMonth - 3 + i + 12) % 12; // Get month index for last 4 months
-    const year = currentYear + Math.floor((currentMonth - 3 + i) / 12); // Adjust year if necessary
+    const monthIndex = (currentMonth - 3 + i + 12) % 12; 
+    const year = currentYear + Math.floor((currentMonth - 3 + i) / 12); 
     const date = new Date(year, monthIndex, 1);
     return {
       key: `${year}-${monthIndex + 1}`,
@@ -33,7 +33,6 @@ const Chart = ({ transactions, currency }) => {
     return acc;
   }, {});
 
-  // Merge in actual transactions
   transactions.forEach((transaction) => {
     const date = new Date(transaction.date);
     const monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`;

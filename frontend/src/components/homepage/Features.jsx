@@ -11,13 +11,13 @@ function Features() {
       className="py-20 px-4 md:px-8 lg:px-16 bg-gradient-to-b from-gray-900 to-gray-950 relative overflow-hidden"
       id="features"
     >
-      {/* Decorative elements */}
+    
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-600"></div>
       <div className="absolute top-10 -left-20 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl"></div>
       <div className="absolute bottom-10 -right-20 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl"></div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Heading */}
+    
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-white">
             Everything You Need for{" "}

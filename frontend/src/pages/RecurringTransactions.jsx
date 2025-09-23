@@ -17,13 +17,10 @@ const RecurringTransactions = () => {
     useState(null);
 
   const queryClient = useQueryClient();
+  const [isLoading, setIsLoading] = useState(false);
 
   // Fetch recurring transactions with loading state
-  const {
-    data: transactions,
-    error: fetchError,
-    isLoading,
-  } = useQuery({
+  const { data: transactions, error: fetchError } = useQuery({
     queryKey: ["recurringTransactions"],
     queryFn: fetchRecurringTransactions,
   });
@@ -32,6 +29,7 @@ const RecurringTransactions = () => {
     toast.error(fetchError?.message || "Error fetching transactions");
   }
 
+  //converting mongodb _id to id
   const recurringTransactions =
     transactions?.transactions?.map((t) => ({
       ...t,
@@ -82,13 +80,14 @@ const RecurringTransactions = () => {
       nextDate,
       isActive,
     };
-
+    setIsLoading(true);
     if (editingRecurringTransaction?.id) {
       updateMutation.mutate({ id: editingRecurringTransaction.id, data });
     } else {
       addMutation.mutate(data);
     }
 
+    setIsLoading(false);
     setShowModal(false);
     setEditingRecurringTransaction(null);
   };
@@ -103,7 +102,9 @@ const RecurringTransactions = () => {
   };
 
   const handleDeleteRecurringTransaction = (id) => {
+    setIsLoading(true);
     deleteMutation.mutate(id);
+    setIsLoading(false);
   };
 
   const handleModalOpenChange = (isOpen) => {

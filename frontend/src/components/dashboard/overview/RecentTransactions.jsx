@@ -1,4 +1,4 @@
-// RecentTransactions.jsx
+
 import React from "react";
 
 const RecentTransactions = ({ transactions, currency }) => {

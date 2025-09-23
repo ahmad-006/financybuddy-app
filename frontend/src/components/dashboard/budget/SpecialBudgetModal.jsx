@@ -108,7 +108,10 @@ const SpecialBudgetModal = ({ onClose, onSave, editingBudget, onDelete, isLoadin
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-2">
-          {/* Title */}
+      
+          
+
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Title
@@ -130,7 +133,7 @@ const SpecialBudgetModal = ({ onClose, onSave, editingBudget, onDelete, isLoadin
             )}
           </div>
 
-          {/* Category */}
+     
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Category
@@ -167,7 +170,7 @@ const SpecialBudgetModal = ({ onClose, onSave, editingBudget, onDelete, isLoadin
             )}
           </div>
 
-          {/* Amount */}
+    
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Amount
@@ -190,7 +193,7 @@ const SpecialBudgetModal = ({ onClose, onSave, editingBudget, onDelete, isLoadin
             )}
           </div>
 
-          {/* Start Date */}
+    
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Start Date
@@ -207,7 +210,7 @@ const SpecialBudgetModal = ({ onClose, onSave, editingBudget, onDelete, isLoadin
             )}
           </div>
 
-          {/* End Date */}
+    
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               End Date

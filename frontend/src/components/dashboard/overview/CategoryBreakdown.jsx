@@ -1,4 +1,4 @@
-// CategoryBreakdown.jsx
+
 import React from "react";
 import {
   PieChart,
@@ -10,6 +10,7 @@ import {
 } from "recharts";
 
 const CategoryBreakdown = ({ transactions, currency, isMobile }) => {
+
   // Calculate spending by category
   const spendingByCategory = transactions
     .filter((t) => t.type === "expense")
@@ -21,7 +22,7 @@ const CategoryBreakdown = ({ transactions, currency, isMobile }) => {
       return acc;
     }, {});
 
-  // Convert to array for chart
+  // transforming data for chart 
   const chartData = Object.entries(spendingByCategory)
     .map(([name, value]) => ({
       name,
@@ -36,7 +37,7 @@ const CategoryBreakdown = ({ transactions, currency, isMobile }) => {
     }))
     .sort((a, b) => b.value - a.value);
 
-  // Color palette for categories
+
   const COLORS = [
     "#3B82F6",
     "#10B981",
@@ -50,7 +51,7 @@ const CategoryBreakdown = ({ transactions, currency, isMobile }) => {
     "#6366F1",
   ];
 
-  // Custom tooltip
+
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
@@ -69,7 +70,7 @@ const CategoryBreakdown = ({ transactions, currency, isMobile }) => {
     return null;
   };
 
-  // Custom legend
+
   const renderLegend = (props) => {
     const { payload } = props;
     return (
@@ -135,7 +136,7 @@ const CategoryBreakdown = ({ transactions, currency, isMobile }) => {
             </ResponsiveContainer>
           </div>
 
-          {/* Detailed breakdown list */}
+     
           <div className="mt-6 space-y-3">
             <h3 className="font-semibold text-gray-800 mb-3">
               Title Details

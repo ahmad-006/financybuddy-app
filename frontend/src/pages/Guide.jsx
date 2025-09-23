@@ -5,7 +5,7 @@ export default function Guide() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white px-6 py-16">
-      {/* Header Section */}
+   
       <div className="text-center mb-16 max-w-3xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-bold mb-6 text-blue-400">
           How FinancyBuddy Works
@@ -23,10 +23,10 @@ export default function Guide() {
         </button>
       </div>
 
-      {/* Steps Section */}
+    
       <div className="max-w-5xl mx-auto mb-20">
         <div className="flex flex-col md:flex-row justify-between items-start space-y-12 md:space-y-0">
-          {/* Step 1 */}
+      
           <div className="flex flex-col items-center text-center w-full md:w-1/3 px-4">
             <div className="w-20 h-20 rounded-full bg-blue-900 flex items-center justify-center mb-6 text-2xl font-bold text-blue-400 border-2 border-blue-500">
               1
@@ -40,13 +40,12 @@ export default function Guide() {
             </p>
           </div>
 
-          {/* Connector Line */}
+      
           <div className="hidden md:flex items-center justify-center w-1/3 relative">
             <div className="absolute h-1 w-full bg-blue-800"></div>
             <div className="absolute w-4 h-4 rounded-full bg-blue-500 left-1/2 transform -translate-x-1/2"></div>
           </div>
 
-          {/* Step 2 */}
           <div className="flex flex-col items-center text-center w-full md:w-1/3 px-4">
             <div className="w-20 h-20 rounded-full bg-blue-900 flex items-center justify-center mb-6 text-2xl font-bold text-blue-400 border-2 border-blue-500">
               2
@@ -60,13 +59,12 @@ export default function Guide() {
             </p>
           </div>
 
-          {/* Connector Line */}
           <div className="hidden md:flex items-center justify-center w-1/3 relative">
             <div className="absolute h-1 w-full bg-blue-800"></div>
             <div className="absolute w-4 h-4 rounded-full bg-blue-500 left-1/2 transform -translate-x-1/2"></div>
           </div>
 
-          {/* Step 3 */}
+  
           <div className="flex flex-col items-center text-center w-full md:w-1/3 px-4">
             <div className="w-20 h-20 rounded-full bg-blue-900 flex items-center justify-center mb-6 text-2xl font-bold text-blue-400 border-2 border-blue-500">
               3
@@ -82,7 +80,7 @@ export default function Guide() {
         </div>
       </div>
 
-      {/* Features Section */}
+    
       <div className="max-w-5xl mx-auto mb-20">
         <h2 className="text-3xl font-bold text-center mb-12 text-blue-400">
           Why Manual Tracking Works Better
@@ -116,7 +114,7 @@ export default function Guide() {
             </p>
           </div>
 
-          {/* Feature 2 */}
+    
           <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 rounded-lg bg-blue-900 flex items-center justify-center mr-4 text-blue-400">
@@ -143,7 +141,7 @@ export default function Guide() {
             </p>
           </div>
 
-          {/* Feature 3 */}
+     
           <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 rounded-lg bg-blue-900 flex items-center justify-center mr-4 text-blue-400">
@@ -170,7 +168,6 @@ export default function Guide() {
             </p>
           </div>
 
-          {/* Feature 4 */}
           <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 rounded-lg bg-blue-900 flex items-center justify-center mr-4 text-blue-400">
@@ -199,7 +196,7 @@ export default function Guide() {
         </div>
       </div>
 
-      {/* FAQ Section */}
+
       <div className="max-w-4xl mx-auto mb-20">
         <h2 className="text-3xl font-bold text-center mb-12 text-blue-400">
           Frequently Asked Questions
@@ -244,7 +241,7 @@ export default function Guide() {
         </div>
       </div>
 
-      {/* CTA Section */}
+  
       <div className="max-w-3xl mx-auto text-center bg-gray-800 p-8 rounded-2xl border border-gray-700">
         <h2 className="text-3xl font-bold mb-4 text-blue-400">
           Ready to Take Control of Your Finances?

@@ -60,7 +60,7 @@ const AddSavingModal = ({ onClose, onSave, editingSaving, onDelete, isLoading })
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-2">
-          {/* Amount */}
+   
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Amount
@@ -83,7 +83,7 @@ const AddSavingModal = ({ onClose, onSave, editingSaving, onDelete, isLoading })
             )}
           </div>
 
-          {/* Date */}
+ 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Date
@@ -98,7 +98,7 @@ const AddSavingModal = ({ onClose, onSave, editingSaving, onDelete, isLoading })
             )}
           </div>
 
-          {/* Note / Description */}
+   
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Title
