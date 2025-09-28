@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import { ToastContainer, Bounce } from "react-toastify";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Error from "./pages/Error";
 
 const Budget = lazy(() => import("./pages/MonthlyBudget"));
 const ReportPage = lazy(() => import("./pages/ReportPage"));
@@ -43,6 +44,7 @@ export default function App() {
   const routes = createBrowserRouter([
     {
       element: <AppLayout />,
+      errorElement: <Error />,
       children: [
         { path: "/", element: <Home /> },
         { path: "/guide", element: <Guide /> },

@@ -1,7 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  
   faEnvelope,
   faLock,
   faIdCard,
@@ -28,8 +27,7 @@ export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  // New state for OTP flow
-  const [currentStep, setCurrentStep] = useState("signup"); // 'signup' or 'otp'
+  const [currentStep, setCurrentStep] = useState("signup");
   const [userEmail, setUserEmail] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [userData, setUserData] = useState([]);
@@ -78,10 +76,8 @@ export default function SignUp() {
       if (res.status === "fail") throw new Error(res);
       reset();
       navigate("/dashboard");
-
       setCurrentStep("signup");
     } catch (error) {
-      
       setSignUpError(error.message || "OTP verification failed");
     } finally {
       setIsVerifying(false);
@@ -125,40 +121,40 @@ export default function SignUp() {
     }
   }, [currentStep, setValue]);
 
-  // OTP Verification Form
   if (currentStep === "otp") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-stone-900 to-stone-800 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full bg-stone-800 rounded-2xl shadow-xl overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
           <div className="p-8">
-            <div className="text-center">
-              <FontAwesomeIcon
-                icon={faShieldAlt}
-                className="text-blue-400 text-5xl mb-4"
-              />
-              <h2 className="text-3xl font-bold text-white mb-2">
+            <div className="text-center mb-8">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <FontAwesomeIcon
+                  icon={faShieldAlt}
+                  className="text-white text-xl"
+                />
+              </div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">
                 Verify Your Email
               </h2>
-              <p className="text-stone-400 mb-4">
+              <p className="text-gray-600 mb-4">
                 We've sent a verification code to
               </p>
-              <p className="text-blue-400 font-semibold mb-6">{userEmail}</p>
+              <p className="text-blue-600 font-semibold mb-6">{userEmail}</p>
             </div>
 
             <form onSubmit={handleSubmit(onSubmitOTP)} className="space-y-6">
               {signUpError && (
-                <div className="p-3 bg-red-900/30 border border-red-700 rounded-lg">
-                  <p className="text-red-400 text-sm">{signUpError}</p>
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-red-600 text-sm">{signUpError}</p>
                 </div>
               )}
 
-              {/* OTP Input Field */}
               <div>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <FontAwesomeIcon
                       icon={faShieldAlt}
-                      className="text-stone-400"
+                      className="text-gray-400"
                     />
                   </div>
                   <input
@@ -175,21 +171,20 @@ export default function SignUp() {
                     type="text"
                     placeholder="Enter 6-digit code"
                     maxLength="6"
-                    className="w-full pl-10 pr-4 py-3 bg-stone-700 border border-stone-600 rounded-lg text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center text-xl tracking-widest"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-center text-xl tracking-widest"
                   />
                 </div>
                 {errors.otp && (
-                  <p className="mt-1 text-sm text-red-400">
+                  <p className="mt-1 text-sm text-red-600">
                     {errors.otp.message}
                   </p>
                 )}
               </div>
 
-              {/* Action Buttons */}
               <div className="flex flex-col space-y-3">
                 <button
                   type="submit"
-                  className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-300 ease-in-out disabled:opacity-50"
+                  className="w-full py-3 px-4 bg-gradient-to-br from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 disabled:opacity-50"
                   disabled={isVerifying}
                 >
                   {isVerifying ? "Verifying..." : "Verify Code"}
@@ -201,7 +196,7 @@ export default function SignUp() {
                 <button
                   type="button"
                   onClick={handleResendOTP}
-                  className="text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors duration-300 disabled:opacity-50"
                   disabled={resendCooldown > 0 || isResending}
                 >
                   {isResending
@@ -214,7 +209,7 @@ export default function SignUp() {
                 <button
                   type="button"
                   onClick={handleBackToSignUp}
-                  className="text-stone-400 hover:text-stone-300 text-sm font-medium transition-colors duration-300"
+                  className="text-gray-600 hover:text-gray-700 text-sm font-medium transition-colors duration-300"
                 >
                   ← Back to sign up
                 </button>
@@ -226,32 +221,33 @@ export default function SignUp() {
     );
   }
 
-  // Original SignUp Form (rendered by default)
   return (
-    <div className="min-h-screen bg-gradient-to-br from-stone-900 to-stone-800 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full bg-stone-800 rounded-2xl shadow-xl overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
         <div className="p-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-white mb-2">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <FontAwesomeIcon icon={faIdCard} className="text-white text-xl" />
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">
               Create Account
             </h2>
-            <p className="text-stone-400 mb-8">
+            <p className="text-gray-600">
               Join us to manage your finances better
             </p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmitSignUp)} className="space-y-4">
             {signUpError && (
-              <div className="p-3 bg-red-900/30 border border-red-700 rounded-lg">
-                <p className="text-red-400 text-sm">{signUpError}</p>
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-600 text-sm">{signUpError}</p>
               </div>
             )}
 
-            {/* First Name Field */}
             <div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FontAwesomeIcon icon={faIdCard} className="text-stone-400" />
+                  <FontAwesomeIcon icon={faIdCard} className="text-gray-400" />
                 </div>
                 <input
                   id="firstName"
@@ -269,21 +265,20 @@ export default function SignUp() {
                   })}
                   type="text"
                   placeholder="First Name"
-                  className="w-full pl-10 pr-4 py-3 bg-stone-700 border border-stone-600 rounded-lg text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
               {errors.firstName && (
-                <p className="mt-1 text-sm text-red-400">
+                <p className="mt-1 text-sm text-red-600">
                   {errors.firstName.message}
                 </p>
               )}
             </div>
 
-            {/* Last Name Field */}
             <div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FontAwesomeIcon icon={faIdCard} className="text-stone-400" />
+                  <FontAwesomeIcon icon={faIdCard} className="text-gray-400" />
                 </div>
                 <input
                   id="lastName"
@@ -301,25 +296,22 @@ export default function SignUp() {
                   })}
                   type="text"
                   placeholder="Last Name"
-                  className="w-full pl-10 pr-4 py-3 bg-stone-700 border border-stone-600 rounded-lg text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
               {errors.lastName && (
-                <p className="mt-1 text-sm text-red-400">
+                <p className="mt-1 text-sm text-red-600">
                   {errors.lastName.message}
                 </p>
               )}
             </div>
 
-            
-
-            {/* Email Field */}
             <div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <FontAwesomeIcon
                     icon={faEnvelope}
-                    className="text-stone-400"
+                    className="text-gray-400"
                   />
                 </div>
                 <input
@@ -334,21 +326,20 @@ export default function SignUp() {
                   })}
                   type="email"
                   placeholder="Email Address"
-                  className="w-full pl-10 pr-4 py-3 bg-stone-700 border border-stone-600 rounded-lg text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
               {errors.email && (
-                <p className="mt-1 text-sm text-red-400">
+                <p className="mt-1 text-sm text-red-600">
                   {errors.email.message}
                 </p>
               )}
             </div>
 
-            {/* Password Field */}
             <div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FontAwesomeIcon icon={faLock} className="text-stone-400" />
+                  <FontAwesomeIcon icon={faLock} className="text-gray-400" />
                 </div>
                 <input
                   id="password"
@@ -359,35 +350,29 @@ export default function SignUp() {
                       value: 8,
                       message: "Password must be at least 8 characters",
                     },
-                    // pattern: {
-                    //   value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/,
-                    //   message:
-                    //     "Must contain at least 1 uppercase, 1 lowercase, and 1 number",
-                    // },
                   })}
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
-                  className="w-full pl-10 pr-4 py-3 bg-stone-700 border border-stone-600 rounded-lg text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
                 <span
                   onClick={() => setShowPassword((s) => !s)}
-                  className="cursor-pointer absolute md:top-2 top-3 right-2"
+                  className="cursor-pointer absolute top-3 right-3"
                 >
                   {showPassword ? <ShowPasswordIcon /> : <HidePasswordIcon />}
                 </span>
               </div>
               {errors.password && (
-                <p className="mt-1 text-sm text-red-400">
+                <p className="mt-1 text-sm text-red-600">
                   {errors.password.message}
                 </p>
               )}
             </div>
 
-            {/* Confirm Password Field */}
             <div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FontAwesomeIcon icon={faLock} className="text-stone-400" />
+                  <FontAwesomeIcon icon={faLock} className="text-gray-400" />
                 </div>
                 <input
                   id="confirmPassword"
@@ -399,26 +384,25 @@ export default function SignUp() {
                   })}
                   type={showPassword ? "text" : "password"}
                   placeholder="Confirm Password"
-                  className="w-full pl-10 pr-4 py-3 bg-stone-700 border border-stone-600 rounded-lg text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
                 <span
                   onClick={() => setShowPassword((s) => !s)}
-                  className="cursor-pointer absolute md:top-2 top-3 right-2"
+                  className="cursor-pointer absolute top-3 right-3"
                 >
                   {showPassword ? <ShowPasswordIcon /> : <HidePasswordIcon />}
                 </span>
               </div>
               {errors.confirmPassword && (
-                <p className="mt-1 text-sm text-red-400">
+                <p className="mt-1 text-sm text-red-600">
                   {errors.confirmPassword.message}
                 </p>
               )}
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1 mt-6 disabled:opacity-50"
+              className="w-full py-3 px-4 bg-gradient-to-br from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 mt-6 disabled:opacity-50"
               disabled={isCreatingAccount}
             >
               {isCreatingAccount ? "Creating..." : "Create Account"}
@@ -428,26 +412,17 @@ export default function SignUp() {
             </button>
           </form>
 
-          {/* Login Link */}
           <div className="mt-6 text-center">
-            <p className="text-stone-400">
+            <p className="text-gray-600">
               Already have an account?{" "}
               <NavLink
                 to="/login"
-                className="text-blue-400 hover:text-blue-300 font-semibold transition-colors duration-300"
+                className="text-blue-600 hover:text-blue-700 font-semibold"
               >
                 Login here
               </NavLink>
             </p>
           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="bg-stone-700 px-8 py-4">
-          <p className="text-xs text-stone-400 text-center">
-            By creating an account, you agree to our Terms of Service and
-            Privacy Policy
-          </p>
         </div>
       </div>
     </div>

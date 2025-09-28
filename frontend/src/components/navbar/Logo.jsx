@@ -1,18 +1,18 @@
 import { faMoneyBill1Wave } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-function logo() {
+function Logo() {
   return (
-    <div className="flex gap-1 p-1 text-2xl sm:text-xl ">
+    <div className="flex gap-2 items-center p-1">
       <FontAwesomeIcon
         icon={faMoneyBill1Wave}
-        style={{ color: "blue" }}
+        className="text-blue-600 text-xl"
       />
-      <h2 className="font-macondo text-2xl sm:text-xl text-white">
+      <h2 className="font-macondo text-2xl sm:text-xl text-gray-900">
         FinancyBuddy
       </h2>
     </div>
   );
 }
 
-export default logo;
+export default Logo;

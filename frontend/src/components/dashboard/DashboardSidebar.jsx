@@ -24,7 +24,6 @@ const DashboardSidebar = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const navigate = useNavigate();
 
-  // Detect screen size changes
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth < 768;
@@ -42,7 +41,6 @@ const DashboardSidebar = () => {
     };
 
     window.addEventListener("resize", handleResize);
-
     handleResize();
 
     return () => window.removeEventListener("resize", handleResize);
@@ -71,7 +69,7 @@ const DashboardSidebar = () => {
   return (
     <>
       <button
-        className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-blue-600 text-white"
+        className="md:hidden fixed top-4 left-4 z-50 p-3 rounded-lg bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-all"
         onClick={() => setIsMobileOpen(!isMobileOpen)}
       >
         <FontAwesomeIcon icon={isMobileOpen ? faTimes : faBars} />
@@ -84,33 +82,31 @@ const DashboardSidebar = () => {
         ></div>
       )}
 
-      {/* Sidebar */}
       <div
-        className={`fixed md:relative top-0 left-0 bg-stone-800 shadow-lg z-40 transition-all duration-300 flex flex-col dashboard-sidebar ios-fix-h-screen
+        className={`fixed md:relative top-0 left-0 bg-white shadow-xl border-r border-gray-200 z-40 transition-all duration-300 flex flex-col dashboard-sidebar ios-fix-h-screen
           ${isOpen ? "w-64" : "w-16"}
           ${isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
           ${isMobile ? "!w-64 h-full" : "h-screen"}`}
       >
-        <div className="flex items-center justify-between p-4 border-b border-stone-700 flex-shrink-0">
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
           {(isOpen || isMobileOpen || isMobile) && (
             <div className="flex items-center">
-              <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center mr-2">
-                <FontAwesomeIcon icon={faHome} className="text-white" />
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center mr-2">
+                <FontAwesomeIcon icon={faHome} className="text-white text-sm" />
               </div>
-              <h1 className="text-white font-bold text-xl">FinancyBuddy</h1>
+              <h1 className="text-gray-900 font-bold text-xl">FinancyBuddy</h1>
             </div>
           )}
           {!isMobile && (
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-1 rounded-full hover:bg-stone-700 text-stone-400"
+              className="p-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-all"
             >
               <FontAwesomeIcon icon={isOpen ? faChevronLeft : faChevronRight} />
             </button>
           )}
         </div>
 
-        {/* Main navigation  */}
         <nav className="flex-1 overflow-y-auto py-2">
           <ul className="space-y-1 px-2">
             {menuItems.map((item) => (
@@ -118,11 +114,11 @@ const DashboardSidebar = () => {
                 <NavLink
                   to={item.path}
                   className={({ isActive }) =>
-                    `flex items-center p-3 rounded-lg transition-colors nav-item
+                    `flex items-center p-3 rounded-lg transition-all duration-300
                     ${
                       isActive
-                        ? "bg-blue-600 text-white"
-                        : "text-stone-300 hover:bg-stone-700 hover:text-white"
+                        ? "bg-blue-50 text-blue-600 border border-blue-200 font-semibold"
+                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                     }`
                   }
                   onClick={() => setIsMobileOpen(false)}
@@ -137,15 +133,15 @@ const DashboardSidebar = () => {
           </ul>
         </nav>
 
-        <div className="p-2 border-t border-stone-700 flex-shrink-0 sidebar-footer">
+        <div className="p-2 border-t border-gray-200 flex-shrink-0 sidebar-footer">
           <NavLink
             to="/user-profile"
             className={({ isActive }) =>
-              `flex items-center p-3 rounded-lg transition-colors mb-1
+              `flex items-center p-3 rounded-lg transition-all duration-300 mb-1
               ${
                 isActive
-                  ? "bg-stone-700 text-white"
-                  : "text-stone-300 hover:bg-stone-700 hover:text-white"
+                  ? "bg-blue-50 text-blue-600 border border-blue-200 font-semibold"
+                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
               }`
             }
             onClick={() => setIsMobileOpen(false)}
@@ -158,7 +154,7 @@ const DashboardSidebar = () => {
 
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center p-3 rounded-lg bg-stone-700 hover:bg-red-600 text-white transition-colors mt-1"
+            className="w-full flex items-center p-3 rounded-lg bg-gradient-to-br from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white transition-all duration-300 shadow-lg hover:shadow-xl"
           >
             <FontAwesomeIcon icon={faSignOutAlt} className="w-5 h-5" />
             {(isOpen || isMobileOpen || isMobile) && (

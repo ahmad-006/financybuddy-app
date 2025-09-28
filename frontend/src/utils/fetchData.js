@@ -14,8 +14,8 @@ axios.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-const baseURL = "http://localhost:8000";
-// const baseURL = "https://backend-test-lac.vercel.app";
+// const baseURL = "http://localhost:8000";
+const baseURL = "https://backend-test-lac.vercel.app";
 // const baseURL = "https://financybuddy-app-production.up.railway.app";
 
 // Fetch all transactions

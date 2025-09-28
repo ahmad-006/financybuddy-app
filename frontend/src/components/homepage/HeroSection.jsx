@@ -1,91 +1,113 @@
+// eslint-disable-next-line no-unused-vars
+import { motion } from "framer-motion";
 import heroSVG from "../../assets/images/home/hero.svg";
 
 function HeroSection({ navigate }) {
   return (
-    <section className="relative flex md:flex-row items-center md:justify-between py-12 md:py-24 px-4 md:px-10 flex-col-reverse text-white overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 to-indigo-900/30 z-0"></div>
-
-      <div className="flex flex-col items-start text-left mt-10 md:mt-0 md:px-6 max-w-2xl relative z-10">
-        <div className="mb-4">
-          <span className="bg-blue-800/40 text-blue-200 px-4 py-2 rounded-full text-sm font-medium">
-            Your Financial Freedom Starts Here
-          </span>
-        </div>
-
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-          Master Your Money,{" "}
-          <span className="text-blue-400">Simplify Your Life</span>
-        </h1>
-
-        <p className="text-lg md:text-xl mb-8 text-gray-200 leading-relaxed">
-          Take full control of your finances with our intelligent expense
-          management platform. Track spending, optimize budgets, and achieve
-          your financial goals faster with AI-powered insights and beautiful
-          visualizations.
-        </p>
-
-        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-          <button
-            className="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-700 transition-all transform hover:-translate-y-1 hover:shadow-xl flex items-center justify-center"
-            onClick={() => navigate("/signup")}
+    <section className="min-h-screen flex items-center justify-center py-5 px-4 bg-white overflow-hidden">
+      <div className="max-w-6xl mx-auto w-full">
+        <div className="flex flex-col lg:flex-row gap-8 items-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="w-full lg:w-1/2 order-1 lg:order-2"
           >
-            Start Free Trial
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 ml-2"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-                clipRule="evenodd"
+            <div className="bg-white rounded-xl p-4 shadow-lg border border-gray-100 max-w-sm mx-auto">
+              <img
+                src={heroSVG}
+                alt="Financial Dashboard"
+                className="w-full h-auto"
               />
-            </svg>
-          </button>
+            </div>
 
-          <a href="#features" className="sm:w-auto w-full">
-            <button className="px-8 py-3.5 rounded-lg border-2 border-indigo-600 text-white font-medium hover:bg-indigo-700/20 transition-all w-full flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-2"
-                viewBox="0 0 20 20"
-                fill="currentColor"
+            <div className="relative -mt-5 max-w-sm mx-auto">
+              <motion.div
+                className="absolute -top-2 -right-2 bg-white rounded-lg p-3 shadow-lg border border-gray-100"
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.8 }}
               >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Explore Features
-            </button>
-          </a>
-        </div>
+                <div className="text-green-600 font-bold text-sm">+32%</div>
+                <div className="text-gray-500 text-xs">Savings</div>
+              </motion.div>
 
-        <div className="mt-10 flex items-center text-gray-300">
-          <div className="flex -space-x-3 mr-4">
-            <div className="w-8 h-8 rounded-full bg-blue-500 border-2 border-gray-900"></div>
-            <div className="w-8 h-8 rounded-full bg-purple-500 border-2 border-gray-900"></div>
-            <div className="w-8 h-8 rounded-full bg-indigo-500 border-2 border-gray-900"></div>
-          </div>
-          <p className="text-sm">
-            <span className="font-semibold text-white">5,000+</span> users
-            tracking their finances
-          </p>
-        </div>
-      </div>
+              <motion.div
+                className="absolute -bottom-2 -left-2 bg-white rounded-lg p-3 shadow-lg border border-gray-100"
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 1 }}
+              >
+                <div className="text-blue-600 font-bold text-sm">95%</div>
+                <div className="text-gray-500 text-xs">Success</div>
+              </motion.div>
+            </div>
+          </motion.div>
 
-      <div className="relative z-10 mb-10 md:mb-0">
-        <div className="relative">
-          <img
-            src={heroSVG}
-            alt="Financial dashboard showing charts and statistics"
-            className="w-72 md:w-80 lg:w-96 transform hover:scale-105 transition-transform duration-700"
-          />
-          {/* Floating elements */}
-          <div className="absolute -top-4 -right-4 w-24 h-24 bg-blue-600/20 rounded-full animate-pulse"></div>
-          <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-purple-600/20 rounded-full animate-pulse delay-500"></div>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="w-full lg:w-1/2 order-2 lg:order-1 text-center lg:text-left"
+          >
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-50 border border-blue-100 mb-6">
+              <span className="text-blue-700 text-sm font-medium">
+                FINANCIAL FREEDOM AWAITS
+              </span>
+            </div>
+
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-gray-900 leading-tight">
+              Master Your
+              <br />
+              <span className="text-blue-600">Financial Future</span>
+            </h1>
+
+            <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+              Transform how you manage money with elegant design and powerful
+              insights. Achieve your goals with precision and clarity.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+              <button
+                onClick={() => navigate("/signup")}
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 flex items-center justify-center font-medium text-sm"
+              >
+                Start Free Trial
+                <svg
+                  className="w-4 h-4 ml-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"
+                  />
+                </svg>
+              </button>
+
+              <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:border-gray-400 transition-all duration-300 text-sm">
+                View Demo
+              </button>
+            </div>
+
+            <div className="flex items-center justify-center lg:justify-start space-x-3 pt-6">
+              <div className="flex -space-x-2">
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full border-2 border-white shadow-lg"
+                  />
+                ))}
+              </div>
+              <span className="text-gray-600 text-sm">
+                <span className="font-semibold text-gray-900">5,000+</span>{" "}
+                professionals trust us
+              </span>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>

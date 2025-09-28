@@ -61,14 +61,13 @@ function AIChatBot() {
   };
 
   return (
-    <div className="h-screen w-full bg-gradient-to-bl from-gray-900 to-gray-800 flex md:items-center md:justify-center overflow-x-hidden">
-      <div className="bg-gray-100 w-full max-w-full sm:h-screen md:w-2/3 lg:w-1/2 md:max-w-2xl md:h-[80%] flex flex-col rounded-lg shadow-lg overflow-hidden">
+    <div className="h-screen w-full bg-gradient-to-br from-gray-50 to-white flex md:items-center md:justify-center overflow-hidden">
+      <div className="bg-white w-full max-w-full sm:h-screen md:w-2/3 lg:w-1/2 md:max-w-2xl md:h-[85%] flex flex-col rounded-xl shadow-2xl border border-gray-200 overflow-hidden">
         <AIHeader />
-        <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 relative">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 bg-gray-50">
           {messages.map((msg, index) => (
             <Messages msg={msg} key={index} />
           ))}
-
           <div ref={messagesEndRef} />
         </div>
         <AIFooter

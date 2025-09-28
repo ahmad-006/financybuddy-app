@@ -1,205 +1,390 @@
+// eslint-disable-next-line no-unused-vars
+import { motion } from "framer-motion";
 import { NavLink } from "react-router-dom";
+import { useState, useEffect } from "react";
 import aboutSVG from "../assets/images/home/aboutus.svg";
 
 export default function About() {
+  const [userCount, setUserCount] = useState(0);
+  const [expenseCount, setExpenseCount] = useState(0);
+  const [satisfactionCount, setSatisfactionCount] = useState(0);
+  const [savingsCount, setSavingsCount] = useState(0);
+
+  useEffect(() => {
+    const duration = 3500;
+    const steps = 90;
+
+    const userIncrement = 50000 / steps;
+    let currentUser = 0;
+
+    const expenseIncrement = 380 / steps;
+    let currentExpense = 0;
+
+    const satisfactionIncrement = 97 / steps;
+    let currentSatisfaction = 0;
+
+    const savingsIncrement = 42 / steps;
+    let currentSavings = 0;
+
+    const timer = setInterval(() => {
+      currentUser += userIncrement;
+      if (currentUser >= 50000) {
+        setUserCount(50000);
+      } else {
+        setUserCount(Math.floor(currentUser));
+      }
+
+      currentExpense += expenseIncrement;
+      if (currentExpense >= 380) {
+        setExpenseCount(380);
+      } else {
+        setExpenseCount(Math.floor(currentExpense));
+      }
+
+      currentSatisfaction += satisfactionIncrement;
+      if (currentSatisfaction >= 97) {
+        setSatisfactionCount(97);
+      } else {
+        setSatisfactionCount(Math.floor(currentSatisfaction));
+      }
+
+      currentSavings += savingsIncrement;
+      if (currentSavings >= 42) {
+        setSavingsCount(42);
+      } else {
+        setSavingsCount(Math.floor(currentSavings));
+      }
+
+      if (
+        currentUser >= 50000 &&
+        currentExpense >= 380 &&
+        currentSatisfaction >= 97 &&
+        currentSavings >= 42
+      ) {
+        clearInterval(timer);
+      }
+    }, duration / steps);
+
+    return () => clearInterval(timer);
+  }, []);
+
   return (
-    <div className="bg-gray-900 text-white">
-      {/* Hero Section */}
+    <div className="bg-white text-gray-800">
       <section className="py-20 px-6">
         <div className="max-w-7xl mx-auto flex md:flex-row flex-col-reverse gap-12 items-center">
-        
-          <div className="md:w-1/2">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-blue-400">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            className="md:w-1/2"
+          >
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-50 border border-blue-100 mb-6">
+              <span className="text-blue-700 text-sm font-medium">
+                OUR STORY
+              </span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
               About
-              <span className="font-macondo"> FinancyBuddy</span>
+              <span className="text-blue-600"> FinancyBuddy</span>
             </h2>
-            <p className="text-gray-300 text-lg mb-4 leading-relaxed">
-              At FinTrack, we're dedicated to revolutionizing how individuals
-              manage their finances. Founded in 2020, our mission is to provide
+            <p className="text-gray-600 text-lg mb-4 leading-relaxed">
+              At FinancyBuddy, we're dedicated to revolutionizing how
+              individuals manage their finances. Our mission is to provide
               simple, intelligent, and actionable tools that make budgeting and
               expense tracking effortless for everyone.
             </p>
-            <p className="text-gray-300 text-lg leading-relaxed mb-8">
+            <p className="text-gray-600 text-lg leading-relaxed mb-8">
               From visual dashboards to AI-driven insights, our goal is to
               empower you to make smarter financial decisions, save more, and
               reach your financial goals faster.
             </p>
 
-            <button className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition transform hover:-translate-y-1">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              className="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-700 transition-all duration-300"
+            >
               <NavLink to={"/Login"}>Start Your Financial Journey</NavLink>
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
 
-      
-          <div className="md:w-1/2 flex justify-center">
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="md:w-1/2 flex justify-center"
+          >
             <img
               src={aboutSVG}
               alt="Financial tracking illustration"
               className="w-full max-w-md"
             />
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Section 2*/}
-      <section className="py-16 px-6 bg-gray-800">
+      <section className="py-16 px-6 bg-gray-50">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12 text-blue-400">
-            Our Mission & Values
-          </h2>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-gray-700 p-6 rounded-lg shadow-lg">
-              <div className="text-blue-400 text-2xl mb-4">🔒</div>
-              <h3 className="text-xl font-semibold mb-3">Security First</h3>
-              <p className="text-gray-300">
-                Your financial data is encrypted and secure. We never share your
-                information with third parties without your explicit consent.
-              </p>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-white border border-gray-200 mb-6">
+              <span className="text-gray-600 text-sm font-medium">
+                OUR VALUES
+              </span>
             </div>
+            <h2 className="text-4xl font-bold text-gray-900 mb-6">
+              Our Mission & Values
+            </h2>
+          </motion.div>
 
-            <div className="bg-gray-700 p-6 rounded-lg shadow-lg">
-              <div className="text-blue-400 text-2xl mb-4">📊</div>
-              <h3 className="text-xl font-semibold mb-3">Clarity & Insight</h3>
-              <p className="text-gray-300">
-                We transform complex financial data into clear, actionable
-                insights that help you understand your spending patterns and
-                opportunities.
-              </p>
-            </div>
-
-            <div className="bg-gray-700 p-6 rounded-lg shadow-lg">
-              <div className="text-blue-400 text-2xl mb-4">🌍</div>
-              <h3 className="text-xl font-semibold mb-3">
-                Financial Empowerment
-              </h3>
-              <p className="text-gray-300">
-                We believe everyone deserves financial freedom. Our tools are
-                designed to be accessible to people at all financial literacy
-                levels.
-              </p>
-            </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                icon: "🔒",
+                title: "Security First",
+                description:
+                  "Your financial data is encrypted and secure. We never share your information with third parties without your explicit consent.",
+              },
+              {
+                icon: "📊",
+                title: "Clarity & Insight",
+                description:
+                  "We transform complex financial data into clear, actionable insights that help you understand your spending patterns and opportunities.",
+              },
+              {
+                icon: "🌍",
+                title: "Financial Empowerment",
+                description:
+                  "We believe everyone deserves financial freedom. Our tools are designed to be accessible to people at all financial literacy levels.",
+              },
+            ].map((value, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
+                viewport={{ once: true }}
+                className="bg-white p-6 rounded-xl border border-gray-200 shadow-lg"
+              >
+                <div className="text-3xl mb-4">{value.icon}</div>
+                <h3 className="text-xl font-semibold mb-3 text-gray-900">
+                  {value.title}
+                </h3>
+                <p className="text-gray-600">{value.description}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/*  Section 3*/}
       <section className="py-16 px-6">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12 text-blue-400">
-            Meet Our Team
-          </h2>
-
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <img
-                src="https://randomuser.me/api/portraits/men/32.jpg"
-                alt="Ahmad Aamir"
-                className="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
-              />
-              <h3 className="text-xl font-semibold">Ahmad Aamir</h3>
-              <p className="text-blue-400">Founder & CEO</p>
-              <p className="text-gray-400 mt-2">
-                Former financial analyst with 10+ years experience
-              </p>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-gray-100 border border-gray-200 mb-6">
+              <span className="text-gray-600 text-sm font-medium">
+                OUR TEAM
+              </span>
             </div>
+            <h2 className="text-4xl font-bold text-gray-900 mb-6">
+              Meet Our Team
+            </h2>
+          </motion.div>
 
-            <div className="text-center">
-              <img
-                src="https://randomuser.me/api/portraits/women/65.jpg"
-                alt="Anna Smith"
-                className="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
-              />
-              <h3 className="text-xl font-semibold">Anna Smith</h3>
-              <p className="text-blue-400">Lead Developer</p>
-              <p className="text-gray-400 mt-2">
-                Specialized in fintech applications and security
-              </p>
-            </div>
-
-            <div className="text-center">
-              <img
-                src="https://randomuser.me/api/portraits/men/45.jpg"
-                alt="Mike Johnson"
-                className="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
-              />
-              <h3 className="text-xl font-semibold">Mike Johnson</h3>
-              <p className="text-blue-400">Product Designer</p>
-              <p className="text-gray-400 mt-2">
-                Focused on creating intuitive user experiences
-              </p>
-            </div>
-
-            <div className="text-center">
-              <img
-                src="https://randomuser.me/api/portraits/women/29.jpg"
-                alt="Sarah Rodriguez"
-                className="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
-              />
-              <h3 className="text-xl font-semibold">Sarah Rodriguez</h3>
-              <p className="text-blue-400">Financial Advisor</p>
-              <p className="text-gray-400 mt-2">
-                Certified financial planner and budgeting expert
-              </p>
-            </div>
+          <div className="grid md:grid-cols-4 gap-6">
+            {[
+              {
+                image: "https:/portraits/men/32.jpg",
+                name: "Ahmad Aamir",
+                role: "Founder & CEO",
+                description:
+                  "Former financial analyst with 10+ years experience",
+              },
+              {
+                image: "https:/portraits/women/65.jpg",
+                name: "Anna Smith",
+                role: "Lead Developer",
+                description: "Specialized in fintech applications and security",
+              },
+              {
+                image: "https:/portraits/men/45.jpg",
+                name: "Mike Johnson",
+                role: "Product Designer",
+                description: "Focused on creating intuitive user experiences",
+              },
+              {
+                image: "https:/portraits/women/29.jpg",
+                name: "Sarah Rodriguez",
+                role: "Financial Advisor",
+                description: "Certified financial planner and budgeting expert",
+              },
+            ].map((member, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="text-center"
+              >
+                <img
+                  src={member.image}
+                  alt={member.name}
+                  className="w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 border-gray-200"
+                />
+                <h3 className="text-xl font-semibold text-gray-900">
+                  {member.name}
+                </h3>
+                <p className="text-blue-600 font-medium">{member.role}</p>
+                <p className="text-gray-600 mt-2 text-sm">
+                  {member.description}
+                </p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/*  Section 4 */}
-      <section className="py-16 px-6 bg-gray-800">
+      <section className="py-16 px-6 bg-gray-50">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12 text-blue-400">
-            Our Impact
-          </h2>
-
-          <div className="grid md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-4xl font-bold text-blue-400 mb-2">50K+</div>
-              <p className="text-gray-300">Active Users</p>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-white border border-gray-200 mb-6">
+              <span className="text-gray-600 text-sm font-medium">
+                OUR IMPACT
+              </span>
             </div>
+            <h2 className="text-4xl font-bold text-gray-900 mb-6">
+              Our Impact
+            </h2>
+          </motion.div>
 
-            <div>
-              <div className="text-4xl font-bold text-blue-400 mb-2">
-                $380M+
+          <div className="grid md:grid-cols-4 gap-6 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <div className="text-4xl font-bold text-blue-600 mb-2">
+                <motion.span
+                  key={userCount}
+                  initial={{ scale: 1.2 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {userCount.toLocaleString()}+
+                </motion.span>
               </div>
-              <p className="text-gray-300">Tracked Expenses</p>
-            </div>
+              <p className="text-gray-600">Active Users</p>
+            </motion.div>
 
-            <div>
-              <div className="text-4xl font-bold text-blue-400 mb-2">97%</div>
-              <p className="text-gray-300">User Satisfaction</p>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              viewport={{ once: true }}
+            >
+              <div className="text-4xl font-bold text-blue-600 mb-2">
+                <motion.span
+                  key={expenseCount}
+                  initial={{ scale: 1.2 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  ${expenseCount}M+
+                </motion.span>
+              </div>
+              <p className="text-gray-600">Tracked Expenses</p>
+            </motion.div>
 
-            <div>
-              <div className="text-4xl font-bold text-blue-400 mb-2">42%</div>
-              <p className="text-gray-300">Average Savings Increase</p>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              <div className="text-4xl font-bold text-blue-600 mb-2">
+                <motion.span
+                  key={satisfactionCount}
+                  initial={{ scale: 1.2 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {satisfactionCount}%
+                </motion.span>
+              </div>
+              <p className="text-gray-600">User Satisfaction</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              viewport={{ once: true }}
+            >
+              <div className="text-4xl font-bold text-blue-600 mb-2">
+                <motion.span
+                  key={savingsCount}
+                  initial={{ scale: 1.2 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {savingsCount}%
+                </motion.span>
+              </div>
+              <p className="text-gray-600">Average Savings Increase</p>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/*  Section 5*/}
       <section className="py-16 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-6 text-blue-400">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="max-w-4xl mx-auto text-center bg-white p-8 rounded-2xl border border-gray-200 shadow-lg"
+        >
+          <h2 className="text-3xl font-bold mb-6 text-gray-900">
             Ready to Take Control of Your Finances?
           </h2>
-          <p className="text-gray-300 text-lg mb-8">
+          <p className="text-gray-600 text-lg mb-8">
             Join thousands of users who have already transformed their financial
-            lives with FinTrack.
+            lives with FinancyBuddy.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              className="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-700 transition-all duration-300"
+            >
               <NavLink to={"/Login"}>Get Started Today</NavLink>
-            </button>
+            </motion.button>
 
-            <button className="px-8 py-3 bg-transparent border border-blue-400 text-blue-400 font-semibold rounded-lg shadow-md hover:bg-blue-400 hover:text-white transition">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              className="px-8 py-4 bg-transparent border border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-600 hover:text-white transition-all duration-300"
+            >
               <NavLink to={"/price"}>View Pricing</NavLink>
-            </button>
+            </motion.button>
           </div>
-        </div>
+        </motion.div>
       </section>
     </div>
   );

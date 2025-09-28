@@ -7,10 +7,7 @@ import CustomerReviews from "../components/homepage/CustomerReviews";
 function Home() {
   const navigate = useNavigate();
   return (
-    <main
-      className="bg-gradient-to-b from-gray-950 to-gray-900 w-full relative"
-      style={{ backgroundColor: "#111827" }}
-    >
+    <main className="bg-white w-full relative">
       <HeroSection navigate={navigate} />
       <Features />
       <CustomerReviews />

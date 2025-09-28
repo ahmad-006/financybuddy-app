@@ -1,189 +1,236 @@
-import { useState, useEffect } from "react";
+// eslint-disable-next-line no-unused-vars
+import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
 
 const CustomerReviews = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [userCount, setUserCount] = useState(10000);
+  const [ratingCount, setRatingCount] = useState(4.0);
+  const [satisfactionCount, setSatisfactionCount] = useState(80);
+  const ref = useRef(null);
 
   const reviews = [
     {
       id: 1,
       name: "Sarah Johnson",
-      role: "Freelancer",
-      avatar: "S",
-      rating: 4,
+      role: "Financial Analyst",
       content:
-        "This app completely transformed how I manage my finances. I've saved 30% more since I started using it!",
-      color: "bg-blue-500",
+        "This platform transformed how I manage both personal and client finances. The insights are incredibly accurate.",
+      rating: 5,
     },
     {
       id: 2,
       name: "Michael Chen",
-      role: "Software Engineer",
-      avatar: "M",
-      rating: 5,
+      role: "Tech Entrepreneur",
       content:
-        "The AI insights are incredibly accurate. It caught spending patterns I hadn't noticed myself.",
-      color: "bg-green-500",
+        "The AI-powered recommendations helped optimize our company's cash flow management significantly.",
+      rating: 5,
     },
     {
       id: 3,
-      name: "Emily Rodriguez",
-      role: "Small Business Owner",
-      avatar: "E",
-      rating: 4,
+      name: "Emma Rodriguez",
+      role: "Portfolio Manager",
       content:
-        "Budgeting used to be a chore, but now it's actually enjoyable. The visual reports are fantastic.",
-      color: "bg-purple-500",
-    },
-    {
-      id: 4,
-      name: "David Kim",
-      role: "Graduate Student",
-      avatar: "D",
+        "Elegant design meets powerful functionality. This is exactly what the finance industry needed.",
       rating: 5,
-      content:
-        "As a student on a tight budget, this app has been a lifesaver. The saving goals feature keeps me motivated.",
-      color: "bg-amber-500",
-    },
-    {
-      id: 5,
-      name: "Jessica Williams",
-      role: "Marketing Manager",
-      avatar: "J",
-      rating: 5,
-      content:
-        "I've tried countless finance apps, but this is the first one that actually made me stick to my budget.",
-      color: "bg-pink-500",
     },
   ];
 
-  const nextReview = () => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % reviews.length);
-  };
-
-  const prevReview = () => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setCurrentIndex(
-      (prevIndex) => (prevIndex - 1 + reviews.length) % reviews.length
-    );
-  };
-
-  const goToReview = (index) => {
-    if (isTransitioning || index === currentIndex) return;
-    setIsTransitioning(true);
-    setCurrentIndex(index);
-  };
-
-  useEffect(() => {
-    if (isTransitioning) {
-      const timer = setTimeout(() => {
-        setIsTransitioning(false);
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [isTransitioning, currentIndex]);
-
   useEffect(() => {
     const interval = setInterval(() => {
-      nextReview();
-    }, 5000);
+      setCurrentIndex((prev) => (prev + 1) % reviews.length);
+    }, 4000);
     return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isTransitioning]);
+  }, [reviews.length]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          const duration = 3000;
+          const steps = 90;
+
+          const userIncrement = (50000 - 10000) / steps;
+          let currentUser = 10000;
+
+          const ratingIncrement = (4.9 - 4.0) / steps;
+          let currentRating = 4.0;
+
+          const satisfactionIncrement = (98 - 80) / steps;
+          let currentSatisfaction = 80;
+
+          const timer = setInterval(() => {
+            currentUser += userIncrement;
+            if (currentUser >= 50000) {
+              setUserCount(50000);
+            } else {
+              setUserCount(Math.floor(currentUser));
+            }
+
+            currentRating += ratingIncrement;
+            if (currentRating >= 4.9) {
+              setRatingCount(4.9);
+            } else {
+              setRatingCount(parseFloat(currentRating.toFixed(1)));
+            }
+
+            currentSatisfaction += satisfactionIncrement;
+            if (currentSatisfaction >= 98) {
+              setSatisfactionCount(98);
+            } else {
+              setSatisfactionCount(Math.floor(currentSatisfaction));
+            }
+
+            if (
+              currentUser >= 50000 &&
+              currentRating >= 4.9 &&
+              currentSatisfaction >= 98
+            ) {
+              clearInterval(timer);
+            }
+          }, duration / steps);
+
+          return () => clearInterval(timer);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    const node = ref.current;
+    if (node) {
+      observer.observe(node);
+    }
+
+    return () => {
+      if (node) {
+        observer.unobserve(node);
+      }
+    };
+  }, []);
 
   return (
-    <section className="py-16 px-4 bg-gradient-to-br from-gray-900 to-gray-800">
+    <section ref={ref} className="py-16 px-4 bg-white">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Trusted by <span className="text-blue-400">Thousands</span> of Users
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <div className="inline-flex items-center px-4 py-2 rounded-full bg-gray-100 border border-gray-200 mb-6">
+            <span className="text-gray-600 text-sm font-medium">
+              TRUSTED BY EXPERTS
+            </span>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            What Our Clients Say
           </h2>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-            Discover why our users love our personal finance app and how it's
-            helping them achieve their financial goals.
-          </p>
-        </div>
+        </motion.div>
 
-        <div className="relative h-96 md:h-80 mb-10 overflow-hidden rounded-xl">
+        <div className="relative h-64 mb-10 mx-2">
           {reviews.map((review, index) => (
-            <div
+            <motion.div
               key={review.id}
-              className={`absolute inset-0 bg-gray-800/70 backdrop-blur-sm rounded-xl p-8 border border-gray-700 transition-all duration-500 ease-in-out transform
-                ${
+              initial={{ opacity: 0, x: index === currentIndex ? 100 : -100 }}
+              animate={{
+                opacity: index === currentIndex ? 1 : 0,
+                x:
                   index === currentIndex
-                    ? "opacity-100 translate-x-0 z-10"
+                    ? 0
                     : index < currentIndex
-                      ? "opacity-0 -translate-x-full"
-                      : "opacity-0 translate-x-full"
-                }`}
+                      ? -100
+                      : 100,
+              }}
+              transition={{ duration: 0.5 }}
+              className={`absolute inset-0 bg-gray-50 rounded-xl p-6 border border-gray-200 ${index === currentIndex ? "" : "pointer-events-none"}`}
             >
-              <div className="flex mb-6 justify-center">
-                {[...Array(5)].map((_, i) => (
-                  <span
-                    key={i}
-                    className={`text-2xl ${i < review.rating ? "text-yellow-400" : "text-gray-600"}`}
-                  >
+              <div className="flex justify-center mb-4">
+                {[...Array(review.rating)].map((_, i) => (
+                  <span key={i} className="text-xl text-yellow-400 mx-1">
                     ★
                   </span>
                 ))}
               </div>
 
-              <p className="text-gray-200 text-center text-lg md:text-xl mb-8 italic px-4">
+              <blockquote className="text-lg text-gray-700 text-center mb-6 italic leading-relaxed">
                 "{review.content}"
-              </p>
+              </blockquote>
 
-              <div className="flex items-center justify-center">
-                <div
-                  className={`flex-shrink-0 flex items-center justify-center w-14 h-14 ${review.color} rounded-full text-white font-bold text-xl`}
-                >
-                  {review.avatar}
-                </div>
-                <div className="ml-4">
-                  <h4 className="text-white font-semibold text-lg">
-                    {review.name}
-                  </h4>
-                  <p className="text-gray-400">{review.role}</p>
-                </div>
+              <div className="text-center">
+                <div className="font-semibold text-gray-900">{review.name}</div>
+                <div className="text-gray-600 text-sm">{review.role}</div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
-        <div className="flex items-center justify-center space-x-6">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          viewport={{ once: true }}
+          className="flex items-center justify-center space-x-4 mb-8"
+        >
           <button
-            onClick={prevReview}
-            className="w-12 h-12 flex items-center justify-center rounded-full bg-gray-800 hover:bg-gray-700 transition-all shadow-lg"
-            aria-label="Previous review"
+            onClick={() =>
+              setCurrentIndex(
+                (prev) => (prev - 1 + reviews.length) % reviews.length
+              )
+            }
+            className="w-10 h-10 rounded-full bg-white border border-gray-300 hover:border-gray-400 transition-all duration-300 flex items-center justify-center shadow-sm"
           >
-            <span className="text-white text-xl font-bold">←</span>
+            <span className="text-gray-600 text-lg">←</span>
           </button>
 
-          <div className="flex space-x-3">
+          <div className="flex space-x-2">
             {reviews.map((_, index) => (
               <button
                 key={index}
-                onClick={() => goToReview(index)}
-                className={`w-3 h-3 rounded-full transition-all ${index === currentIndex ? "bg-blue-400 scale-125" : "bg-gray-700"}`}
-                aria-label={`Go to review ${index + 1}`}
+                onClick={() => setCurrentIndex(index)}
+                className={`w-2 h-2 rounded-full transition-all ${index === currentIndex ? "bg-blue-600 scale-125" : "bg-gray-300"}`}
               />
             ))}
           </div>
 
           <button
-            onClick={nextReview}
-            className="w-12 h-12 flex items-center justify-center rounded-full bg-gray-800 hover:bg-gray-700 transition-all shadow-lg"
-            aria-label="Next review"
+            onClick={() =>
+              setCurrentIndex((prev) => (prev + 1) % reviews.length)
+            }
+            className="w-10 h-10 rounded-full bg-white border border-gray-300 hover:border-gray-400 transition-all duration-300 flex items-center justify-center shadow-sm"
           >
-            <span className="text-white text-xl font-bold">→</span>
+            <span className="text-gray-600 text-lg">→</span>
           </button>
-        </div>
+        </motion.div>
 
-        <div className="text-center mt-6 text-gray-400">
-          {currentIndex + 1} / {reviews.length}
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          viewport={{ once: true }}
+          className="grid grid-cols-3 gap-4 max-w-md mx-auto pt-8 border-t border-gray-200"
+        >
+          <div className="text-center">
+            <div className="text-2xl font-bold text-gray-900 mb-1">
+              {userCount.toLocaleString()}+
+            </div>
+            <div className="text-gray-600 text-xs">Users</div>
+          </div>
+
+          <div className="text-center">
+            <div className="text-2xl font-bold text-gray-900 mb-1">
+              {ratingCount}/5
+            </div>
+            <div className="text-gray-600 text-xs">Rating</div>
+          </div>
+
+          <div className="text-center">
+            <div className="text-2xl font-bold text-gray-900 mb-1">
+              {satisfactionCount}%
+            </div>
+            <div className="text-gray-600 text-xs">Satisfaction</div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
