@@ -18,13 +18,10 @@ const RecurringTransactions = () => {
 
   const queryClient = useQueryClient();
 
-
-  const { data: transactions, isLoading: isFetching, error: fetchError } = useQuery({
+  const { data: transactions, isLoading: isFetching } = useQuery({
     queryKey: ["recurringTransactions"],
     queryFn: fetchRecurringTransactions,
   });
-
-
 
   //converting mongodb _id to id
   const recurringTransactions =
@@ -84,7 +81,10 @@ const RecurringTransactions = () => {
       isActive,
     };
     if (editingRecurringTransaction?.id) {
-      await updateMutation.mutateAsync({ id: editingRecurringTransaction.id, data });
+      await updateMutation.mutateAsync({
+        id: editingRecurringTransaction.id,
+        data,
+      });
     } else {
       await addMutation.mutateAsync(data);
     }
@@ -173,7 +173,9 @@ const RecurringTransactions = () => {
                   handlePauseRecurringTransaction(isActive, transaction.id)
                 }
                 onDelete={handleDeleteRecurringTransaction}
-                isMutating={updateMutation.isPending || deleteMutation.isPending}
+                isMutating={
+                  updateMutation.isPending || deleteMutation.isPending
+                }
               />
             ))
           ) : (
@@ -196,7 +198,11 @@ const RecurringTransactions = () => {
             onSave={handleSaveRecurringTransaction}
             editingTransaction={editingRecurringTransaction}
             onDelete={handleDeleteRecurringTransaction}
-            isLoading={addMutation.isPending || updateMutation.isPending || deleteMutation.isPending}
+            isLoading={
+              addMutation.isPending ||
+              updateMutation.isPending ||
+              deleteMutation.isPending
+            }
           />
         )}
       </div>

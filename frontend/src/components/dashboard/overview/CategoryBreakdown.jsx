@@ -13,8 +13,8 @@ const CategoryBreakdown = ({ transactions, currency }) => {
 
   transactions.forEach((t) => {
     if (t.type === "expense") {
-      if (!spendingByCategory[t.title]) spendingByCategory[t.title] = 0;
-      spendingByCategory[t.title] += t.amount;
+      if (!spendingByCategory[t.category]) spendingByCategory[t.category] = 0;
+      spendingByCategory[t.category] += t.amount;
     }
   });
 

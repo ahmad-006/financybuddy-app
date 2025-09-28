@@ -8,7 +8,7 @@ function Home() {
   const navigate = useNavigate();
   return (
     <main
-      className="bg-gradient-to-b from-gray-950 to-gray-900 min-h-screen w-full relative"
+      className="bg-gradient-to-b from-gray-950 to-gray-900 w-full relative"
       style={{ backgroundColor: "#111827" }}
     >
       <HeroSection navigate={navigate} />
