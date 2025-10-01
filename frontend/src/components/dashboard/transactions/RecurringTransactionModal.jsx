@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   Dialog,
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { format } from "date-fns";
+import TestSelect from "@/components/TestSelect";
 
 const RecurringTransactionModal = ({
   onOpenChange,
@@ -34,6 +35,8 @@ const RecurringTransactionModal = ({
     setValue,
     formState: { errors },
   } = useForm();
+
+  const [frequency, setFrequency] = useState("Monthly");
 
   const categories = useMemo(
     () => [
@@ -63,7 +66,7 @@ const RecurringTransactionModal = ({
       setValue("amount", editingTransaction.amount ?? 0);
       setValue("type", editingTransaction.type || "expense");
       setValue("category", editingTransaction.category || categories[0]);
-      setValue("frequency", editingTransaction.frequency || "Monthly");
+      setFrequency(editingTransaction.frequency || "Monthly");
       setValue("isActive", editingTransaction.isActive ?? true);
       setValue(
         "nextDate",
@@ -74,7 +77,7 @@ const RecurringTransactionModal = ({
     } else {
       reset();
       setValue("type", "expense");
-      setValue("frequency", "Monthly");
+      setFrequency("Monthly");
       setValue("isActive", true);
       setValue("nextDate", format(new Date(), "yyyy-MM-dd"));
     }
@@ -83,6 +86,7 @@ const RecurringTransactionModal = ({
   const onSubmit = async (data) => {
     await onSave({
       ...data,
+      frequency,
       id: editingTransaction ? editingTransaction.id : `rt${Date.now()}`,
     });
     reset();
@@ -150,89 +154,68 @@ const RecurringTransactionModal = ({
             )}
           </div>
 
-          <div className="space-y-2">
-            <div className="text-sm font-medium">Type</div>
-            <Controller
-              name="type"
-              control={control}
-              rules={{ required: "Type is required" }}
-              render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger
-                    className={errors.type ? "border-red-500" : ""}
-                  >
-                    <SelectValue placeholder="Select type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="expense">Expense</SelectItem>
-                    <SelectItem value="income">Income</SelectItem>
-                  </SelectContent>
-                </Select>
-              )}
-            />
-            {errors.type && (
-              <p className="text-red-500 text-xs mt-1">{errors.type.message}</p>
-            )}
-          </div>
+          {!editingTransaction && (
+            <>
+              <div className="space-y-2">
+                <div className="text-sm font-medium">Type</div>
+                <Controller
+                  name="type"
+                  control={control}
+                  rules={{ required: "Type is required" }}
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger
+                        className={errors.type ? "border-red-500" : ""}
+                      >
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="expense">Expense</SelectItem>
+                        <SelectItem value="income">Income</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.type && (
+                  <p className="text-red-500 text-xs mt-1">{errors.type.message}</p>
+                )}
+              </div>
 
-          <div className="space-y-2">
-            <div className="text-sm font-medium">Category</div>
-            <Controller
-              name="category"
-              control={control}
-              rules={{ required: "Category is required" }}
-              render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger
-                    className={errors.category ? "border-red-500" : ""}
-                  >
-                    <SelectValue placeholder="Select category" />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-72 overflow-y-auto">
-                    {categories.map((cat) => (
-                      <SelectItem key={cat} value={cat}>
-                        {cat}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-            {errors.category && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.category.message}
-              </p>
-            )}
-          </div>
+              <div className="space-y-2">
+                <div className="text-sm font-medium">Category</div>
+                <Controller
+                  name="category"
+                  control={control}
+                  rules={{ required: "Category is required" }}
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger
+                        className={errors.category ? "border-red-500" : ""}
+                      >
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-72 overflow-y-auto">
+                        {categories.map((cat) => (
+                          <SelectItem key={cat} value={cat}>
+                            {cat}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.category && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.category.message}
+                  </p>
+                )}
+              </div>
+            </>
+          )}
 
           <div className="space-y-2">
             <div className="text-sm font-medium">Frequency</div>
-            <Controller
-              name="frequency"
-              control={control}
-              rules={{ required: "Frequency is required" }}
-              render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger
-                    className={errors.frequency ? "border-red-500" : ""}
-                  >
-                    <SelectValue placeholder="Select frequency" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {frequencies.map((freq) => (
-                      <SelectItem key={freq} value={freq}>
-                        {freq}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-            {errors.frequency && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.frequency.message}
-              </p>
-            )}
+            <TestSelect />
           </div>
 
           <div className="space-y-2">

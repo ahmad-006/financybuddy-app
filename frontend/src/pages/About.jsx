@@ -203,29 +203,34 @@ export default function About() {
           <div className="grid md:grid-cols-4 gap-6">
             {[
               {
-                image: "https:/portraits/men/32.jpg",
+                image:
+                  "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
                 name: "Ahmad Aamir",
                 role: "Founder & CEO",
                 description:
                   "Former financial analyst with 10+ years experience",
               },
               {
-                image: "https:/portraits/women/65.jpg",
+                image:
+                  "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
                 name: "Anna Smith",
                 role: "Lead Developer",
                 description: "Specialized in fintech applications and security",
               },
               {
-                image: "https:/portraits/men/45.jpg",
-                name: "Mike Johnson",
-                role: "Product Designer",
-                description: "Focused on creating intuitive user experiences",
-              },
-              {
-                image: "https:/portraits/women/29.jpg",
+                image:
+                  "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
                 name: "Sarah Rodriguez",
                 role: "Financial Advisor",
                 description: "Certified financial planner and budgeting expert",
+              },
+              {
+                image:
+                  "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                name: "Alicia Yous",
+                role: "Accounts Advisor",
+                description:
+                  "Certified Accounts planner and budgeting expert by World Bank",
               },
             ].map((member, index) => (
               <motion.div
@@ -375,13 +380,6 @@ export default function About() {
               className="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-700 transition-all duration-300"
             >
               <NavLink to={"/Login"}>Get Started Today</NavLink>
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              className="px-8 py-4 bg-transparent border border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-600 hover:text-white transition-all duration-300"
-            >
-              <NavLink to={"/price"}>View Pricing</NavLink>
             </motion.button>
           </div>
         </motion.div>

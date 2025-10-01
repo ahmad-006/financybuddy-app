@@ -1,6 +1,6 @@
 import React from "react";
 import { format } from "date-fns";
-import { DollarSign, Edit } from "lucide-react";
+import { DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const SavingCard = ({ saving, onEdit, currency = "$" }) => {
@@ -28,7 +28,7 @@ const SavingCard = ({ saving, onEdit, currency = "$" }) => {
           onClick={() => onEdit(saving)}
           aria-label="Edit saving"
         >
-          <Edit className="h-4 w-4 sm:h-5 sm:w-5" />
+          Edit
         </Button>
       </div>
     </div>

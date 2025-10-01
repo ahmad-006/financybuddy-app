@@ -142,7 +142,6 @@ export default function TransactionModal({
             <Input
               {...register("title", { required: "Title is required" })}
               placeholder="e.g., Coffee, Rent, Salary"
-              readOnly={!!editingTransaction}
             />
             {errors.title && (
               <p className="text-red-500 text-xs mt-1">
@@ -169,90 +168,94 @@ export default function TransactionModal({
             )}
           </div>
 
-          <div className="space-y-2">
-            <div className="text-sm font-medium">Type</div>
-            <Controller
-              name="type"
-              control={control}
-              rules={{ required: "Type is required" }}
-              render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select transaction type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="income">Income</SelectItem>
-                    <SelectItem value="expense">Expense</SelectItem>
-                    <SelectItem value="saving">Saving</SelectItem>
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </div>
+          {!editingTransaction && (
+            <>
+              <div className="space-y-2">
+                <div className="text-sm font-medium">Type</div>
+                <Controller
+                  name="type"
+                  control={control}
+                  rules={{ required: "Type is required" }}
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select transaction type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="income">Income</SelectItem>
+                        <SelectItem value="expense">Expense</SelectItem>
+                        <SelectItem value="saving">Saving</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
 
-          <div className="space-y-2">
-            <div className="text-sm font-medium">Category</div>
-            <Controller
-              name="category"
-              control={control}
-              rules={{ required: "Category is required" }}
-              render={({ field }) => (
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value}
-                  disabled={!!editingTransaction || transactionType === "saving"}
-                >
-                  <SelectTrigger
-                    className={errors.category ? "border-red-500" : ""}
-                  >
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-72 overflow-y-auto">
-                    {categories.map((cat) => (
-                      <SelectItem key={cat} value={cat.toLowerCase()}>
-                        {cat}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-            {errors.category && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.category.message}
-              </p>
-            )}
-          </div>
+              <div className="space-y-2">
+                <div className="text-sm font-medium">Category</div>
+                <Controller
+                  name="category"
+                  control={control}
+                  rules={{ required: "Category is required" }}
+                  render={({ field }) => (
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      disabled={transactionType === "saving"}
+                    >
+                      <SelectTrigger
+                        className={errors.category ? "border-red-500" : ""}
+                      >
+                        <SelectValue placeholder="Select a category" />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-72 overflow-y-auto">
+                        {categories.map((cat) => (
+                          <SelectItem key={cat} value={cat.toLowerCase()}>
+                            {cat}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.category && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.category.message}
+                  </p>
+                )}
+              </div>
 
-          <div className="space-y-2">
-            <div className="text-sm font-medium">Budget Type</div>
-            <Controller
-              name="budgetType"
-              control={control}
-              rules={{ required: "Budget Type is required" }}
-              render={({ field }) => (
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value}
-                  disabled={transactionType === "saving"}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select budget type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="monthly">Monthly</SelectItem>
-                    <SelectItem value="special">Special</SelectItem>
-                    <SelectItem value="none">None</SelectItem>
-                  </SelectContent>
-                </Select>
-              )}
-            />
-            {errors.budgetType && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.budgetType.message}
-              </p>
-            )}
-          </div>
+              <div className="space-y-2">
+                <div className="text-sm font-medium">Budget Type</div>
+                <Controller
+                  name="budgetType"
+                  control={control}
+                  rules={{ required: "Budget Type is required" }}
+                  render={({ field }) => (
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      disabled={transactionType === "saving"}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select budget type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="monthly">Monthly</SelectItem>
+                        <SelectItem value="special">Special</SelectItem>
+                        <SelectItem value="none">None</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.budgetType && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.budgetType.message}
+                  </p>
+                )}
+              </div>
+            </>
+          )}
 
           <div className="space-y-2">
             <div className="text-sm font-medium">Date</div>

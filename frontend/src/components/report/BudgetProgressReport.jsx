@@ -11,13 +11,13 @@ const BudgetProgressReport = ({
       .reduce((sum, t) => sum + t.amount, 0);
 
     const progress =
-      budget.monthlyLimit > 0 ? (spent / budget.monthlyLimit) * 100 : 0;
+      budget.limit > 0 ? (spent / budget.limit) * 100 : 0;
 
     return {
       ...budget,
       spent,
       progress: Math.min(100, progress),
-      isOverBudget: spent > budget.monthlyLimit,
+      isOverBudget: spent > budget.limit,
     };
   });
 

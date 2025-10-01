@@ -72,7 +72,7 @@ function HeroSection({ navigate }) {
                 onClick={() => navigate("/signup")}
                 className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 flex items-center justify-center font-medium text-sm"
               >
-                Start Free Trial
+                Start Free Now
                 <svg
                   className="w-4 h-4 ml-2"
                   fill="none"
@@ -86,10 +86,6 @@ function HeroSection({ navigate }) {
                     d="M13 7l5 5m0 0l-5 5m5-5H6"
                   />
                 </svg>
-              </button>
-
-              <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:border-gray-400 transition-all duration-300 text-sm">
-                View Demo
               </button>
             </div>
 

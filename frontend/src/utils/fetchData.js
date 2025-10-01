@@ -316,6 +316,34 @@ const resetForgotPassword = async (token, newPassword) => {
     return error;
   }
 };
+
+// Fetch all savings
+const getSavings = async () => {
+  const res = await axios.get(`${baseURL}/api/v1/savings`);
+  if (!res.data) throw new Error("No savings found");
+  return res.data.data;
+};
+
+// Add a new saving
+const addSaving = async (data) => {
+  const res = await axios.post(`${baseURL}/api/v1/savings`, data);
+  if (!res.data) throw new Error("Failed to add saving");
+  return res.data.data;
+};
+
+// Update a saving
+const updateSaving = async ({ id, ...data }) => {
+  const res = await axios.patch(`${baseURL}/api/v1/savings/${id}`, data);
+  if (!res.data) throw new Error("Failed to update saving");
+  return res.data.data;
+};
+
+// Delete a saving
+const deleteSaving = async (id) => {
+  await axios.delete(`${baseURL}/api/v1/savings/${id}`);
+  return id;
+};
+
 export {
   fetchTransactions,
   addTransaction,
@@ -343,4 +371,8 @@ export {
   resetPassword,
   sendPasswordResetLink,
   resetForgotPassword,
+  getSavings,
+  addSaving,
+  updateSaving,
+  deleteSaving,
 };

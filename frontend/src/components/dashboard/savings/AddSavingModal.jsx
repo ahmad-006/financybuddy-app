@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
 
-const AddSavingModal = ({ onClose, onSave, editingSaving, onDelete, isLoading }) => {
+const AddSavingModal = ({ isOpen, onClose, onAddSaving, saving, isLoading, onDelete }) => {
   const {
     register,
     handleSubmit,
@@ -21,23 +21,23 @@ const AddSavingModal = ({ onClose, onSave, editingSaving, onDelete, isLoading })
   } = useForm();
 
   useEffect(() => {
-    if (editingSaving) {
-      setValue("amount", editingSaving.amount || 0);
+    if (saving) {
+      setValue("amount", saving.amount || 0);
       setValue(
         "date",
-        editingSaving.date
-          ? format(new Date(editingSaving.date), "yyyy-MM-dd")
+        saving.date
+          ? format(new Date(saving.date), "yyyy-MM-dd")
           : format(new Date(), "yyyy-MM-dd")
       );
-      setValue("title", editingSaving.title || "");
+      setValue("title", saving.title || "");
     } else {
       reset();
       setValue("date", format(new Date(), "yyyy-MM-dd"));
     }
-  }, [editingSaving, reset, setValue]);
+  }, [saving, reset, setValue]);
 
   const onSubmit = async (data) => {
-    await onSave({
+    await onAddSaving({
       ...data,
     });
     onClose();
@@ -45,18 +45,18 @@ const AddSavingModal = ({ onClose, onSave, editingSaving, onDelete, isLoading })
   };
 
   const handleDelete = async () => {
-    if (editingSaving && onDelete) {
-      await onDelete(editingSaving._id);
+    if (saving && onDelete) {
+      await onDelete(saving._id);
       onClose();
     }
   };
 
   return (
-    <Dialog open={true} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-center">
-            {editingSaving ? "Edit Saving Entry" : "Add New Saving"}
+            {saving ? "Edit Saving Entry" : "Add New Saving"}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-2">
@@ -115,7 +115,7 @@ const AddSavingModal = ({ onClose, onSave, editingSaving, onDelete, isLoading })
           </div>
 
           <DialogFooter className="flex flex-col gap-2 sm:flex-row sm:justify-between pt-4">
-            {editingSaving && onDelete && (
+            {saving && onDelete && (
               <Button
                 type="button"
                 variant="destructive"
@@ -137,10 +137,10 @@ const AddSavingModal = ({ onClose, onSave, editingSaving, onDelete, isLoading })
               </Button>
               <Button
                 type="submit"
-                className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
+                className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white"
                 disabled={isLoading}
               >
-                {isLoading ? (editingSaving ? "Updating..." : "Adding...") : (editingSaving ? "Update" : "Add")} Saving
+                {isLoading ? (saving ? "Updating..." : "Adding...") : (saving ? "Update" : "Add")} Saving
               </Button>
             </div>
           </DialogFooter>
@@ -149,5 +149,6 @@ const AddSavingModal = ({ onClose, onSave, editingSaving, onDelete, isLoading })
     </Dialog>
   );
 };
+
 
 export default AddSavingModal;

@@ -17,8 +17,7 @@ export default function SavingsPage() {
 
   const queryClient = useQueryClient();
 
-  //initial fetch using react query
-  const { data: transactions } = useQuery({
+  const { data: transactions, isLoading: isTransactionsLoading } = useQuery({
     queryKey: ["transactions"],
     queryFn: fetchTransactions,
   });
@@ -26,7 +25,6 @@ export default function SavingsPage() {
   const savings =
     transactions?.transactions?.filter((t) => t.type === "saving") || [];
 
-  // mutation functions declaration (update,add,delete)
   const deleteMutation = useMutation({
     mutationFn: (id) => deleteTransaction(id),
     onSuccess: () => {
@@ -69,6 +67,12 @@ export default function SavingsPage() {
     },
   });
 
+  const isDeleting = deleteMutation.isPending;
+  const isAdding = addMutation.isPending;
+  const isUpdating = updateMutation.isPending;
+  const isModalLoading = isAdding || isUpdating || isDeleting;
+  const isLoading = isTransactionsLoading || isModalLoading;
+
   const totalSavings = Array.isArray(savings)
     ? savings.reduce((sum, s) => sum + s.amount, 0)
     : 0;
@@ -100,30 +104,37 @@ export default function SavingsPage() {
     deleteMutation.mutate(id);
   };
 
-  const handleSave = (data) => {
+  const handleSave = async (data) => {
     if (editingSaving) {
       const id = editingSaving._id;
-      // update
-      updateMutation.mutate({ id, data });
+      await updateMutation.mutateAsync({ id, data });
     } else {
-      //adding
-      addMutation.mutate({
+      await addMutation.mutateAsync({
         ...data,
         budgetType: "none",
         type: "saving",
         category: "savings",
       });
     }
-
     setOpen(false);
     setEditingSaving(null);
   };
-
 
   const handleModalClose = () => {
     setOpen(false);
     setEditingSaving(null);
   };
+
+  if (isTransactionsLoading) {
+    return (
+      <div className="relative p-4 sm:p-6 lg:p-8 bg-gray-50 text-gray-900 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading savings data...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative p-4 sm:p-6 lg:p-8 bg-gray-50 text-gray-900 min-h-screen">
@@ -134,19 +145,19 @@ export default function SavingsPage() {
           and see how close you are to reaching your targets.
         </p>
       </div>
- ]
+
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Savings</h1>
         <button
           onClick={handleAddNew}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition-colors flex items-center gap-2"
+          disabled={isLoading}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Plus className="w-5 h-5" />
           Add Saving
         </button>
       </div>
 
- 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
           <div>
@@ -168,7 +179,6 @@ export default function SavingsPage() {
         </div>
       </div>
 
-      
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h2 className="text-xl font-bold text-gray-800 mb-4">History</h2>
         {savings.length === 0 ? (
@@ -191,23 +201,24 @@ export default function SavingsPage() {
                 <SavingCard
                   key={saving._id}
                   saving={saving}
+                  onDelete={handleDelete}
                   onEdit={handleEdit}
                   currency={"PKR"}
+                  isLoading={isLoading}
                 />
               ))}
           </div>
         )}
       </div>
 
-
-      {open && (
-        <AddSavingModal
-          onClose={handleModalClose}
-          onSave={handleSave}
-          editingSaving={editingSaving}
-          onDelete={handleDelete}
-        />
-      )}
+      <AddSavingModal
+        isOpen={open}
+        onClose={handleModalClose}
+        onAddSaving={handleSave}
+        saving={editingSaving}
+        isLoading={isModalLoading}
+        onDelete={handleDelete}
+      />
     </div>
   );
 }
