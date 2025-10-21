@@ -285,16 +285,15 @@ export default function About() {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <div className="text-4xl font-bold text-blue-600 mb-2">
-                <motion.span
-                  key={userCount}
-                  initial={{ scale: 1.2 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  {userCount.toLocaleString()}+
-                </motion.span>
-              </div>
+               <div className="text-4xl font-bold text-blue-600 mb-2">
+                 <motion.span
+                   initial={{ scale: 1.2 }}
+                   animate={{ scale: 1 }}
+                   transition={{ duration: 0.2 }}
+                 >
+                   {userCount.toLocaleString()}+
+                 </motion.span>
+               </div>
               <p className="text-gray-600">Active Users</p>
             </motion.div>
 
@@ -304,16 +303,15 @@ export default function About() {
               transition={{ duration: 0.6, delay: 0.1 }}
               viewport={{ once: true }}
             >
-              <div className="text-4xl font-bold text-blue-600 mb-2">
-                <motion.span
-                  key={expenseCount}
-                  initial={{ scale: 1.2 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  ${expenseCount}M+
-                </motion.span>
-              </div>
+               <div className="text-4xl font-bold text-blue-600 mb-2">
+                 <motion.span
+                   initial={{ scale: 1.2 }}
+                   animate={{ scale: 1 }}
+                   transition={{ duration: 0.2 }}
+                 >
+                   ${expenseCount}M+
+                 </motion.span>
+               </div>
               <p className="text-gray-600">Tracked Expenses</p>
             </motion.div>
 
@@ -323,16 +321,15 @@ export default function About() {
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              <div className="text-4xl font-bold text-blue-600 mb-2">
-                <motion.span
-                  key={satisfactionCount}
-                  initial={{ scale: 1.2 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  {satisfactionCount}%
-                </motion.span>
-              </div>
+               <div className="text-4xl font-bold text-blue-600 mb-2">
+                 <motion.span
+                   initial={{ scale: 1.2 }}
+                   animate={{ scale: 1 }}
+                   transition={{ duration: 0.2 }}
+                 >
+                   {satisfactionCount}%
+                 </motion.span>
+               </div>
               <p className="text-gray-600">User Satisfaction</p>
             </motion.div>
 
@@ -342,16 +339,15 @@ export default function About() {
               transition={{ duration: 0.6, delay: 0.3 }}
               viewport={{ once: true }}
             >
-              <div className="text-4xl font-bold text-blue-600 mb-2">
-                <motion.span
-                  key={savingsCount}
-                  initial={{ scale: 1.2 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  {savingsCount}%
-                </motion.span>
-              </div>
+               <div className="text-4xl font-bold text-blue-600 mb-2">
+                 <motion.span
+                   initial={{ scale: 1.2 }}
+                   animate={{ scale: 1 }}
+                   transition={{ duration: 0.2 }}
+                 >
+                   {savingsCount}%
+                 </motion.span>
+               </div>
               <p className="text-gray-600">Average Savings Increase</p>
             </motion.div>
           </div>

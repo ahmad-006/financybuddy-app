@@ -1,22 +1,22 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+
 dotenv.config({ path: "./config.env" });
 
-const connectDB = () => {
+const connectDB = async () => {
   const DB = process.env.DATABASE.replace(
     "<PASSWORD>",
     process.env.DATABASE_PASSWORD
   );
 
-  mongoose.connect(DB);
-
-  mongoose.set("strictQuery", true);
-
-  const conn = mongoose.connection;
-  conn.on("error", console.error.bind(console, "connection error:"));
-  conn.once("open", () => {
-    console.log("DB connection successful!");
-  });
+  try {
+    const conn = await mongoose.connect(DB);
+    console.log(`DB connection successful!....`);
+    return conn;
+  } catch (error) {
+    console.error("DB connection failed:", error);
+    process.exit(1);
+  }
 };
 
 module.exports = connectDB;

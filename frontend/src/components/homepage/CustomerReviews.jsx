@@ -44,59 +44,39 @@ const CustomerReviews = () => {
   }, [reviews.length]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          const duration = 3000;
-          const steps = 90;
-
-          const userIncrement = (50000 - 10000) / steps;
-          let currentUser = 10000;
-
-          const ratingIncrement = (4.9 - 4.0) / steps;
-          let currentRating = 4.0;
-
-          const satisfactionIncrement = (98 - 80) / steps;
-          let currentSatisfaction = 80;
-
-          const timer = setInterval(() => {
-            currentUser += userIncrement;
-            if (currentUser >= 50000) {
-              setUserCount(50000);
-            } else {
-              setUserCount(Math.floor(currentUser));
-            }
-
-            currentRating += ratingIncrement;
-            if (currentRating >= 4.9) {
-              setRatingCount(4.9);
-            } else {
-              setRatingCount(parseFloat(currentRating.toFixed(1)));
-            }
-
-            currentSatisfaction += satisfactionIncrement;
-            if (currentSatisfaction >= 98) {
-              setSatisfactionCount(98);
-            } else {
-              setSatisfactionCount(Math.floor(currentSatisfaction));
-            }
-
-            if (
-              currentUser >= 50000 &&
-              currentRating >= 4.9 &&
-              currentSatisfaction >= 98
-            ) {
-              clearInterval(timer);
-            }
-          }, duration / steps);
-
-          return () => clearInterval(timer);
-        }
-      },
-      { threshold: 0.3 }
-    );
-
     const node = ref.current;
+    let observer;
+    let animationFrame;
+
+    const animateValue = (start, end, duration, setter) => {
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const value = progress * (end - start) + start;
+        setter(value);
+        if (progress < 1) {
+          animationFrame = requestAnimationFrame(step);
+        }
+      };
+      animationFrame = requestAnimationFrame(step);
+    };
+
+    const observerCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          animateValue(10000, 50000, 2000, (v) => setUserCount(Math.floor(v)));
+          animateValue(4.0, 4.9, 2000, (v) => setRatingCount(parseFloat(v.toFixed(1))));
+          animateValue(80, 98, 2000, (v) => setSatisfactionCount(Math.floor(v)));
+          if (node) {
+            observer.unobserve(node);
+          }
+        }
+      });
+    };
+
+    observer = new IntersectionObserver(observerCallback, { threshold: 0.3 });
+
     if (node) {
       observer.observe(node);
     }
@@ -104,6 +84,9 @@ const CustomerReviews = () => {
     return () => {
       if (node) {
         observer.unobserve(node);
+      }
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
       }
     };
   }, []);
