@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bungee&family=Crimson+Text:wght@400;600&family=Dancing+Script:wght@400;700&family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700;800&family=Share+Tech+Mono&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -124,7 +124,7 @@ html.dashboard-active,
     box-sizing: border-box;
   }
   body {
-    @apply bg-background text-foreground font-times;
+    @apply bg-background text-foreground font-crimson-text;
   }
 }
 

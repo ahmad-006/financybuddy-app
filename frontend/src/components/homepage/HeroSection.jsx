@@ -51,18 +51,18 @@ function HeroSection({ navigate }) {
             className="w-full lg:w-1/2 order-2 lg:order-1 text-center lg:text-left"
           >
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-50 border border-blue-100 mb-6">
-              <span className="text-blue-700 text-sm font-medium">
+              <span className="text-blue-700 text-sm font-medium font-share-tech-mono">
                 FINANCIAL FREEDOM AWAITS
               </span>
             </div>
 
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-gray-900 leading-tight">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-gray-900 leading-tight font-bungee">
               Master Your
               <br />
               <span className="text-blue-600">Financial Future</span>
             </h1>
 
-            <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+            <p className="text-lg text-gray-600 mb-6 leading-relaxed font-crimson-text">
               Transform how you manage money with elegant design and powerful
               insights. Achieve your goals with precision and clarity.
             </p>

@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
+import { NavLink } from "react-router-dom";
 import transactionSVG from "../../assets/images/home/transaction.svg";
 import savingSVG from "../../assets/images/home/saving.svg";
 import aiSVG from "../../assets/images/home/ai.svg";
@@ -62,14 +63,14 @@ function Features() {
           className="text-center mb-12"
         >
           <div className="inline-flex items-center px-4 py-2 rounded-full bg-white border border-gray-200 mb-6">
-            <span className="text-gray-600 text-sm font-medium">
+            <span className="text-gray-600 text-sm font-medium font-share-tech-mono">
               POWERFUL FEATURES
             </span>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-bungee">
             Everything You Need
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto px-4">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto px-4 font-crimson-text">
             Comprehensive tools designed for modern financial management
           </p>
         </motion.div>
@@ -94,10 +95,10 @@ function Features() {
                 />
               </div>
 
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2 font-poppins">
                 {feature.title}
               </h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
+              <p className="text-gray-600 text-sm leading-relaxed font-crimson-text">
                 {feature.description}
               </p>
             </motion.div>
@@ -111,9 +112,11 @@ function Features() {
           viewport={{ once: true }}
           className="text-center mt-10"
         >
-          <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 font-medium text-sm">
-            Explore All Features
-          </button>
+          <NavLink to="/guide">
+            <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 font-medium text-sm">
+              Explore All Features
+            </button>
+          </NavLink>
         </motion.div>
       </div>
     </section>

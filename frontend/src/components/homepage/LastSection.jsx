@@ -56,7 +56,7 @@ export default function LastSection() {
             viewport={{ once: true }}
             className="w-full lg:w-1/2 order-2 lg:order-1 text-center lg:text-left"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight font-bungee">
               Ready to
               <br />
               <span className="text-blue-600">Transform Your</span>
@@ -64,7 +64,7 @@ export default function LastSection() {
               Finances?
             </h2>
 
-            <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+            <p className="text-lg text-gray-600 mb-6 leading-relaxed font-crimson-text">
               Join thousands of professionals who have already elevated their
               financial management. Start your journey to financial clarity
               today.
@@ -113,7 +113,7 @@ export default function LastSection() {
                   <div className="text-xl font-bold text-gray-900 mb-1">
                     {stat.value}
                   </div>
-                  <div className="text-gray-600 text-xs">{stat.label}</div>
+                  <div className="text-gray-600 text-xs font-crimson-text">{stat.label}</div>
                 </div>
               ))}
             </div>

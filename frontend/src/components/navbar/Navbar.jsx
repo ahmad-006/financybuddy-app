@@ -38,7 +38,7 @@ function Navbar() {
           <Logo />
         </NavLink>
 
-        <ul className="hidden md:flex space-x-2 text-gray-700">
+        <ul className="hidden md:flex space-x-2 text-gray-700 font-poppins">
           <li>
             <NavLink
               to="/"

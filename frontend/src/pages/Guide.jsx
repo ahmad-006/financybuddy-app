@@ -14,15 +14,15 @@ export default function Guide() {
         className="text-center mb-16 max-w-3xl mx-auto"
       >
         <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-50 border border-blue-100 mb-6">
-          <span className="text-blue-700 text-sm font-medium">
+          <span className="text-blue-700 text-sm font-medium font-share-tech-mono">
             GET STARTED GUIDE
           </span>
         </div>
 
-        <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
+        <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900 font-bungee">
           How <span className="text-blue-600">FinancyBuddy</span> Works
         </h1>
-        <p className="text-lg md:text-xl text-gray-600 mb-8">
+        <p className="text-lg md:text-xl text-gray-600 mb-8 font-crimson-text">
           Take control of your finances with our simple, manual expense tracking
           approach. No bank connections needed - just straightforward money
           management.
@@ -61,10 +61,10 @@ export default function Guide() {
             <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center mb-6 text-2xl font-bold text-blue-600 border-2 border-blue-200">
               1
             </div>
-            <h3 className="text-2xl font-semibold mb-4 text-gray-900">
+            <h3 className="text-2xl font-semibold mb-4 text-gray-900 font-poppins">
               Sign Up & Set Up
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-600 font-crimson-text">
               Create your free account in seconds. Set up your spending
               categories and initial budget.
             </p>
@@ -85,10 +85,10 @@ export default function Guide() {
             <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center mb-6 text-2xl font-bold text-blue-600 border-2 border-blue-200">
               2
             </div>
-            <h3 className="text-2xl font-semibold mb-4 text-gray-900">
+            <h3 className="text-2xl font-semibold mb-4 text-gray-900 font-poppins">
               Log Your Expenses
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-600 font-crimson-text">
               Quickly add transactions as you spend. Our simple form makes it
               easy to record purchases.
             </p>
@@ -109,10 +109,10 @@ export default function Guide() {
             <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center mb-6 text-2xl font-bold text-blue-600 border-2 border-blue-200">
               3
             </div>
-            <h3 className="text-2xl font-semibold mb-4 text-gray-900">
+            <h3 className="text-2xl font-semibold mb-4 text-gray-900 font-poppins">
               Track & Analyze
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-600 font-crimson-text">
               View your spending patterns, see category breakdowns, and stay on
               budget with visual reports.
             </p>
@@ -128,7 +128,7 @@ export default function Guide() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 font-bungee">
             Why Manual Tracking
             <br />
             <span className="text-blue-600">Works Better</span>
@@ -160,9 +160,9 @@ export default function Guide() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold">Complete Privacy</h3>
+              <h3 className="text-xl font-semibold font-poppins">Complete Privacy</h3>
             </div>
-            <p className="text-gray-600">
+            <p className="text-gray-600 font-crimson-text">
               Your financial data never leaves our secure servers. No bank
               connections means maximum privacy.
             </p>
@@ -192,9 +192,9 @@ export default function Guide() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold">Mindful Spending</h3>
+              <h3 className="text-xl font-semibold font-poppins">Mindful Spending</h3>
             </div>
-            <p className="text-gray-600">
+            <p className="text-gray-600 font-crimson-text">
               Manually entering expenses increases awareness of your spending
               habits and helps you make better choices.
             </p>
@@ -224,9 +224,9 @@ export default function Guide() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold">Flexible Categories</h3>
+              <h3 className="text-xl font-semibold font-poppins">Flexible Categories</h3>
             </div>
-            <p className="text-gray-600">
+            <p className="text-gray-600 font-crimson-text">
               Create custom spending categories that match your lifestyle. No
               predefined categories to limit you.
             </p>
@@ -256,9 +256,9 @@ export default function Guide() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold">No Bank Access Needed</h3>
+              <h3 className="text-xl font-semibold font-poppins">No Bank Access Needed</h3>
             </div>
-            <p className="text-gray-600">
+            <p className="text-gray-600 font-crimson-text">
               Use FinancyBuddy anywhere, anytime without needing to connect to
               your bank accounts.
             </p>
@@ -274,7 +274,7 @@ export default function Guide() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-4xl font-bold text-gray-900 mb-6">
+          <h2 className="text-4xl font-bold text-gray-900 mb-6 font-bungee">
             Frequently Asked Questions
           </h2>
         </motion.div>
@@ -309,10 +309,10 @@ export default function Guide() {
               viewport={{ once: true }}
               className="bg-white p-6 rounded-xl border border-gray-200 shadow-lg"
             >
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-xl font-semibold text-gray-900 mb-2 font-poppins">
                 {faq.question}
               </h3>
-              <p className="text-gray-600">{faq.answer}</p>
+              <p className="text-gray-600 font-crimson-text">{faq.answer}</p>
             </motion.div>
           ))}
         </div>
@@ -325,10 +325,10 @@ export default function Guide() {
         viewport={{ once: true }}
         className="max-w-3xl mx-auto text-center bg-white p-8 rounded-2xl border border-gray-200 shadow-lg"
       >
-        <h2 className="text-3xl font-bold mb-4 text-gray-900">
+        <h2 className="text-3xl font-bold mb-4 text-gray-900 font-bungee">
           Ready to Take Control of Your Finances?
         </h2>
-        <p className="text-lg text-gray-600 mb-6">
+        <p className="text-lg text-gray-600 mb-6 font-crimson-text">
           Join the community of mindful spenders who are achieving their
           financial goals with FinancyBuddy.
         </p>
@@ -339,7 +339,7 @@ export default function Guide() {
         >
           Start Tracking For Free
         </motion.button>
-        <p className="text-gray-500 mt-4">
+        <p className="text-gray-500 mt-4 font-crimson-text">
           No payment required • No bank connections needed
         </p>
       </motion.div>

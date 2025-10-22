@@ -8,7 +8,7 @@ function Logo() {
         icon={faMoneyBill1Wave}
         className="text-blue-600 text-xl"
       />
-      <h2 className="font-macondo text-2xl sm:text-xl text-gray-900">
+      <h2 className="font-dancing-script text-2xl sm:text-xl text-gray-900">
         FinancyBuddy
       </h2>
     </div>

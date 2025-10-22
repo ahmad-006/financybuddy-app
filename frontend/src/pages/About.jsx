@@ -79,21 +79,21 @@ export default function About() {
             className="md:w-1/2"
           >
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-50 border border-blue-100 mb-6">
-              <span className="text-blue-700 text-sm font-medium">
+              <span className="text-blue-700 text-sm font-medium font-share-tech-mono">
                 OUR STORY
               </span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900 font-bungee">
               About
               <span className="text-blue-600"> FinancyBuddy</span>
             </h2>
-            <p className="text-gray-600 text-lg mb-4 leading-relaxed">
+            <p className="text-gray-600 text-lg mb-4 leading-relaxed font-crimson-text">
               At FinancyBuddy, we're dedicated to revolutionizing how
               individuals manage their finances. Our mission is to provide
               simple, intelligent, and actionable tools that make budgeting and
               expense tracking effortless for everyone.
             </p>
-            <p className="text-gray-600 text-lg leading-relaxed mb-8">
+            <p className="text-gray-600 text-lg leading-relaxed mb-8 font-crimson-text">
               From visual dashboards to AI-driven insights, our goal is to
               empower you to make smarter financial decisions, save more, and
               reach your financial goals faster.
@@ -132,11 +132,11 @@ export default function About() {
             className="text-center mb-12"
           >
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-white border border-gray-200 mb-6">
-              <span className="text-gray-600 text-sm font-medium">
+              <span className="text-gray-600 text-sm font-medium font-share-tech-mono">
                 OUR VALUES
               </span>
             </div>
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl font-bold text-gray-900 mb-6 font-bungee">
               Our Mission & Values
             </h2>
           </motion.div>
@@ -171,10 +171,10 @@ export default function About() {
                 className="bg-white p-6 rounded-xl border border-gray-200 shadow-lg"
               >
                 <div className="text-3xl mb-4">{value.icon}</div>
-                <h3 className="text-xl font-semibold mb-3 text-gray-900">
+                <h3 className="text-xl font-semibold mb-3 text-gray-900 font-poppins">
                   {value.title}
                 </h3>
-                <p className="text-gray-600">{value.description}</p>
+                <p className="text-gray-600 font-crimson-text">{value.description}</p>
               </motion.div>
             ))}
           </div>
@@ -191,11 +191,11 @@ export default function About() {
             className="text-center mb-12"
           >
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-gray-100 border border-gray-200 mb-6">
-              <span className="text-gray-600 text-sm font-medium">
+              <span className="text-gray-600 text-sm font-medium font-share-tech-mono">
                 OUR TEAM
               </span>
             </div>
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl font-bold text-gray-900 mb-6 font-bungee">
               Meet Our Team
             </h2>
           </motion.div>
@@ -246,13 +246,13 @@ export default function About() {
                   alt={member.name}
                   className="w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 border-gray-200"
                 />
-                <h3 className="text-xl font-semibold text-gray-900">
+                <h3 className="text-xl font-semibold text-gray-900 font-poppins">
                   {member.name}
                 </h3>
                 <p className="text-blue-600 font-medium">{member.role}</p>
-                <p className="text-gray-600 mt-2 text-sm">
-                  {member.description}
-                </p>
+                 <p className="text-gray-600 mt-2 text-sm font-crimson-text">
+                   {member.description}
+                 </p>
               </motion.div>
             ))}
           </div>
@@ -269,11 +269,11 @@ export default function About() {
             className="text-center mb-12"
           >
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-white border border-gray-200 mb-6">
-              <span className="text-gray-600 text-sm font-medium">
+              <span className="text-gray-600 text-sm font-medium font-share-tech-mono">
                 OUR IMPACT
               </span>
             </div>
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl font-bold text-gray-900 mb-6 font-bungee">
               Our Impact
             </h2>
           </motion.div>
@@ -294,7 +294,7 @@ export default function About() {
                    {userCount.toLocaleString()}+
                  </motion.span>
                </div>
-              <p className="text-gray-600">Active Users</p>
+              <p className="text-gray-600 font-crimson-text">Active Users</p>
             </motion.div>
 
             <motion.div
@@ -312,7 +312,7 @@ export default function About() {
                    ${expenseCount}M+
                  </motion.span>
                </div>
-              <p className="text-gray-600">Tracked Expenses</p>
+              <p className="text-gray-600 font-crimson-text">Tracked Expenses</p>
             </motion.div>
 
             <motion.div
@@ -330,7 +330,7 @@ export default function About() {
                    {satisfactionCount}%
                  </motion.span>
                </div>
-              <p className="text-gray-600">User Satisfaction</p>
+              <p className="text-gray-600 font-crimson-text">User Satisfaction</p>
             </motion.div>
 
             <motion.div
@@ -362,10 +362,10 @@ export default function About() {
           viewport={{ once: true }}
           className="max-w-4xl mx-auto text-center bg-white p-8 rounded-2xl border border-gray-200 shadow-lg"
         >
-          <h2 className="text-3xl font-bold mb-6 text-gray-900">
+          <h2 className="text-3xl font-bold mb-6 text-gray-900 font-bungee">
             Ready to Take Control of Your Finances?
           </h2>
-          <p className="text-gray-600 text-lg mb-8">
+          <p className="text-gray-600 text-lg mb-8 font-crimson-text">
             Join thousands of users who have already transformed their financial
             lives with FinancyBuddy.
           </p>

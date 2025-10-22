@@ -102,11 +102,11 @@ const CustomerReviews = () => {
           className="text-center mb-12"
         >
           <div className="inline-flex items-center px-4 py-2 rounded-full bg-gray-100 border border-gray-200 mb-6">
-            <span className="text-gray-600 text-sm font-medium">
+            <span className="text-gray-600 text-sm font-medium font-share-tech-mono">
               TRUSTED BY EXPERTS
             </span>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-bungee">
             What Our Clients Say
           </h2>
         </motion.div>
@@ -136,13 +136,13 @@ const CustomerReviews = () => {
                 ))}
               </div>
 
-              <blockquote className="text-lg text-gray-700 text-center mb-6 italic leading-relaxed">
+              <blockquote className="text-lg text-gray-700 text-center mb-6 italic leading-relaxed font-crimson-text">
                 "{review.content}"
               </blockquote>
 
               <div className="text-center">
                 <div className="font-semibold text-gray-900">{review.name}</div>
-                <div className="text-gray-600 text-sm">{review.role}</div>
+                <div className="text-gray-600 text-sm font-crimson-text">{review.role}</div>
               </div>
             </motion.div>
           ))}

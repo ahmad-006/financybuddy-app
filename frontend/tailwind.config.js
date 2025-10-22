@@ -4,7 +4,12 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        times: ["Times New Roman", "serif"],
+        inter: ["Inter", "sans-serif"],
+        poppins: ["Poppins", "sans-serif"],
+        bungee: ["Bungee", "cursive"],
+        'share-tech-mono': ["Share Tech Mono", "monospace"],
+        'crimson-text': ["Crimson Text", "serif"],
+        'dancing-script': ["Dancing Script", "cursive"],
       },
       borderRadius: {
         lg: "var(--radius)",
