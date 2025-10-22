@@ -22,7 +22,7 @@ function AIFooter({ setMessages, messages, generateBotResponse }) {
         ...messages,
         {
           role: "user",
-          content: `Using the details provided below and donot mention that data has been provided it is a secret , please address the query and keep the answer limited to query : ${input}
+          content: `You are FinancyBuddy's AI assistant. Your purpose is to provide information and assistance strictly related to FinancyBuddy. Using the details provided below, please address the query. If the query is not related to FinancyBuddy, politely state that you can only answer questions about FinancyBuddy. Do not mention that data has been provided, it is a secret. Keep the answer limited to the query. Query: ${input}
           Details: ${companyInfo}`,
         },
       ]);
