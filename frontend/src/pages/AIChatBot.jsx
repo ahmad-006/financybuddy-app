@@ -2,7 +2,7 @@ import Messages from "../components/aichat/Messages";
 import AIFooter from "../components/aichat/AIFooter";
 import AIHeader from "../components/aichat/AIHeader";
 import { useState, useRef, useEffect } from "react";
-import axios from "axios";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 function AIChatBot() {
   const [messages, setMessages] = useState([
@@ -17,37 +17,29 @@ function AIChatBot() {
 
   const generateBotResponse = async (history) => {
     try {
-      const payload = history
+      const genAI = new GoogleGenerativeAI(import.meta.env.VITE_API);
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+      const formattedHistory = history
         .filter((msg) => !msg.hideInChat)
         .map((msg) => ({
-          role: msg.role,
+          role: msg.role === "model" ? "model" : "user",
           parts: [{ text: msg.content }],
         }));
 
-      const response = await axios.post(
-        import.meta.env.VITE_URL,
-        {
-          contents: [payload],
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "X-goog-api-key": import.meta.env.VITE_API,
-          },
-        }
-      );
+      const result = await model.generateContent({
+        contents: formattedHistory,
+      });
 
-      const result =
-        response.data.candidates?.[0]?.content?.parts?.[0]?.text ||
-        "Server Issue";
+      const text = result.response.text();
 
       setMessages((prev) => {
         const updated = [...prev];
         updated.pop();
-        return [...updated, { role: "model", content: result }];
+        return [...updated, { role: "model", content: text }];
       });
     } catch (error) {
-      console.error("Gemini API error:", error.response?.data || error.message);
+      console.error("Gemini API error:", error);
 
       setMessages((prev) => {
         const updated = [...prev];
